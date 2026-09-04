@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03 - Formulare HTML</title>
+
+    <style>
+      body {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #222;
+        background: #f7f7f7;
+      }
+
+      h1,
+      h2 {
+        color: #67328f;
+      }
+
+      section {
+        margin: 24px 0;
+        padding: 24px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      code {
+        color: #b62d24;
+        font-family: monospace;
+      }
+
+      .exemplu {
+        padding: 14px;
+        overflow-x: auto;
+        background: #f0f0f0;
+        border-left: 4px solid #67328f;
+      }
+
+      .camp {
+        margin-bottom: 16px;
+      }
+
+      label,
+      legend {
+        font-weight: bold;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        box-sizing: border-box;
+        max-width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="number"],
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+      }
+
+      input[type="checkbox"],
+      input[type="radio"] {
+        width: auto;
+      }
+
+      fieldset {
+        margin: 20px 0;
+        padding: 18px;
+        border: 1px solid #aaa;
+      }
+
+      .ajutor {
+        display: block;
+        color: #555;
+      }
+
+      .butoane {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <p><a href="02-HTML-building-blocks.html">&larr; Înapoi la lecția 02</a></p>
+      <h1>03 - Formulare HTML</h1>
+      <p>Formularele colectează informații introduse de utilizator.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Elementul form</h2>
+        <p>Toate câmpurile unui formular sunt puse în elementul <code>&lt;form&gt;</code>.</p>
+        <p class="exemplu"><code>&lt;form&gt;... câmpurile formularului ...&lt;/form&gt;</code></p>
+        <p>
+          Atributul <code>action</code> spune unde sunt trimise datele, iar
+          <code>method</code> stabilește metoda de trimitere, de obicei
+          <code>get</code> sau <code>post</code>.
+        </p>
+        <p class="exemplu"><code>&lt;form action="/contact" method="post"&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>2. Părțile principale ale unui formular</h2>
+        <ol>
+          <li><strong>Etichete</strong> — explică rolul câmpurilor.</li>
+          <li><strong>Câmpuri</strong> — primesc informațiile.</li>
+          <li><strong>Acțiuni</strong> — trimit sau resetează formularul.</li>
+          <li><strong>Ajutor</strong> — explică ce trebuie completat.</li>
+          <li><strong>Mesaje</strong> — oferă feedback utilizatorului.</li>
+          <li><strong>Validare</strong> — verifică datele introduse.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>3. Label și input</h2>
+        <p>
+          <code>&lt;label&gt;</code> este legat de câmp prin atributele
+          <code>for</code> și <code>id</code>. Apasă pe etichetă și câmpul va fi selectat.
+        </p>
+        <p class="exemplu">
+          <code>&lt;label for="prenume"&gt;Prenume:&lt;/label&gt;<br />
+&lt;input id="prenume" name="prenume" type="text" /&gt;</code>
+        </p>
+        <div class="camp">
+          <label for="demo-prenume">Prenume:</label>
+          <input id="demo-prenume" name="demo-prenume" type="text" placeholder="Scrie prenumele" />
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Câmpuri pentru text</h2>
+        <div class="camp">
+          <label for="demo-text">Text pe un singur rând:</label>
+          <input id="demo-text" name="demo-text" type="text" value="Un text simplu" />
+        </div>
+        <div class="camp">
+          <label for="demo-parola">Parolă:</label>
+          <input id="demo-parola" name="demo-parola" type="password" value="parola" />
+        </div>
+        <div class="camp">
+          <label for="demo-email">E-mail:</label>
+          <input id="demo-email" name="demo-email" type="email" placeholder="nume@exemplu.ro" />
+        </div>
+        <div class="camp">
+          <label for="demo-mesaj">Text pe mai multe rânduri:</label>
+          <textarea id="demo-mesaj" name="demo-mesaj" rows="4">Acesta este un mesaj mai lung.</textarea>
+        </div>
+        <p>
+          Un câmp <code>hidden</code> este trimis împreună cu formularul, dar nu este
+          afișat utilizatorului.
+        </p>
+        <p class="exemplu"><code>&lt;input name="sursa" type="hidden" value="lectia-03" /&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>5. Checkbox și radio</h2>
+        <p>Checkbox-urile permit selectarea mai multor variante.</p>
+        <div>
+          <input id="html" name="tehnologii" type="checkbox" value="html" />
+          <label for="html">HTML</label>
+        </div>
+        <div>
+          <input id="css" name="tehnologii" type="checkbox" value="css" />
+          <label for="css">CSS</label>
+        </div>
+
+        <p>Butoanele radio cu același <code>name</code> permit o singură alegere.</p>
+        <div>
+          <input id="incepator" name="nivel-demo" type="radio" value="incepator" />
+          <label for="incepator">Începător</label>
+        </div>
+        <div>
+          <input id="intermediar" name="nivel-demo" type="radio" value="intermediar" />
+          <label for="intermediar">Intermediar</label>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. Select și option</h2>
+        <div class="camp">
+          <label for="nivel">Alege nivelul:</label>
+          <select id="nivel" name="nivel">
+            <option value="">Alege o variantă</option>
+            <option value="incepator">Începător</option>
+            <option value="intermediar">Intermediar</option>
+            <option value="avansat">Avansat</option>
+          </select>
+        </div>
+
+        <div class="camp">
+          <label for="subiecte">Alege mai multe subiecte:</label>
+          <select id="subiecte" name="subiecte" multiple size="3">
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="javascript">JavaScript</option>
+          </select>
+          <small class="ajutor">Ține apăsat Ctrl sau Cmd pentru selecție multiplă.</small>
+        </div>
+      </section>
+
+      <section>
+        <h2>7. Alte tipuri de input</h2>
+        <div class="camp">
+          <label for="varsta">Număr:</label>
+          <input id="varsta" name="varsta" type="number" min="1" max="120" />
+        </div>
+        <div class="camp">
+          <label for="data">Dată:</label>
+          <input id="data" name="data" type="date" />
+        </div>
+        <div class="camp">
+          <label for="fisier">Fișier:</label>
+          <input id="fisier" name="fisier" type="file" />
+        </div>
+        <div class="camp">
+          <label for="culoare">Culoare:</label>
+          <input id="culoare" name="culoare" type="color" value="#67328f" />
+        </div>
+        <div class="camp">
+          <label for="volum">Interval:</label>
+          <input id="volum" name="volum" type="range" min="0" max="100" value="50" />
+        </div>
+      </section>
+
+      <section>
+        <h2>8. Fieldset și legend</h2>
+        <p><code>&lt;fieldset&gt;</code> grupează câmpuri, iar <code>&lt;legend&gt;</code> denumește grupul.</p>
+        <fieldset>
+          <legend>Date personale</legend>
+          <div class="camp">
+            <label for="demo-nume">Nume:</label>
+            <input id="demo-nume" name="demo-nume" type="text" />
+          </div>
+          <div class="camp">
+            <label for="demo-oras">Oraș:</label>
+            <input id="demo-oras" name="demo-oras" type="text" />
+          </div>
+        </fieldset>
+      </section>
+
+      <section>
+        <h2>9. Butoanele formularului</h2>
+        <ul>
+          <li><code>submit</code> încearcă să trimită formularul;</li>
+          <li><code>reset</code> readuce câmpurile la valorile inițiale;</li>
+          <li><code>button</code> nu are o acțiune implicită.</li>
+        </ul>
+        <div class="butoane">
+          <button type="submit">Trimite</button>
+          <button type="reset">Resetează</button>
+          <button type="button">Buton simplu</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>10. Validare simplă</h2>
+        <p>Browserul poate verifica unele date fără JavaScript:</p>
+        <ul>
+          <li><code>required</code> face câmpul obligatoriu;</li>
+          <li><code>minlength</code> și <code>maxlength</code> controlează lungimea;</li>
+          <li><code>min</code> și <code>max</code> limitează numerele;</li>
+          <li><code>type="email"</code> verifică forma adresei de e-mail.</li>
+        </ul>
+        <p class="exemplu"><code>&lt;input type="email" required /&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>11. Formular complet de test</h2>
+        <p>Completează formularul și testează butoanele. Datele nu sunt trimise unui server.</p>
+
+        <form action="" method="get">
+          <input name="lectie" type="hidden" value="03-formulare" />
+
+          <fieldset>
+            <legend>Date personale</legend>
+
+            <div class="camp">
+              <label for="nume">Nume:</label>
+              <input id="nume" name="nume" type="text" minlength="2" placeholder="Numele tău" required />
+            </div>
+
+            <div class="camp">
+              <label for="email">E-mail:</label>
+              <input id="email" name="email" type="email" placeholder="nume@exemplu.ro" required />
+              <small class="ajutor">Vom folosi adresa doar pentru acest exemplu.</small>
+            </div>
+
+            <div class="camp">
+              <label for="oras">Oraș:</label>
+              <select id="oras" name="oras" required>
+                <option value="">Alege orașul</option>
+                <option value="bucuresti">București</option>
+                <option value="cluj">Cluj-Napoca</option>
+                <option value="iasi">Iași</option>
+              </select>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Preferințe</legend>
+            <p>Alege nivelul:</p>
+            <div>
+              <input id="nivel-incepator" name="nivel" type="radio" value="incepator" required />
+              <label for="nivel-incepator">Începător</label>
+            </div>
+            <div>
+              <input id="nivel-intermediar" name="nivel" type="radio" value="intermediar" />
+              <label for="nivel-intermediar">Intermediar</label>
+            </div>
+
+            <p>
+              <input id="noutati" name="noutati" type="checkbox" value="da" />
+              <label for="noutati">Vreau să primesc noutăți</label>
+            </p>
+
+            <div class="camp">
+              <label for="comentariu">Comentariu:</label>
+              <textarea id="comentariu" name="comentariu" rows="4" maxlength="300"></textarea>
+              <small class="ajutor">Maximum 300 de caractere.</small>
+            </div>
+          </fieldset>
+
+          <div class="butoane">
+            <button type="submit">Trimite formularul</button>
+            <button type="reset">Șterge răspunsurile</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>12. Reguli simple</h2>
+        <ul>
+          <li>Folosește un <code>&lt;label&gt;</code> pentru fiecare câmp.</li>
+          <li>Folosește un <code>id</code> unic pentru fiecare control.</li>
+          <li>Folosește atributul <code>name</code> pentru datele care trebuie trimise.</li>
+          <li>Grupează opțiunile asociate cu <code>&lt;fieldset&gt;</code>.</li>
+          <li>Marchează clar câmpurile obligatorii.</li>
+          <li>Oferă mesaje de ajutor scurte și ușor de înțeles.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="02-HTML-building-blocks.html">&larr; Înapoi la elementele HTML de bază</a></p>
+      <p><a href="04-CSS-basics.html">Continuă cu lecția 04 - CSS Basics &rarr;</a></p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+/* CSS extern folosit de pagina 04-CSS-basics.html */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background-color: #f7f7f7;
+}
+
+h1,
+h2 {
+  color: #67328f;
+}
+
+section {
+  margin: 24px 0;
+  padding: 24px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+code {
+  color: #b62d24;
+}
+
+pre {
+  padding: 14px;
+  overflow-x: auto;
+  background-color: #f0f0f0;
+  border-left: 4px solid #67328f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #aaa;
+  text-align: left;
+}
+
+.roluri,
+.carduri {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  padding: 16px;
+  background-color: #eee4f7;
+  border: 1px solid #67328f;
+  border-radius: 6px;
+}
+
+.demo-extern {
+  padding: 16px;
+  color: #075985;
+  background-color: #e0f2fe;
+  border: 2px solid #075985;
+}
+
+.demo-selectori p {
+  padding: 8px;
+}
+
+.demo-selectori .important {
+  color: #b42318;
+  font-weight: bold;
+}
+
+.demo-selectori #mesaj-unic {
+  background-color: #fef3c7;
+}
+
+.buton-demo {
+  padding: 10px 14px;
+  color: white;
+  background-color: #67328f;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buton-demo:hover {
+  background-color: #9c4dcc;
+}
+
+.buton-demo:focus {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
+
+.cutie-model {
+  width: min(100%, 340px);
+  margin: 24px;
+  padding: 24px;
+  background-color: #dbeafe;
+  border: 8px solid #2563eb;
+}
+
+.prima-litera::first-letter {
+  color: #67328f;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.eticheta-nou::after {
+  content: " NOU";
+  color: #b42318;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.nota {
+  padding: 12px;
+  background-color: #ecfdf3;
+  border-left: 4px solid #16803c;
+}

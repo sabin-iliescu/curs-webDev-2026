@@ -1,0 +1,51 @@
+/* Acesta este un fișier CSS extern. */
+
+body {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background: #f7f7f7;
+}
+
+section {
+  margin: 24px 0;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+button {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+code {
+  color: #b42318;
+}
+
+.css-extern {
+  padding: 16px;
+  color: #075985;
+  background: #e0f2fe;
+  border: 2px solid #075985;
+}
+
+.cutie {
+  width: 180px;
+  margin-bottom: 12px;
+  padding: 24px;
+  text-align: center;
+  background: #ddd;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.cutie-schimbata {
+  color: white;
+  background: #16803c;
+  transform: translateX(30px);
+}

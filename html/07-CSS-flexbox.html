@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>07 - CSS Flexbox</title>
+    <link rel="stylesheet" href="07-flexbox.css" />
+  </head>
+
+  <body>
+    <header>
+      <p><a href="06-CSS-advanced.html">&larr; Înapoi la lecția 06 - CSS Advanced</a></p>
+      <h1>07 - CSS Flexbox</h1>
+      <p>Așezarea elementelor în rânduri și coloane, pas cu pas.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce este Flexbox?</h2>
+        <p>
+          Flexbox este un sistem CSS pentru așezarea și alinierea elementelor.
+          Este foarte util pentru meniuri, carduri și centrare.
+        </p>
+        <p class="nota">Flexbox controlează elementele pe o singură direcție principală: rând sau coloană.</p>
+      </section>
+
+      <section>
+        <h2>2. Container și items</h2>
+        <p>Elementul părinte devine <strong>flex container</strong>, iar copiii direcți devin <strong>flex items</strong>.</p>
+        <pre><code>&lt;div class="container"&gt;
+  &lt;div&gt;1&lt;/div&gt;
+  &lt;div&gt;2&lt;/div&gt;
+  &lt;div&gt;3&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <pre><code>.container {
+  display: flex;
+}</code></pre>
+        <div class="flex-demo"><div>1</div><div>2</div><div>3</div></div>
+      </section>
+
+      <section>
+        <h2>3. Primul pas: display flex</h2>
+        <p>O singură proprietate activează Flexbox pentru copiii direcți:</p>
+        <pre><code>.container {
+  display: flex;
+}</code></pre>
+        <p>Elementele sunt așezate implicit într-un rând, de la stânga la dreapta.</p>
+      </section>
+
+      <section>
+        <h2>4. Axa principală și axa secundară</h2>
+        <ul>
+          <li><strong>Main axis</strong> este direcția în care sunt așezate elementele.</li>
+          <li><strong>Cross axis</strong> este direcția perpendiculară.</li>
+        </ul>
+        <p>
+          Dacă direcția este <code>row</code>, axa principală este orizontală. Dacă
+          direcția este <code>column</code>, axa principală este verticală.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Flex direction</h2>
+        <pre><code>flex-direction: row;
+flex-direction: column;</code></pre>
+        <h3>Row</h3>
+        <div class="flex-demo"><div>1</div><div>2</div><div>3</div></div>
+        <h3>Column</h3>
+        <div class="flex-demo coloana"><div>1</div><div>2</div><div>3</div></div>
+        <p>Pentru început folosim mai ales <code>row</code> și <code>column</code>.</p>
+      </section>
+
+      <section>
+        <h2>6. Gap</h2>
+        <p><code>gap</code> creează spațiu egal între flex items.</p>
+        <pre><code>.container {
+  display: flex;
+  gap: 16px;
+}</code></pre>
+        <p class="nota">Pentru spațiul dintre elemente, <code>gap</code> este adesea mai simplu decât marginile individuale.</p>
+      </section>
+
+      <section>
+        <h2>7. Justify content</h2>
+        <p><code>justify-content</code> aliniază elementele pe axa principală.</p>
+        <h3>Center</h3>
+        <div class="flex-demo justify-center"><div>1</div><div>2</div><div>3</div></div>
+        <h3>Space between</h3>
+        <div class="flex-demo justify-between"><div>1</div><div>2</div><div>3</div></div>
+        <pre><code>justify-content: flex-start;
+justify-content: center;
+justify-content: space-between;</code></pre>
+      </section>
+
+      <section>
+        <h2>8. Align items</h2>
+        <p><code>align-items</code> aliniază elementele pe axa secundară.</p>
+        <div class="flex-demo align-center">
+          <div>Scurt</div>
+          <div class="inalt">Mai înalt</div>
+          <div>Scurt</div>
+        </div>
+        <pre><code>.container {
+  display: flex;
+  align-items: center;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>9. Centrare pe ambele axe</h2>
+        <div class="centrare-demo"><div>Sunt centrat</div></div>
+        <pre><code>.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>10. Flex wrap</h2>
+        <p>Implicit, elementele încearcă să rămână pe un singur rând. <code>flex-wrap: wrap</code> le permite să treacă pe rândul următor.</p>
+        <div class="flex-demo wrap-demo">
+          <div>1</div><div>2</div><div>3</div><div>4</div>
+        </div>
+        <pre><code>.container {
+  display: flex;
+  flex-wrap: wrap;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>11. Flex grow</h2>
+        <p><code>flex-grow</code> spune cât din spațiul liber poate primi un element.</p>
+        <div class="flex-demo grow-demo">
+          <div>grow: 1</div>
+          <div class="creste-mai-mult">grow: 2</div>
+          <div>grow: 1</div>
+        </div>
+        <p>Elementul cu valoarea 2 încearcă să primească mai mult din spațiul disponibil.</p>
+      </section>
+
+      <section>
+        <h2>12. Flex basis și flex shrink</h2>
+        <ul>
+          <li><code>flex-basis</code> propune dimensiunea inițială a elementului;</li>
+          <li><code>flex-shrink</code> spune dacă elementul se poate micșora.</li>
+        </ul>
+        <pre><code>.item {
+  flex-basis: 200px;
+  flex-shrink: 1;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>13. Proprietatea flex</h2>
+        <p><code>flex</code> este prescurtarea pentru grow, shrink și basis.</p>
+        <div class="flex-demo basis-demo"><div>Card 1</div><div>Card 2</div><div>Card 3</div></div>
+        <pre><code>.item {
+  flex: 1 1 180px;
+}</code></pre>
+        <p>Această variantă spune: poate crește, se poate micșora și pornește de la aproximativ 180px.</p>
+      </section>
+
+      <section>
+        <h2>14. Align self</h2>
+        <p><code>align-self</code> schimbă alinierea unui singur flex item.</p>
+        <div class="flex-demo self-demo">
+          <div>Normal</div>
+          <div class="singur">align-self: flex-end</div>
+          <div>Normal</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>15. Order</h2>
+        <p><code>order</code> poate schimba ordinea vizuală a unui element.</p>
+        <pre><code>.item-special {
+  order: -1;
+}</code></pre>
+        <p class="nota">
+          Folosește <code>order</code> cu grijă. Ordinea din HTML rămâne importantă
+          pentru tastatură și cititoarele de ecran.
+        </p>
+      </section>
+
+      <section>
+        <h2>16. Exemplu: meniu</h2>
+        <div class="navbar-demo">
+          <strong>Site Demo</strong>
+          <nav aria-label="Meniu demonstrativ">
+            <a href="#">Acasă</a>
+            <a href="#">Despre</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+        <pre><code>.meniu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>17. Exemplu: carduri responsive</h2>
+        <div class="carduri-demo">
+          <article><h3>HTML</h3><p>Structura paginii.</p></article>
+          <article><h3>CSS</h3><p>Aspectul paginii.</p></article>
+          <article><h3>JavaScript</h3><p>Interacțiunile paginii.</p></article>
+        </div>
+        <pre><code>.carduri {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.card {
+  flex: 1 1 200px;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>18. Greșeli frecvente</h2>
+        <ul>
+          <li>Aplicarea proprietăților Flexbox pe elementul greșit.</li>
+          <li>Uitarea proprietății <code>display: flex</code>.</li>
+          <li>Confundarea axei principale cu axa secundară.</li>
+          <li>Uitarea proprietății <code>flex-wrap</code> când nu există spațiu.</li>
+          <li>Folosirea Flexbox când normal flow este deja suficient.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>19. Mini-exercițiu</h2>
+        <p>Creează un meniu cu un logo și trei linkuri.</p>
+        <ol>
+          <li>Folosește <code>display: flex</code>.</li>
+          <li>Pune logo-ul și linkurile la capete cu <code>space-between</code>.</li>
+          <li>Centrează elementele vertical.</li>
+          <li>Adaugă spațiu între linkuri cu <code>gap</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>20. Exercițiu puțin mai complex</h2>
+        <p>Creează o secțiune cu patru carduri de curs.</p>
+        <ol>
+          <li>Fiecare card conține titlu, descriere și buton.</li>
+          <li>Așază cardurile pe un rând cu Flexbox.</li>
+          <li>Permite trecerea lor pe rând nou.</li>
+          <li>Folosește <code>flex: 1 1 220px</code> pentru carduri.</li>
+          <li>Folosește <code>gap</code> pentru spațiere.</li>
+          <li>Aliniază butonul la finalul fiecărui card.</li>
+          <li>Testează pagina la o lățime mică.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>21. Recapitulare</h2>
+        <ul>
+          <li>Părintele primește <code>display: flex</code>.</li>
+          <li>Copiii direcți devin flex items.</li>
+          <li><code>justify-content</code> lucrează pe axa principală.</li>
+          <li><code>align-items</code> lucrează pe axa secundară.</li>
+          <li><code>flex-wrap</code> permite trecerea pe rând nou.</li>
+          <li><code>flex</code> controlează flexibilitatea elementelor.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="06-CSS-advanced.html">&larr; Înapoi la lecția 06 - CSS Advanced</a></p>
+      <p><a href="index.html">Înapoi la pagina principală</a></p>
+    </footer>
+  </body>
+</html>

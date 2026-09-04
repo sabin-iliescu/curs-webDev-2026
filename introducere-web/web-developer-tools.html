@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instrumentele unui Web Developer</title>
+
+    <style>
+      body {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #222;
+        background: #f7f7f7;
+      }
+
+      h1,
+      h2 {
+        color: #67328f;
+      }
+
+      section {
+        margin: 24px 0;
+        padding: 24px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      code {
+        color: #b62d24;
+      }
+
+      pre {
+        padding: 14px;
+        overflow-x: auto;
+        background: #f0f0f0;
+        border-left: 4px solid #67328f;
+      }
+
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .pas {
+        padding: 12px;
+        font-weight: bold;
+        text-align: center;
+        background: #eee4f7;
+        border: 1px solid #67328f;
+        border-radius: 6px;
+      }
+
+      .sageata {
+        color: #67328f;
+        font-size: 24px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #aaa;
+        text-align: left;
+      }
+
+      .link-oficial {
+        display: inline-block;
+        margin: 5px 5px 5px 0;
+        padding: 8px 12px;
+        color: white;
+        background: #67328f;
+        border-radius: 5px;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <p><a href="introducere-web.html">&larr; Înapoi la Introducere în Web</a></p>
+      <h1>Instrumentele unui Web Developer</h1>
+      <p>Chrome DevTools, Git, GitHub și Visual Studio Code, explicate simplu.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. De ce avem nevoie de aceste instrumente?</h2>
+        <ul>
+          <li><strong>Visual Studio Code</strong> - scriem și organizăm codul;</li>
+          <li><strong>Chrome</strong> - deschidem și testăm pagina;</li>
+          <li><strong>Chrome DevTools</strong> - inspectăm și depanăm pagina;</li>
+          <li><strong>Git</strong> - păstrăm istoricul modificărilor;</li>
+          <li><strong>GitHub</strong> - păstrăm și distribuim proiectul online.</li>
+        </ul>
+
+        <div class="flow">
+          <div class="pas">Scriu<br />VS Code</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Testez<br />Chrome</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Verific<br />DevTools</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Salvez<br />Git + GitHub</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Google Chrome și Developer Tools</h2>
+        <p>
+          Chrome DevTools este inclus în browserul Chrome. Nu trebuie instalat
+          separat.
+        </p>
+        <p>
+          <a class="link-oficial" href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">
+            Descarcă Google Chrome
+          </a>
+          <a class="link-oficial" href="https://developer.chrome.com/docs/devtools/overview" target="_blank" rel="noopener noreferrer">
+            Documentație DevTools
+          </a>
+        </p>
+
+        <h3>Cum deschidem DevTools?</h3>
+        <ul>
+          <li>click dreapta pe un element și alegem <strong>Inspect</strong>;</li>
+          <li>Windows/Linux: <code>Ctrl + Shift + I</code> sau <code>F12</code>;</li>
+          <li>Mac: <code>Cmd + Option + I</code>.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Cele mai utile panouri DevTools</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Panou</th>
+              <th>La ce îl folosim?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Elements</td>
+              <td>Vedem HTML-ul și regulile CSS.</td>
+            </tr>
+            <tr>
+              <td>Console</td>
+              <td>Vedem erori și testăm JavaScript.</td>
+            </tr>
+            <tr>
+              <td>Network</td>
+              <td>Vedem fișierele cerute de browser.</td>
+            </tr>
+            <tr>
+              <td>Sources</td>
+              <td>Vedem fișierele și depanăm JavaScript.</td>
+            </tr>
+            <tr>
+              <td>Device Toolbar</td>
+              <td>Simulăm afișarea pe telefon sau tabletă.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>4. Primul exercițiu în DevTools</h2>
+        <ol>
+          <li>Deschide pagina <code>index.html</code> în Chrome.</li>
+          <li>Dă click dreapta pe titlu și alege <strong>Inspect</strong>.</li>
+          <li>În panoul Elements, schimbă temporar textul titlului.</li>
+          <li>În Styles, debifează o regulă CSS.</li>
+          <li>Deschide Console și scrie comanda de mai jos.</li>
+        </ol>
+        <pre><code>console.log("Salut din DevTools!");</code></pre>
+        <p>
+          Modificările făcute în DevTools sunt temporare. La reîncărcarea paginii,
+          ele dispar dacă nu modificăm și fișierul original.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Ce este Git?</h2>
+        <p>
+          Git este un sistem de control al versiunilor. El ține minte modificările
+          făcute în proiect.
+        </p>
+        <ul>
+          <li>vedem ce fișiere s-au schimbat;</li>
+          <li>salvăm versiuni importante ale proiectului;</li>
+          <li>revenim la o versiune anterioară;</li>
+          <li>lucrăm mai ușor împreună cu alți developeri.</li>
+        </ul>
+        <p>
+          <a class="link-oficial" href="https://git-scm.com/downloads/" target="_blank" rel="noopener noreferrer">
+            Descarcă Git
+          </a>
+          <a class="link-oficial" href="https://git-scm.com/doc" target="_blank" rel="noopener noreferrer">
+            Documentație Git
+          </a>
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Instalare și configurare Git</h2>
+        <p>După instalare, deschide terminalul și verifică versiunea:</p>
+        <pre><code>git --version</code></pre>
+
+        <p>Configurăm numele și adresa de e-mail folosite în commit-uri:</p>
+        <pre><code>git config --global user.name "Prenume Nume"
+git config --global user.email "email@exemplu.ro"
+git config --global --list</code></pre>
+      </section>
+
+      <section>
+        <h2>7. Cum gândește Git?</h2>
+        <div class="flow">
+          <div class="pas">Fișiere<br />modificate</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Staging<br />git add</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Commit<br />git commit</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">GitHub<br />git push</div>
+        </div>
+        <ul>
+          <li><strong>Working directory</strong> - fișierele la care lucrăm;</li>
+          <li><strong>Staging area</strong> - modificările pregătite pentru salvare;</li>
+          <li><strong>Commit</strong> - o versiune salvată local;</li>
+          <li><strong>Remote</strong> - copia proiectului de pe GitHub.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>8. Comenzi Git de bază</h2>
+        <pre><code>git status
+git add .
+git commit -m "Adaug pagina principală"
+git push</code></pre>
+        <ul>
+          <li><code>git status</code> arată situația proiectului;</li>
+          <li><code>git add .</code> pregătește modificările;</li>
+          <li><code>git commit</code> salvează o versiune locală;</li>
+          <li><code>git push</code> trimite commit-urile pe GitHub.</li>
+        </ul>
+        <p>Pentru a primi modificările remote folosim:</p>
+        <pre><code>git pull</code></pre>
+      </section>
+
+      <section>
+        <h2>9. Ce este GitHub?</h2>
+        <p>
+          GitHub este o platformă online care găzduiește repository-uri Git.
+          <strong>Git și GitHub nu sunt același lucru.</strong>
+        </p>
+        <ul>
+          <li><strong>Git</strong> funcționează local și păstrează istoricul;</li>
+          <li><strong>GitHub</strong> păstrează o copie online și permite colaborarea.</li>
+        </ul>
+        <p>
+          <a class="link-oficial" href="https://github.com/signup" target="_blank" rel="noopener noreferrer">
+            Creează cont GitHub
+          </a>
+          <a class="link-oficial" href="https://docs.github.com/en/get-started" target="_blank" rel="noopener noreferrer">
+            GitHub Docs - Începe aici
+          </a>
+        </p>
+      </section>
+
+      <section>
+        <h2>10. Primul repository pe GitHub</h2>
+        <ol>
+          <li>Creează un cont și verifică adresa de e-mail.</li>
+          <li>Apasă <strong>New repository</strong>.</li>
+          <li>Alege un nume simplu, de exemplu <code>primul-meu-site</code>.</li>
+          <li>Creează repository-ul.</li>
+          <li>Copiază adresa repository-ului.</li>
+          <li>Clonează proiectul pe calculator.</li>
+        </ol>
+        <pre><code>git clone https://github.com/utilizator/primul-meu-site.git
+cd primul-meu-site</code></pre>
+        <p>
+          Nu publica parole, chei API sau alte date secrete într-un repository.
+        </p>
+      </section>
+
+      <section>
+        <h2>11. Visual Studio Code</h2>
+        <p>
+          Visual Studio Code este editorul în care scriem și organizăm fișierele
+          HTML, CSS și JavaScript.
+        </p>
+        <p>
+          <a class="link-oficial" href="https://code.visualstudio.com/Download" target="_blank" rel="noopener noreferrer">
+            Descarcă Visual Studio Code
+          </a>
+          <a class="link-oficial" href="https://code.visualstudio.com/docs" target="_blank" rel="noopener noreferrer">
+            Documentație VS Code
+          </a>
+        </p>
+        <ol>
+          <li>Instalează VS Code.</li>
+          <li>Alege <strong>File &gt; Open Folder</strong>.</li>
+          <li>Deschide folderul proiectului, nu doar un singur fișier.</li>
+          <li>Creează sau modifică fișierele din Explorer.</li>
+          <li>Salvează cu <code>Ctrl + S</code> sau <code>Cmd + S</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>12. Zonele principale din VS Code</h2>
+        <ul>
+          <li><strong>Explorer</strong> - fișierele și directoarele proiectului;</li>
+          <li><strong>Editor</strong> - zona în care scriem codul;</li>
+          <li><strong>Terminal</strong> - rulăm comenzi fără să părăsim editorul;</li>
+          <li><strong>Source Control</strong> - vedem modificările Git;</li>
+          <li><strong>Extensions</strong> - instalăm funcții suplimentare.</li>
+        </ul>
+        <p>Terminalul integrat se deschide din meniul <strong>Terminal &gt; New Terminal</strong>.</p>
+      </section>
+
+      <section>
+        <h2>13. Extensii simple pentru început</h2>
+        <ul>
+          <li><strong>Live Server</strong> - deschide și reîncarcă pagina locală;</li>
+          <li><strong>Prettier</strong> - formatează codul automat;</li>
+          <li><strong>GitLens</strong> - oferă informații suplimentare despre istoricul Git.</li>
+        </ul>
+        <p>
+          Instalează doar extensiile de care ai nevoie și verifică întotdeauna
+          numele publisherului.
+        </p>
+        <p>
+          <a class="link-oficial" href="https://marketplace.visualstudio.com/vscode" target="_blank" rel="noopener noreferrer">
+            VS Code Marketplace
+          </a>
+        </p>
+      </section>
+
+      <section>
+        <h2>14. Scurtături utile în VS Code</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Acțiune</th>
+              <th>Windows/Linux</th>
+              <th>Mac</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Salvare</td>
+              <td><code>Ctrl + S</code></td>
+              <td><code>Cmd + S</code></td>
+            </tr>
+            <tr>
+              <td>Command Palette</td>
+              <td><code>Ctrl + Shift + P</code></td>
+              <td><code>Cmd + Shift + P</code></td>
+            </tr>
+            <tr>
+              <td>Căutare în proiect</td>
+              <td><code>Ctrl + Shift + F</code></td>
+              <td><code>Cmd + Shift + F</code></td>
+            </tr>
+            <tr>
+              <td>Terminal</td>
+              <td><code>Ctrl + `</code></td>
+              <td><code>Ctrl + `</code></td>
+            </tr>
+            <tr>
+              <td>Formatare document</td>
+              <td><code>Shift + Alt + F</code></td>
+              <td><code>Shift + Option + F</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <a href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf" target="_blank" rel="noopener noreferrer">Scurtături VS Code pentru Windows</a>
+          |
+          <a href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf" target="_blank" rel="noopener noreferrer">Scurtături VS Code pentru Mac</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>15. Flow complet de lucru</h2>
+        <ol>
+          <li>Deschide folderul proiectului în VS Code.</li>
+          <li>Modifică un fișier HTML.</li>
+          <li>Salvează fișierul.</li>
+          <li>Deschide pagina în Chrome cu Live Server.</li>
+          <li>Folosește DevTools pentru verificare.</li>
+          <li>Revino în VS Code și corectează fișierul original.</li>
+          <li>Verifică modificările cu <code>git status</code>.</li>
+          <li>Rulează <code>git add</code> și <code>git commit</code>.</li>
+          <li>Trimite versiunea pe GitHub cu <code>git push</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>16. Exercițiu practic</h2>
+        <ol>
+          <li>Creează un repository numit <code>prima-lectie-web</code>.</li>
+          <li>Clonează repository-ul pe calculator.</li>
+          <li>Deschide folderul în VS Code.</li>
+          <li>Creează un fișier <code>index.html</code> cu un titlu și un paragraf.</li>
+          <li>Deschide pagina în Chrome.</li>
+          <li>Inspectează titlul cu DevTools.</li>
+          <li>Fă primul commit și trimite-l pe GitHub.</li>
+        </ol>
+        <pre><code>git status
+git add index.html
+git commit -m "Creez prima pagină HTML"
+git push</code></pre>
+      </section>
+
+      <section>
+        <h2>17. Recapitulare</h2>
+        <ul>
+          <li>VS Code este locul în care scriem codul.</li>
+          <li>Chrome afișează pagina.</li>
+          <li>DevTools ne ajută să inspectăm și să depanăm.</li>
+          <li>Git păstrează istoricul local.</li>
+          <li>GitHub găzduiește proiectul și ajută la colaborare.</li>
+        </ul>
+        <p><a href="introducere-web.html">Continuă cu lecția Introducere în Web</a>.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Instrumentele unui Web Developer</p>
+    </footer>
+  </body>
+</html>

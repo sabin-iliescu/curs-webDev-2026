@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04 - CSS Basics</title>
+
+    <!-- CSS extern -->
+    <link rel="stylesheet" href="04-styles.css" />
+
+    <!-- CSS intern -->
+    <style>
+      .demo-intern {
+        padding: 16px;
+        color: #5c2d91;
+        background-color: #eee4f7;
+        border: 2px dashed #5c2d91;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <p><a href="index.html">&larr; Înapoi la pagina principală</a></p>
+      <h1>04 - CSS Basics</h1>
+      <p>O introducere simplă în stilizarea paginilor HTML.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce este CSS?</h2>
+        <p>
+          <strong>CSS</strong> vine de la <em>Cascading Style Sheets</em> și
+          descrie aspectul unei pagini web.
+        </p>
+        <p>Cu CSS putem controla culorile, fonturile, spațiile, dimensiunile și poziția elementelor.</p>
+        <div class="roluri">
+          <div class="card"><strong>HTML</strong><br />Conținut și structură</div>
+          <div class="card"><strong>CSS</strong><br />Aspect și prezentare</div>
+          <div class="card"><strong>JavaScript</strong><br />Comportament</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. De ce separăm HTML de CSS?</h2>
+        <ul>
+          <li>HTML-ul rămâne mai ușor de citit.</li>
+          <li>Același CSS poate fi folosit de mai multe pagini.</li>
+          <li>Putem schimba aspectul site-ului dintr-un singur fișier.</li>
+          <li>Conținutul și prezentarea au responsabilități diferite.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Anatomia unei reguli CSS</h2>
+        <pre><code>p {
+  color: blue;
+  font-size: 18px;
+}</code></pre>
+        <ul>
+          <li><code>p</code> este selectorul;</li>
+          <li><code>color</code> și <code>font-size</code> sunt proprietăți;</li>
+          <li><code>blue</code> și <code>18px</code> sunt valori;</li>
+          <li>proprietatea și valoarea formează o declarație.</li>
+        </ul>
+        <p>Declarațiile sunt puse între acolade și sunt separate prin punct și virgulă.</p>
+      </section>
+
+      <section>
+        <h2>4. Comentarii CSS</h2>
+        <p>Comentariile explică codul și nu sunt afișate în pagină.</p>
+        <pre><code>/* Acesta este un comentariu CSS. */</code></pre>
+      </section>
+
+      <section>
+        <h2>5. CSS în trei moduri</h2>
+
+        <h3>CSS inline</h3>
+        <p style="padding: 12px; color: #9a3412; background-color: #ffedd5">
+          Acest paragraf folosește atributul <code>style</code>.
+        </p>
+        <pre><code>&lt;p style="color: red;"&gt;Text roșu&lt;/p&gt;</code></pre>
+
+        <h3>CSS intern</h3>
+        <p class="demo-intern">Acest paragraf este stilizat în elementul <code>&lt;style&gt;</code>.</p>
+        <pre><code>&lt;style&gt;
+  p { color: purple; }
+&lt;/style&gt;</code></pre>
+
+        <h3>CSS extern</h3>
+        <p class="demo-extern">Acest paragraf este stilizat din fișierul <code>04-styles.css</code>.</p>
+        <pre><code>&lt;link rel="stylesheet" href="04-styles.css" /&gt;</code></pre>
+
+        <p class="nota">Pentru proiecte reale, CSS-ul extern este de obicei varianta recomandată.</p>
+      </section>
+
+      <section>
+        <h2>6. Selectori simpli</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Selector</th>
+              <th>Ce selectează?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>p</code></td>
+              <td>Toate paragrafele</td>
+            </tr>
+            <tr>
+              <td><code>.important</code></td>
+              <td>Elementele cu această clasă</td>
+            </tr>
+            <tr>
+              <td><code>#mesaj</code></td>
+              <td>Elementul care are acest ID unic</td>
+            </tr>
+            <tr>
+              <td><code>*</code></td>
+              <td>Toate elementele</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="demo-selectori">
+          <p>Paragraf normal.</p>
+          <p class="important">Paragraf cu clasa <code>important</code>.</p>
+          <p id="mesaj-unic">Paragraf cu un ID unic.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>7. Clasă sau ID?</h2>
+        <ul>
+          <li>O <code>class</code> poate fi folosită pe mai multe elemente.</li>
+          <li>Un <code>id</code> trebuie să fie unic în pagină.</li>
+          <li>Pentru stilizare reutilizabilă preferăm clasele.</li>
+        </ul>
+        <pre><code>&lt;p class="avertisment"&gt;Primul mesaj&lt;/p&gt;
+&lt;p class="avertisment"&gt;Al doilea mesaj&lt;/p&gt;
+
+.avertisment {
+  color: red;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>8. Gruparea selectorilor</h2>
+        <p>Separăm selectorii prin virgulă când primesc aceleași reguli.</p>
+        <pre><code>h1,
+h2,
+h3 {
+  font-family: Arial, sans-serif;
+  color: purple;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>9. Selectori descendenți și copii direcți</h2>
+        <pre><code>article p {
+  color: blue;
+}
+
+article &gt; p {
+  font-weight: bold;
+}</code></pre>
+        <ul>
+          <li><code>article p</code> selectează paragrafele aflate oriunde în articol;</li>
+          <li><code>article &gt; p</code> selectează doar paragrafele copil direct.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>10. Selectori după atribut</h2>
+        <p>Putem selecta elementele și după atributele lor.</p>
+        <pre><code>[required] {
+  border-color: red;
+}
+
+input[type="email"] {
+  background-color: lightyellow;
+}
+
+a[href^="https"] {
+  color: green;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>11. Pseudo-clase</h2>
+        <p>Pseudo-clasele stilizează un element într-o anumită stare.</p>
+        <pre><code>button:hover {
+  background-color: purple;
+}
+
+input:focus {
+  outline: 2px solid orange;
+}
+
+input:checked {
+  accent-color: green;
+}</code></pre>
+        <button class="buton-demo" type="button">Treci cu mouse-ul peste mine</button>
+      </section>
+
+      <section>
+        <h2>12. Pseudo-elemente</h2>
+        <p>Pseudo-elementele pot stiliza o parte a elementului sau pot adăuga conținut decorativ.</p>
+        <pre><code>p::first-letter {
+  font-size: 32px;
+}
+
+.produs::after {
+  content: " NOU";
+}</code></pre>
+        <p class="prima-litera">Prima literă a acestui paragraf este diferită.</p>
+        <p class="eticheta-nou">Curs CSS</p>
+      </section>
+
+      <section>
+        <h2>13. Culori în CSS</h2>
+        <p>Aceeași culoare poate fi scrisă în mai multe moduri.</p>
+        <pre><code>color: red;
+color: #ff0000;
+color: rgb(255, 0, 0);
+color: hsl(0, 100%, 50%);</code></pre>
+        <p>La început poți folosi nume de culori sau valori hexazecimale.</p>
+      </section>
+
+      <section>
+        <h2>14. Unități de măsură</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Unitate</th>
+              <th>Utilizare simplă</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>px</code></td>
+              <td>O dimensiune fixă</td>
+            </tr>
+            <tr>
+              <td><code>%</code></td>
+              <td>Procent din spațiul disponibil</td>
+            </tr>
+            <tr>
+              <td><code>rem</code></td>
+              <td>Dimensiune raportată la textul paginii</td>
+            </tr>
+            <tr>
+              <td><code>vw</code> și <code>vh</code></td>
+              <td>Procent din lățimea sau înălțimea ferestrei</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>15. Proprietăți folosite des</h2>
+        <div class="carduri">
+          <div class="card"><code>color</code><br />Culoarea textului</div>
+          <div class="card"><code>background-color</code><br />Culoarea fundalului</div>
+          <div class="card"><code>font-size</code><br />Dimensiunea textului</div>
+          <div class="card"><code>font-family</code><br />Familia fontului</div>
+          <div class="card"><code>text-align</code><br />Alinierea textului</div>
+          <div class="card"><code>border</code><br />Conturul elementului</div>
+          <div class="card"><code>width</code><br />Lățimea</div>
+          <div class="card"><code>height</code><br />Înălțimea</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>16. Box model</h2>
+        <p>Browserul tratează fiecare element ca pe o cutie formată din:</p>
+        <ol>
+          <li><strong>content</strong> - conținutul;</li>
+          <li><strong>padding</strong> - spațiul interior;</li>
+          <li><strong>border</strong> - conturul;</li>
+          <li><strong>margin</strong> - spațiul exterior.</li>
+        </ol>
+        <div class="cutie-model">Conținutul cutiei</div>
+        <pre><code>.cutie {
+  margin: 24px;
+  padding: 24px;
+  border: 8px solid blue;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>17. Moștenirea</h2>
+        <p>Unele proprietăți trec de la părinte la copii.</p>
+        <pre><code>body {
+  color: #222;
+  font-family: Arial, sans-serif;
+}</code></pre>
+        <p>Textul din interiorul paginii va moșteni de obicei culoarea și fontul.</p>
+        <p>Proprietăți precum <code>margin</code>, <code>padding</code> și <code>border</code> nu se moștenesc în mod normal.</p>
+      </section>
+
+      <section>
+        <h2>18. Ce înseamnă „cascading”?</h2>
+        <p>Dacă mai multe reguli stilizează același element, browserul trebuie să aleagă regula câștigătoare.</p>
+        <ol>
+          <li>importanța regulii;</li>
+          <li>specificitatea selectorului;</li>
+          <li>ordinea regulilor în fișier.</li>
+        </ol>
+        <p class="nota">Evită <code>!important</code> la început. De obicei putem rezolva problema cu un selector mai clar.</p>
+      </section>
+
+      <section>
+        <h2>19. Specificitatea, explicată simplu</h2>
+        <p>Un selector mai precis are prioritate față de unul mai general.</p>
+        <pre><code>p { color: blue; }          /* general */
+.mesaj { color: green; }    /* mai specific */
+#mesaj-unic { color: red; } /* foarte specific */</code></pre>
+        <p>Ca regulă simplă: ID-ul cântărește mai mult decât clasa, iar clasa mai mult decât elementul.</p>
+      </section>
+
+      <section>
+        <h2>20. Ordinea regulilor</h2>
+        <p>Dacă doi selectori au aceeași specificitate, ultima regulă câștigă.</p>
+        <pre><code>p { color: blue; }
+p { color: green; } /* textul va fi verde */</code></pre>
+      </section>
+
+      <section>
+        <h2>21. Stilurile implicite ale browserului</h2>
+        <p>Browserul aplică propriile stiluri când noi nu scriem CSS.</p>
+        <p>De aceea titlurile sunt mari, linkurile sunt albastre și listele au marcatori chiar înainte să adăugăm CSS.</p>
+        <pre><code>* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>22. Verificarea CSS în DevTools</h2>
+        <ol>
+          <li>Deschide pagina în Chrome.</li>
+          <li>Dă click dreapta pe un element și alege <strong>Inspect</strong>.</li>
+          <li>În panoul <strong>Styles</strong>, vezi regulile aplicate.</li>
+          <li>Debifează o proprietate și observă schimbarea.</li>
+          <li>Modifică o culoare direct în DevTools.</li>
+        </ol>
+        <p>Schimbările din DevTools sunt temporare. Pentru a le păstra, modifică fișierul CSS.</p>
+      </section>
+
+      <section>
+        <h2>23. Exemplu HTML + CSS</h2>
+        <h3>HTML</h3>
+        <pre><code>&lt;article class="produs"&gt;
+  &lt;h2&gt;Caiet&lt;/h2&gt;
+  &lt;p&gt;Un caiet simplu pentru notițe.&lt;/p&gt;
+  &lt;a href="#"&gt;Vezi produsul&lt;/a&gt;
+&lt;/article&gt;</code></pre>
+
+        <h3>CSS</h3>
+        <pre><code>.produs {
+  max-width: 300px;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.produs a {
+  color: purple;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>24. Mini-exercițiu</h2>
+        <p>Pornește de la o pagină HTML care conține un titlu, două paragrafe și un link.</p>
+        <ol>
+          <li>Creează un fișier numit <code>exercitiu.css</code>.</li>
+          <li>Leagă fișierul CSS în elementul <code>&lt;head&gt;</code>.</li>
+          <li>Schimbă fontul și culoarea de fundal a paginii.</li>
+          <li>Stilizează titlul folosind selectorul de element.</li>
+          <li>Adaugă aceeași clasă celor două paragrafe.</li>
+          <li>Stilizează linkul și schimbă-i culoarea la <code>:hover</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>25. Exercițiu puțin mai complex</h2>
+        <p>Creează un card pentru prezentarea unui eveniment.</p>
+        <ol>
+          <li>Adaugă un titlu, o dată, o descriere și un link.</li>
+          <li>Folosește o clasă <code>.eveniment</code> pentru card.</li>
+          <li>Adaugă <code>padding</code>, <code>border</code> și <code>border-radius</code>.</li>
+          <li>Limitează lățimea cardului la <code>400px</code>.</li>
+          <li>Stilizează separat data folosind o clasă.</li>
+          <li>Transformă linkul într-un buton simplu.</li>
+          <li>Adaugă o stare <code>:hover</code> pentru buton.</li>
+          <li>Verifică rezultatul în Chrome DevTools.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>26. Recapitulare</h2>
+        <ul>
+          <li>CSS controlează aspectul paginii.</li>
+          <li>O regulă conține selector, proprietăți și valori.</li>
+          <li>CSS poate fi inline, intern sau extern.</li>
+          <li>Clasele sunt potrivite pentru stiluri reutilizabile.</li>
+          <li>Box model explică spațiul ocupat de un element.</li>
+          <li>Cascada decide ce regulă CSS câștigă.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="03-HTML-forms.html">&larr; Înapoi la lecția 03 - Formulare HTML</a></p>
+      <p><a href="05-CSS-properties.html">Continuă cu lecția 05 - CSS Properties &rarr;</a></p>
+      <p><a href="index.html">Înapoi la pagina principală</a></p>
+    </footer>
+  </body>
+</html>

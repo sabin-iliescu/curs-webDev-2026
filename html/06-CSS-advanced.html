@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>06 - CSS Advanced</title>
+    <link rel="stylesheet" href="06-advanced.css" />
+  </head>
+
+  <body>
+    <header>
+      <p><a href="05-CSS-properties.html">&larr; Înapoi la lecția 05 - CSS Properties</a></p>
+      <h1>06 - CSS Advanced</h1>
+      <p>Tranziții, transformări și animații explicate foarte simplu.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce înseamnă CSS Advanced aici?</h2>
+        <p>
+          În această lecție adăugăm mișcare și efecte vizuale. Nu avem nevoie de
+          JavaScript pentru exemplele de bază.
+        </p>
+        <ul>
+          <li><strong>transition</strong> - face o schimbare mai lină;</li>
+          <li><strong>transform</strong> - mută, rotește sau redimensionează;</li>
+          <li><strong>animation</strong> - rulează mai multe etape definite de noi.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Normal flow - recapitulare</h2>
+        <p>
+          În mod normal, browserul afișează elementele în ordinea în care apar în
+          HTML. Elementele block sunt așezate unul sub altul.
+        </p>
+        <div class="demo">
+          <p>Primul paragraf</p>
+          <p>Al doilea paragraf</p>
+        </div>
+        <p class="nota">Lasă normal flow să lucreze atunci când nu ai nevoie de o poziționare specială.</p>
+      </section>
+
+      <section>
+        <h2>3. Position - recapitulare</h2>
+        <ul>
+          <li><code>static</code> - poziția normală;</li>
+          <li><code>relative</code> - elementul devine reper;</li>
+          <li><code>absolute</code> - elementul este poziționat față de reper;</li>
+          <li><code>fixed</code> - elementul rămâne fix în fereastră;</li>
+          <li><code>sticky</code> - elementul se fixează în timpul derulării.</li>
+        </ul>
+        <div class="demo pozitie">
+          Părinte cu <code>position: relative</code>
+          <span>Copil absolute</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Ce este o tranziție?</h2>
+        <p>
+          Fără tranziție, o proprietate se schimbă imediat. Cu
+          <code>transition</code>, schimbarea are loc treptat.
+        </p>
+        <button class="buton-tranzitie" type="button">Treci cu mouse-ul peste mine</button>
+        <pre><code>.buton {
+  background-color: purple;
+  transition: background-color 0.3s ease;
+}
+
+.buton:hover {
+  background-color: green;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>5. Părțile unei tranziții</h2>
+        <table>
+          <thead>
+            <tr><th>Proprietate</th><th>Rol</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>transition-property</code></td><td>Ce proprietate se animă</td></tr>
+            <tr><td><code>transition-duration</code></td><td>Cât durează</td></tr>
+            <tr><td><code>transition-timing-function</code></td><td>Cum se schimbă viteza</td></tr>
+            <tr><td><code>transition-delay</code></td><td>Cât așteaptă înainte să înceapă</td></tr>
+          </tbody>
+        </table>
+        <pre><code>transition: transform 0.3s ease;</code></pre>
+      </section>
+
+      <section>
+        <h2>6. Ce face transform?</h2>
+        <p><code>transform</code> schimbă vizual un element fără să mute celelalte elemente din jur.</p>
+        <div class="transformari">
+          <div class="translate">translate</div>
+          <div class="scale">scale</div>
+          <div class="rotate">rotate</div>
+          <div class="skew">skew</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>7. Transformări de bază</h2>
+        <pre><code>transform: translateX(20px); /* mută */
+transform: scale(1.2);       /* mărește */
+transform: rotate(10deg);    /* rotește */
+transform: skewX(10deg);     /* înclină */</code></pre>
+        <p>Putem combina mai multe transformări pe aceeași linie:</p>
+        <pre><code>transform: translateY(-4px) scale(1.05);</code></pre>
+      </section>
+
+      <section>
+        <h2>8. Transition și transform împreună</h2>
+        <div class="demo card-hover">
+          <h3>Card demonstrativ</h3>
+          <p>Treci cu mouse-ul peste card.</p>
+        </div>
+        <pre><code>.card {
+  transition: transform 0.25s ease;
+}
+
+.card:hover {
+  transform: scale(1.04);
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>9. Ce este o animație CSS?</h2>
+        <p>
+          O animație poate avea mai multe etape și poate porni fără ca utilizatorul
+          să treacă mouse-ul peste element.
+        </p>
+        <div class="demo"><div class="minge" aria-label="Minge animată"></div></div>
+      </section>
+
+      <section>
+        <h2>10. Keyframes</h2>
+        <p><code>@keyframes</code> definește începutul și sfârșitul animației.</p>
+        <pre><code>@keyframes plimbare {
+  from { transform: translateX(0); }
+  to { transform: translateX(220px); }
+}
+
+.minge {
+  animation: plimbare 2s infinite alternate;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>11. Proprietățile unei animații</h2>
+        <table>
+          <thead>
+            <tr><th>Proprietate</th><th>Rol</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>animation-name</code></td><td>Numele keyframes</td></tr>
+            <tr><td><code>animation-duration</code></td><td>Durata unui ciclu</td></tr>
+            <tr><td><code>animation-delay</code></td><td>Întârzierea</td></tr>
+            <tr><td><code>animation-iteration-count</code></td><td>Numărul de repetări</td></tr>
+            <tr><td><code>animation-direction</code></td><td>Direcția animației</td></tr>
+            <tr><td><code>animation-timing-function</code></td><td>Modul în care variază viteza</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>12. Un exemplu de animație subtilă</h2>
+        <p class="puls">Mesaj important</p>
+        <p>
+          Animațiile mici pot atrage atenția. Prea multe animații pot obosi sau
+          distrage utilizatorul.
+        </p>
+      </section>
+
+      <section>
+        <h2>13. Accesibilitate și mișcare</h2>
+        <p>
+          Unele persoane preferă mai puțină mișcare. Putem respecta setarea lor cu
+          media query-ul <code>prefers-reduced-motion</code>.
+        </p>
+        <pre><code>@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none;
+    transition: none;
+  }
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>14. Verificare în DevTools</h2>
+        <ol>
+          <li>Inspectează butonul cu tranziție.</li>
+          <li>Activează manual starea <code>:hover</code>.</li>
+          <li>Modifică durata din <code>0.3s</code> în <code>2s</code>.</li>
+          <li>Dezactivează temporar proprietatea <code>transform</code>.</li>
+          <li>Observă diferența.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>15. Mini-exercițiu</h2>
+        <p>Creează un buton care reacționează la hover.</p>
+        <ol>
+          <li>Schimbă-i culoarea de fundal.</li>
+          <li>Ridică-l cu <code>translateY(-3px)</code>.</li>
+          <li>Adaugă o tranziție de <code>0.3s</code>.</li>
+          <li>Adaugă o umbră discretă.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>16. Exercițiu puțin mai complex</h2>
+        <p>Creează un card de produs animat.</p>
+        <ol>
+          <li>Adaugă titlu, descriere, preț și buton.</li>
+          <li>La hover, mărește cardul foarte puțin.</li>
+          <li>Schimbă umbra cardului printr-o tranziție.</li>
+          <li>Adaugă o etichetă „Nou” cu o animație discretă.</li>
+          <li>Oprește animația pentru <code>prefers-reduced-motion</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>17. Recapitulare</h2>
+        <ul>
+          <li><code>transition</code> face schimbările mai line.</li>
+          <li><code>transform</code> mută, mărește sau rotește.</li>
+          <li><code>@keyframes</code> definește etapele unei animații.</li>
+          <li>Animațiile trebuie folosite cu măsură.</li>
+        </ul>
+        <p><a href="07-CSS-flexbox.html">Continuă cu lecția 07 - CSS Flexbox &rarr;</a></p>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="05-CSS-properties.html">&larr; Înapoi la lecția 05 - CSS Properties</a></p>
+      <p><a href="index.html">Înapoi la pagina principală</a></p>
+    </footer>
+  </body>
+</html>

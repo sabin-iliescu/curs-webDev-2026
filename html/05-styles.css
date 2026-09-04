@@ -1,0 +1,198 @@
+/* CSS extern folosit de pagina 05-CSS-properties.html */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background-color: #f7f7f7;
+}
+
+h1,
+h2 {
+  color: #67328f;
+}
+
+section {
+  margin: 24px 0;
+  padding: 24px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+code {
+  color: #b62d24;
+}
+
+pre {
+  padding: 14px;
+  overflow-x: auto;
+  background-color: #f0f0f0;
+  border-left: 4px solid #67328f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #aaa;
+  text-align: left;
+}
+
+.demo {
+  margin: 16px 0;
+  padding: 16px;
+  background-color: #eee4f7;
+  border: 1px solid #67328f;
+  border-radius: 6px;
+}
+
+.font-serif {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.font-monospace {
+  font-family: "Courier New", Courier, monospace;
+}
+
+.text-formatat {
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.text-layout {
+  max-width: 520px;
+  line-height: 1.8;
+  letter-spacing: 1px;
+  word-spacing: 4px;
+  text-align: center;
+}
+
+.text-lung {
+  width: 260px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.text-umbra {
+  font-size: 28px;
+  text-shadow: 2px 2px 5px #999;
+}
+
+.culori-demo {
+  color: rgb(255, 255, 255);
+  background-color: hsl(270, 48%, 38%);
+}
+
+.transparenta-demo {
+  background-color: rgba(37, 99, 235, 0.25);
+}
+
+.gradient-demo {
+  min-height: 120px;
+  color: white;
+  background: linear-gradient(135deg, #67328f, #2563eb);
+}
+
+.box-model-demo {
+  width: min(100%, 360px);
+  margin: 24px;
+  padding: 24px;
+  background-color: #dbeafe;
+  border: 8px solid #2563eb;
+}
+
+.dimensiune-demo {
+  width: 80%;
+  max-width: 420px;
+  min-height: 80px;
+}
+
+.border-demo {
+  border: 3px dashed #b42318;
+  border-radius: 16px;
+}
+
+.display-demo span {
+  display: inline-block;
+  margin: 4px;
+  padding: 10px;
+  background-color: #dbeafe;
+}
+
+.flex-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.flex-demo div {
+  flex: 1 1 150px;
+  padding: 18px;
+  text-align: center;
+  background-color: #eee4f7;
+  border: 1px solid #67328f;
+}
+
+.pozitie-demo {
+  position: relative;
+  min-height: 150px;
+  background-color: #eee;
+}
+
+.pozitie-demo span {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  color: white;
+  background-color: #b42318;
+}
+
+.straturi-demo {
+  position: relative;
+  height: 130px;
+}
+
+.strat {
+  position: absolute;
+  width: 130px;
+  height: 80px;
+  padding: 12px;
+  color: white;
+}
+
+.strat-unu {
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  background-color: #2563eb;
+}
+
+.strat-doi {
+  top: 40px;
+  left: 80px;
+  z-index: 2;
+  background-color: #b42318;
+}
+
+.nota {
+  padding: 12px;
+  background-color: #ecfdf3;
+  border-left: 4px solid #16803c;
+}

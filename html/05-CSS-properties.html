@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05 - CSS Properties</title>
+    <link rel="stylesheet" href="05-styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <p><a href="04-CSS-basics.html">&larr; Înapoi la lecția 04 - CSS Basics</a></p>
+      <h1>05 - CSS Properties</h1>
+      <p>Proprietăți CSS uzuale, explicate prin exemple vizibile și simple.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce este o proprietate CSS?</h2>
+        <p>Proprietatea spune <strong>ce aspect</strong> vrem să modificăm, iar valoarea spune <strong>cum</strong>.</p>
+        <pre><code>p {
+  color: blue;
+  font-size: 18px;
+}</code></pre>
+        <p>
+          Sintaxa și selectorii sunt explicați în
+          <a href="04-CSS-basics.html">lecția 04 - CSS Basics</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Font family</h2>
+        <p><code>font-family</code> stabilește familia fontului.</p>
+        <pre><code>body {
+  font-family: Arial, Helvetica, sans-serif;
+}</code></pre>
+        <p>Scriem mai multe variante. Dacă primul font nu există, browserul încearcă următorul.</p>
+        <div class="demo">
+          <p>Text cu Arial.</p>
+          <p class="font-serif">Text cu Georgia.</p>
+          <p class="font-monospace">Text cu Courier New.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Dimensiunea fontului</h2>
+        <p><code>font-size</code> controlează dimensiunea textului.</p>
+        <table>
+          <thead>
+            <tr><th>Unitate</th><th>Explicație</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>px</code></td><td>Dimensiune fixă în pixeli</td></tr>
+            <tr><td><code>em</code></td><td>Raportată la dimensiunea părintelui</td></tr>
+            <tr><td><code>rem</code></td><td>Raportată la dimensiunea de bază a paginii</td></tr>
+          </tbody>
+        </table>
+        <pre><code>h1 { font-size: 2rem; }
+p { font-size: 18px; }</code></pre>
+      </section>
+
+      <section>
+        <h2>4. Stilul textului</h2>
+        <ul>
+          <li><code>font-style</code> - text normal sau italic;</li>
+          <li><code>font-weight</code> - grosimea textului;</li>
+          <li><code>text-transform</code> - litere mari, mici sau capitale;</li>
+          <li><code>text-decoration</code> - subliniere sau tăiere.</li>
+        </ul>
+        <p class="demo text-formatat">Exemplu de text formatat</p>
+        <pre><code>.text {
+  font-style: italic;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: underline;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>5. Așezarea textului</h2>
+        <ul>
+          <li><code>text-align</code> - alinierea textului;</li>
+          <li><code>line-height</code> - spațiul dintre rânduri;</li>
+          <li><code>letter-spacing</code> - spațiul dintre litere;</li>
+          <li><code>word-spacing</code> - spațiul dintre cuvinte;</li>
+          <li><code>overflow-wrap</code> - permite ruperea cuvintelor foarte lungi.</li>
+        </ul>
+        <p class="demo text-layout">
+          Acest paragraf are textul centrat și spații mai mari între rânduri,
+          litere și cuvinte.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Text prea lung</h2>
+        <p><code>text-overflow: ellipsis</code> afișează trei puncte când textul nu încape.</p>
+        <p class="demo text-lung">Acesta este un text foarte lung care nu încape în cutia sa.</p>
+        <pre><code>.text-lung {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>7. Umbra textului</h2>
+        <p><code>text-shadow</code> primește deplasarea orizontală, deplasarea verticală, blurul și culoarea.</p>
+        <p class="text-umbra">Text cu umbră</p>
+        <pre><code>h2 {
+  text-shadow: 2px 2px 5px #999;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>8. Culori și transparență</h2>
+        <p><code>color</code> schimbă textul, iar <code>background-color</code> schimbă fundalul.</p>
+        <pre><code>color: red;
+color: #ff0000;
+color: rgb(255, 0, 0);
+color: hsl(0, 100%, 50%);</code></pre>
+        <p class="demo culori-demo">Text alb pe un fundal mov.</p>
+        <p class="demo transparenta-demo">Fundal albastru cu transparență.</p>
+        <p class="nota">
+          <code>rgba()</code> face transparentă doar culoarea. <code>opacity</code>
+          face transparent întregul element, inclusiv copiii lui.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Imagini de fundal</h2>
+        <pre><code>.hero {
+  background-color: lightblue;
+  background-image: url("fundal.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}</code></pre>
+        <ul>
+          <li>Folosește <code>&lt;img&gt;</code> pentru o imagine importantă pentru conținut.</li>
+          <li>Folosește <code>background-image</code> pentru o imagine decorativă.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>10. Gradient</h2>
+        <p>Un gradient este creat de browser și nu necesită un fișier imagine.</p>
+        <div class="demo gradient-demo">Fundal cu gradient</div>
+        <pre><code>.banner {
+  background: linear-gradient(135deg, purple, blue);
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>11. Box model - recapitulare</h2>
+        <p>Fiecare element HTML este o cutie formată din:</p>
+        <ol>
+          <li>content;</li>
+          <li>padding;</li>
+          <li>border;</li>
+          <li>margin.</li>
+        </ol>
+        <div class="box-model-demo">Conținutul cutiei</div>
+        <p><code>box-sizing: border-box</code> include paddingul și bordura în lățimea stabilită.</p>
+      </section>
+
+      <section>
+        <h2>12. Width și height</h2>
+        <ul>
+          <li><code>width</code> și <code>height</code> stabilesc dimensiunea;</li>
+          <li><code>min-width</code> și <code>min-height</code> stabilesc minimul;</li>
+          <li><code>max-width</code> și <code>max-height</code> stabilesc maximul.</li>
+        </ul>
+        <div class="demo dimensiune-demo">Lățime 80%, dar maximum 420px.</div>
+        <p class="nota"><code>max-width</code> este foarte util pentru pagini responsive.</p>
+      </section>
+
+      <section>
+        <h2>13. Margin și padding</h2>
+        <p><code>margin</code> creează spațiu în exterior, iar <code>padding</code> în interior.</p>
+        <pre><code>.cutie {
+  margin: 20px;
+  padding: 10px 20px;
+}</code></pre>
+        <p>În <code>padding: 10px 20px</code>, valoarea 10px este verticală, iar 20px este orizontală.</p>
+      </section>
+
+      <section>
+        <h2>14. Border și border-radius</h2>
+        <div class="demo border-demo">Cutie cu bordură punctată și colțuri rotunjite.</div>
+        <pre><code>.cutie {
+  border: 3px dashed red;
+  border-radius: 16px;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>15. Marginile verticale se pot uni</h2>
+        <p>
+          Uneori marginile de sus și de jos ale elementelor block se combină.
+          Browserul păstrează, de obicei, marginea mai mare.
+        </p>
+        <p class="nota">Pentru început este suficient să știi că două margini verticale nu se adună întotdeauna.</p>
+      </section>
+
+      <section>
+        <h2>16. Display</h2>
+        <ul>
+          <li><code>block</code> - elementul începe pe rând nou;</li>
+          <li><code>inline</code> - elementul rămâne în rând;</li>
+          <li><code>inline-block</code> - rămâne în rând, dar acceptă dimensiuni;</li>
+          <li><code>none</code> - elementul este eliminat din afișare;</li>
+          <li><code>flex</code> - așază mai ușor elementele într-un rând sau coloană.</li>
+        </ul>
+        <div class="display-demo">
+          <span>Primul</span><span>Al doilea</span><span>Al treilea</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>17. Flexbox, foarte simplu</h2>
+        <div class="flex-demo">
+          <div>Card 1</div>
+          <div>Card 2</div>
+          <div>Card 3</div>
+        </div>
+        <pre><code>.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}</code></pre>
+        <p>Flexbox este preferat în locul proprietății vechi <code>float</code> pentru majoritatea layout-urilor simple.</p>
+      </section>
+
+      <section>
+        <h2>18. Position</h2>
+        <table>
+          <thead>
+            <tr><th>Valoare</th><th>Comportament</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>static</code></td><td>Poziția normală</td></tr>
+            <tr><td><code>relative</code></td><td>Devine reper și poate fi deplasat</td></tr>
+            <tr><td><code>absolute</code></td><td>Este poziționat față de cel mai apropiat reper</td></tr>
+            <tr><td><code>fixed</code></td><td>Rămâne fix față de fereastra browserului</td></tr>
+            <tr><td><code>sticky</code></td><td>Se fixează după ce ajunge la o anumită poziție</td></tr>
+          </tbody>
+        </table>
+        <div class="demo pozitie-demo">
+          Părinte cu <code>position: relative</code>
+          <span>Copil absolute</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>19. Z-index</h2>
+        <p><code>z-index</code> controlează ordinea elementelor suprapuse.</p>
+        <div class="straturi-demo">
+          <div class="strat strat-unu">z-index: 1</div>
+          <div class="strat strat-doi">z-index: 2</div>
+        </div>
+        <p>Valoarea mai mare apare deasupra. <code>z-index</code> funcționează în contexte de suprapunere și, de obicei, cu elemente poziționate.</p>
+      </section>
+
+      <section>
+        <h2>20. Display none și visibility hidden</h2>
+        <ul>
+          <li><code>display: none</code> ascunde elementul și elimină spațiul ocupat;</li>
+          <li><code>visibility: hidden</code> ascunde elementul, dar păstrează spațiul.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>21. Verificarea proprietăților în DevTools</h2>
+        <ol>
+          <li>Deschide pagina în Chrome.</li>
+          <li>Inspectează una dintre demonstrații.</li>
+          <li>Debifează <code>padding</code>, <code>border</code> sau <code>background</code>.</li>
+          <li>Modifică valoarea direct în panoul Styles.</li>
+          <li>Observă diagrama Box Model din panoul Computed.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>22. Mini-exercițiu</h2>
+        <p>Creează un card de profil folosind HTML și CSS.</p>
+        <ol>
+          <li>Adaugă o imagine, un titlu, o descriere și un link.</li>
+          <li>Setează familia și dimensiunea fontului.</li>
+          <li>Adaugă fundal, padding, border și colțuri rotunjite.</li>
+          <li>Limitează cardul cu <code>max-width</code>.</li>
+          <li>Transformă linkul într-un buton și adaugă o stare <code>:hover</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>23. Exercițiu puțin mai complex</h2>
+        <p>Creează o secțiune cu trei carduri pentru un mic eveniment.</p>
+        <ol>
+          <li>Așază cardurile cu <code>display: flex</code>.</li>
+          <li>Folosește <code>gap</code> pentru spațiul dintre ele.</li>
+          <li>Permite trecerea pe rând nou cu <code>flex-wrap</code>.</li>
+          <li>Adaugă câte un fundal sau gradient fiecărui card.</li>
+          <li>Folosește aceleași valori pentru padding, border și border-radius.</li>
+          <li>Adaugă o etichetă poziționată absolute pe cardul recomandat.</li>
+          <li>Verifică pagina la o fereastră îngustă.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>24. Recapitulare</h2>
+        <ul>
+          <li>Proprietățile controlează aspectul elementelor.</li>
+          <li>Textul are proprietăți pentru font și așezare.</li>
+          <li>Fundalurile pot folosi culori, imagini sau gradiente.</li>
+          <li>Box model explică dimensiunile și spațiile.</li>
+          <li><code>display</code>, Flexbox și <code>position</code> controlează așezarea.</li>
+          <li>DevTools ne ajută să testăm rapid proprietățile.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="04-CSS-basics.html">&larr; Înapoi la lecția 04 - CSS Basics</a></p>
+      <p><a href="06-CSS-advanced.html">Continuă cu lecția 06 - CSS Advanced &rarr;</a></p>
+      <p><a href="index.html">Înapoi la pagina principală</a></p>
+    </footer>
+  </body>
+</html>

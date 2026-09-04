@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02 - Elementele de bază HTML</title>
+
+    <style>
+      body {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #222;
+        background: #f7f7f7;
+      }
+
+      h1,
+      h2 {
+        color: #67328f;
+      }
+
+      section {
+        margin: 24px 0;
+        padding: 24px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      code {
+        color: #b62d24;
+        font-family: monospace;
+      }
+
+      .exemplu {
+        padding: 14px;
+        overflow-x: auto;
+        background: #f0f0f0;
+        border-left: 4px solid #67328f;
+      }
+
+      .verde {
+        color: #069c55;
+        font-weight: bold;
+      }
+
+      .anatomie {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 20px 0;
+        font-family: monospace;
+        font-size: 18px;
+      }
+
+      .anatomie span {
+        padding: 12px;
+        border: 1px solid white;
+        color: white;
+        background: #666;
+      }
+
+      .anatomie .continut {
+        background: #999;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        border: 1px solid #aaa;
+        text-align: left;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        padding: 8px;
+        margin: 4px 0;
+      }
+
+      img,
+      video {
+        max-width: 100%;
+      }
+
+      .roluri,
+      .structura-pagina {
+        display: grid;
+        gap: 10px;
+      }
+
+      .roluri {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .rol,
+      .zona {
+        padding: 14px;
+        background: #eee4f7;
+        border: 1px solid #67328f;
+        border-radius: 6px;
+      }
+
+      iframe {
+        width: 100%;
+        min-height: 220px;
+        border: 1px solid #aaa;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <p><a href="index.html">&larr; Înapoi la pagina principală</a></p>
+      <h1>02 - Elementele de bază HTML</h1>
+      <p>O introducere simplă în structura elementelor HTML.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce este HTML?</h2>
+        <p>
+          <strong>HTML</strong> vine de la
+          <em>HyperText Markup Language</em> și descrie structura unei pagini web.
+        </p>
+        <ul>
+          <li><strong>HyperText</strong> - paginile pot fi legate prin linkuri;</li>
+          <li><strong>Markup</strong> - folosim etichete pentru a descrie conținutul;</li>
+          <li><strong>Language</strong> - HTML are reguli și o sintaxă proprie.</li>
+        </ul>
+        <p class="exemplu"><code>&lt;h1&gt;Prima mea pagină&lt;/h1&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>2. HTML, CSS și JavaScript</h2>
+        <p>Cele trei tehnologii au roluri diferite și lucrează împreună.</p>
+        <div class="roluri">
+          <div class="rol"><strong>HTML</strong><br />Structura și conținutul</div>
+          <div class="rol"><strong>CSS</strong><br />Culorile și aspectul</div>
+          <div class="rol"><strong>JavaScript</strong><br />Comportamentul și interacțiunile</div>
+        </div>
+        <p>
+          Exemplu: HTML creează un buton, CSS îl colorează, iar JavaScript îi
+          spune ce să facă atunci când este apăsat.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Caracteristicile HTML</h2>
+        <ul>
+          <li>HTML este un <strong>limbaj de marcare</strong>, nu un limbaj de programare.</li>
+          <li>Browserul citește HTML și afișează pagina.</li>
+          <li>HTML descrie ce reprezintă elementele: titlu, paragraf, imagine sau link.</li>
+          <li>Versiunea modernă folosită astăzi este HTML5.</li>
+          <li>HTML nu diferențiază literele mari de cele mici în numele etichetelor, dar folosim litere mici pentru consecvență.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Primul fișier HTML</h2>
+        <ol>
+          <li>Creează un fișier nou în Visual Studio Code.</li>
+          <li>Salvează-l cu extensia <code>.html</code>, de exemplu <code>pagina.html</code>.</li>
+          <li>Scrie structura HTML.</li>
+          <li>Salvează și deschide fișierul în browser.</li>
+        </ol>
+        <p>
+          În VS Code poți scrie <code>!</code> și apăsa <code>Tab</code> pentru a
+          genera structura de bază cu Emmet.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Din ce este format un element HTML?</h2>
+        <p>Un element HTML conține, de obicei:</p>
+
+        <ul>
+          <li>o <span class="verde">etichetă de deschidere</span>;</li>
+          <li>conținutul elementului;</li>
+          <li>o <span class="verde">etichetă de închidere</span>.</li>
+        </ul>
+
+        <div class="anatomie">
+          <span>&lt;p&gt;</span>
+          <span class="continut">Acesta este un paragraf</span>
+          <span>&lt;/p&gt;</span>
+        </div>
+
+        <p class="exemplu"><code>&lt;p&gt;Acesta este un paragraf.&lt;/p&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>6. Elementele pot fi imbricate</h2>
+        <p>Un element poate fi pus în interiorul altui element.</p>
+
+        <p class="exemplu">
+          <code>&lt;p&gt;Învățăm &lt;strong&gt;HTML&lt;/strong&gt; împreună.&lt;/p&gt;</code>
+        </p>
+
+        <p>Rezultatul din browser:</p>
+        <p>Învățăm <strong>HTML</strong> împreună.</p>
+
+        <h3>Elemente fără conținut</h3>
+        <p>Unele elemente folosesc o singură etichetă, de exemplu o imagine:</p>
+        <p class="exemplu"><code>&lt;img src="logo.jpg" alt="Logo" /&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>7. Elemente block și inline</h2>
+
+        <h3>Elemente block</h3>
+        <p>Încep pe un rând nou și ocupă spațiul disponibil.</p>
+        <p>Exemple: <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;div&gt;</code>.</p>
+
+        <h3>Elemente inline</h3>
+        <p>
+          Rămân în interiorul rândului și ocupă doar spațiul necesar. Exemple:
+          <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;a&gt;</code>.
+        </p>
+
+        <p class="exemplu">
+          Acesta este un paragraf cu <strong>text îngroșat</strong> și
+          <em>text înclinat</em>.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Atribute HTML</h2>
+        <p>Atributele oferă informații suplimentare despre un element.</p>
+
+        <ul>
+          <li>se scriu în eticheta de deschidere;</li>
+          <li>conțin un nume și o valoare;</li>
+          <li>valoarea este scrisă între ghilimele.</li>
+        </ul>
+
+        <p class="exemplu">
+          <code>&lt;img src="logo.jpg" alt="Logo-ul site-ului" /&gt;</code>
+        </p>
+
+        <p>
+          În exemplu, <code>src</code> și <code>alt</code> sunt atribute, iar
+          textele dintre ghilimele sunt valorile lor.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Spații și comentarii</h2>
+        <p>
+          Browserul reduce mai multe spații și treceri pe rând nou la un singur
+          spațiu atunci când afișează textul.
+        </p>
+
+        <ul>
+          <li>Folosește spații și rânduri noi pentru un cod ușor de citit.</li>
+          <li>Scrie elementele block pe rânduri separate.</li>
+          <li>Indentează elementele aflate în interiorul altor elemente.</li>
+        </ul>
+
+        <h3>Comentarii</h3>
+        <p>Comentariile sunt vizibile în cod, dar nu sunt afișate în pagină.</p>
+        <p class="exemplu"><code>&lt;!-- Acesta este un comentariu --&gt;</code></p>
+
+        <!-- Acesta este un comentariu HTML real. -->
+      </section>
+
+      <section>
+        <h2>10. Structura unui document HTML</h2>
+        <p>Fiecare pagină HTML pornește de la o structură de bază.</p>
+        <pre class="exemplu"><code>&lt;!doctype html&gt;
+&lt;html lang="ro"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Titlul paginii&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Conținutul vizibil
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        <ul>
+          <li><code>&lt;!doctype html&gt;</code> anunță că documentul folosește HTML modern;</li>
+          <li><code>&lt;html&gt;</code> cuprinde întreaga pagină;</li>
+          <li><code>&lt;head&gt;</code> conține informații pentru browser;</li>
+          <li><code>&lt;body&gt;</code> conține elementele vizibile în pagină.</li>
+        </ul>
+
+        <h3>Ce putem pune în head?</h3>
+        <p class="exemplu"><code>&lt;title&gt;Titlul filei din browser&lt;/title&gt;<br />
+&lt;meta name="description" content="Descrierea paginii" /&gt;<br />
+&lt;link rel="stylesheet" href="styles.css" /&gt;<br />
+&lt;script src="script.js" defer&gt;&lt;/script&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>11. Titluri, paragrafe și text</h2>
+        <p>Titlurile sunt de la <code>&lt;h1&gt;</code> la <code>&lt;h6&gt;</code>.</p>
+        <h3>Acesta este un titlu h3</h3>
+        <h4>Acesta este un titlu h4</h4>
+        <p>
+          Text <strong>important</strong>, <em>accentuat</em>, <mark>evidențiat</mark>
+          și <small>mai mic</small>.
+        </p>
+        <p>Apă: H<sub>2</sub>O. Putere: 2<sup>3</sup> = 8.</p>
+        <p>Un rând.<br />Alt rând după <code>&lt;br&gt;</code>.</p>
+        <hr />
+        <p>Linia de mai sus este creată cu <code>&lt;hr&gt;</code>.</p>
+      </section>
+
+      <section id="linkuri">
+        <h2>12. Linkuri</h2>
+        <p><a href="https://developer.mozilla.org/" target="_blank" rel="noopener noreferrer">Link extern</a></p>
+        <p><a href="#linkuri">Link către această secțiune</a></p>
+        <p><a href="mailto:salut@exemplu.ro">Trimite un e-mail</a></p>
+        <p><a href="tel:+40123456789">Sună la 0123 456 789</a></p>
+        <p class="exemplu"><code>&lt;a href="pagina.html"&gt;Deschide pagina&lt;/a&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>13. Liste</h2>
+        <h3>Listă neordonată</h3>
+        <ul>
+          <li>HTML</li>
+          <li>CSS</li>
+        </ul>
+
+        <h3>Listă ordonată</h3>
+        <ol>
+          <li>Scriem codul</li>
+          <li>Salvăm fișierul</li>
+        </ol>
+
+        <h3>Listă imbricată</h3>
+        <ul>
+          <li>Frontend
+            <ul>
+              <li>HTML</li>
+              <li>CSS</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>Listă de definiții</h3>
+        <dl>
+          <dt>HTML</dt>
+          <dd>Definește structura paginii.</dd>
+          <dt>CSS</dt>
+          <dd>Definește aspectul paginii.</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>14. Imagini și căi către fișiere</h2>
+        <figure>
+          <img
+            src="https://placehold.co/320x180?text=Imagine+demo"
+            alt="Imagine demonstrativă cu textul Imagine demo"
+            width="320"
+            height="180"
+          />
+          <figcaption>Descrierea imaginii cu <code>&lt;figcaption&gt;</code>.</figcaption>
+        </figure>
+        <ul>
+          <li><code>imagini/logo.png</code> este o cale relativă.</li>
+          <li><code>../index.html</code> urcă un director.</li>
+          <li><code>https://exemplu.ro/logo.png</code> este o adresă absolută.</li>
+        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Atribut</th>
+              <th>Rol</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>src</code></td>
+              <td>Adresa imaginii</td>
+            </tr>
+            <tr>
+              <td><code>alt</code></td>
+              <td>Descriere pentru accesibilitate sau când imaginea nu se încarcă</td>
+            </tr>
+            <tr>
+              <td><code>width</code> și <code>height</code></td>
+              <td>Dimensiunile imaginii</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>15. Structura semantică a paginii</h2>
+        <p>Aceste elemente explică rolul fiecărei zone:</p>
+        <ul>
+          <li><code>&lt;header&gt;</code> — partea de început;</li>
+          <li><code>&lt;nav&gt;</code> — navigația;</li>
+          <li><code>&lt;main&gt;</code> — conținutul principal;</li>
+          <li><code>&lt;section&gt;</code> — o secțiune;</li>
+          <li><code>&lt;article&gt;</code> — conținut independent;</li>
+          <li><code>&lt;aside&gt;</code> — conținut secundar;</li>
+          <li><code>&lt;footer&gt;</code> — partea de final.</li>
+        </ul>
+        <div class="structura-pagina" aria-label="Structura simplă a unei pagini">
+          <div class="zona"><code>&lt;header&gt;</code> - titlu și introducere</div>
+          <div class="zona"><code>&lt;nav&gt;</code> - linkuri de navigare</div>
+          <div class="zona"><code>&lt;main&gt;</code> - conținutul principal</div>
+          <div class="zona"><code>&lt;aside&gt;</code> - informații secundare</div>
+          <div class="zona"><code>&lt;footer&gt;</code> - finalul paginii</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>16. Div și span</h2>
+        <p><code>&lt;div&gt;</code> grupează elemente de tip block.</p>
+        <p><code>&lt;span&gt;</code> marchează o bucată mică de text inline.</p>
+        <div class="exemplu">
+          Un div cu un <span class="verde">span verde</span> în interior.
+        </div>
+      </section>
+
+      <section>
+        <h2>17. Tabele</h2>
+        <table>
+          <caption>Program simplu</caption>
+          <thead>
+            <tr>
+              <th>Zi</th>
+              <th>Activitate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Luni</td>
+              <td>Învăț HTML</td>
+            </tr>
+            <tr>
+              <td>Marți</td>
+              <td>Exersez CSS</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">Două zile de studiu</td>
+            </tr>
+          </tfoot>
+        </table>
+        <h3>Unirea celulelor</h3>
+        <p>
+          <code>colspan</code> unește coloane, iar <code>rowspan</code> unește rânduri.
+        </p>
+        <table>
+          <tbody>
+            <tr>
+              <th colspan="2">Titlu pe două coloane</th>
+            </tr>
+            <tr>
+              <td rowspan="2">Această celulă ocupă două rânduri</td>
+              <td>Rândul 1</td>
+            </tr>
+            <tr>
+              <td>Rândul 2</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>18. Formulare</h2>
+        <p>
+          Pentru explicații și mai multe exemple, deschide
+          <a href="03-HTML-forms.html">lecția 03 - Formulare HTML</a>.
+        </p>
+        <form>
+          <p>
+            <label for="nume">Nume:</label><br />
+            <input id="nume" name="nume" type="text" placeholder="Numele tău" required />
+          </p>
+          <p>
+            <label for="email">E-mail:</label><br />
+            <input id="email" name="email" type="email" />
+          </p>
+          <p>
+            <label for="parola">Parolă:</label><br />
+            <input id="parola" name="parola" type="password" />
+          </p>
+          <p>
+            <label for="varsta">Vârstă:</label><br />
+            <input id="varsta" name="varsta" type="number" min="1" />
+          </p>
+          <p>
+            <label for="data">Data:</label><br />
+            <input id="data" name="data" type="date" />
+          </p>
+          <p>
+            <input id="html" name="subiect" type="checkbox" value="html" />
+            <label for="html">Îmi place HTML</label>
+          </p>
+          <p>
+            Nivel:
+            <input id="incepator" name="nivel" type="radio" value="incepator" />
+            <label for="incepator">Începător</label>
+            <input id="avansat" name="nivel" type="radio" value="avansat" />
+            <label for="avansat">Avansat</label>
+          </p>
+          <p>
+            <label for="oras">Oraș:</label><br />
+            <select id="oras" name="oras">
+              <option value="">Alege un oraș</option>
+              <option value="bucuresti">București</option>
+              <option value="cluj">Cluj-Napoca</option>
+            </select>
+          </p>
+          <p>
+            <label for="mesaj">Mesaj:</label><br />
+            <textarea id="mesaj" name="mesaj" rows="3"></textarea>
+          </p>
+          <button type="submit">Trimite</button>
+          <button type="button" disabled>Buton dezactivat</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>19. Audio și video</h2>
+        <p>Controalele apar când folosim atributul <code>controls</code>.</p>
+        <p class="exemplu"><code>&lt;audio controls&gt;&lt;source src="sunet.mp3" type="audio/mpeg" /&gt;&lt;/audio&gt;</code></p>
+        <p class="exemplu"><code>&lt;video controls width="320"&gt;&lt;source src="video.mp4" type="video/mp4" /&gt;&lt;/video&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>20. Caractere speciale</h2>
+        <ul>
+          <li><code>&amp;lt;</code> afișează &lt;</li>
+          <li><code>&amp;gt;</code> afișează &gt;</li>
+          <li><code>&amp;amp;</code> afișează &amp;</li>
+          <li><code>&amp;copy;</code> afișează &copy;</li>
+          <li><code>&amp;nbsp;</code> creează un spațiu care nu se rupe între rânduri.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>21. ID, class și atribute globale</h2>
+        <ul>
+          <li><code>id</code> identifică un singur element.</li>
+          <li><code>class</code> poate fi folosită pentru mai multe elemente.</li>
+          <li><code>title</code> oferă informații suplimentare.</li>
+          <li><code>hidden</code> ascunde un element.</li>
+          <li><code>data-*</code> păstrează date personalizate.</li>
+          <li><code>aria-label</code> oferă o etichetă accesibilă.</li>
+        </ul>
+        <button type="button" title="Informație la trecerea cu mouse-ul" aria-label="Buton demonstrativ">
+          Treci cu mouse-ul peste mine
+        </button>
+        <p hidden>Acest text este ascuns.</p>
+        <p data-lectie="html">Acest paragraf are atributul <code>data-lectie="html"</code>.</p>
+      </section>
+
+      <section>
+        <h2>22. Cod și text preformatat</h2>
+        <p><code>&lt;code&gt;</code> marchează o bucată de cod.</p>
+        <pre class="exemplu"><code>&lt;ul&gt;
+  &lt;li&gt;Primul element&lt;/li&gt;
+  &lt;li&gt;Al doilea element&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+        <p><code>&lt;pre&gt;</code> păstrează spațiile și rândurile noi.</p>
+      </section>
+
+      <section>
+        <h2>23. Citate și abrevieri</h2>
+        <blockquote cite="https://developer.mozilla.org/">
+          HTML oferă structura unei pagini web.
+        </blockquote>
+        <p>Un citat scurt: <q>Începem cu elementele de bază.</q></p>
+        <p>Sursa unei lucrări poate fi marcată cu <cite>Manual HTML</cite>.</p>
+        <p><abbr title="HyperText Markup Language">HTML</abbr> este un limbaj de marcare.</p>
+      </section>
+
+      <section>
+        <h2>24. Element interactiv simplu</h2>
+        <details>
+          <summary>Apasă pentru a vedea explicația</summary>
+          <p><code>&lt;details&gt;</code> poate ascunde și afișa conținut fără JavaScript.</p>
+        </details>
+      </section>
+
+      <section>
+        <h2>25. Afișarea unei pagini cu iframe</h2>
+        <p>
+          <code>&lt;iframe&gt;</code> poate afișa o altă pagină în interiorul paginii
+          curente. Nu toate site-urile permit acest lucru.
+        </p>
+        <p class="exemplu"><code>&lt;iframe src="index.html" title="Pagina principală"&gt;&lt;/iframe&gt;</code></p>
+        <iframe src="index.html" title="Exemplu cu pagina principală"></iframe>
+      </section>
+
+      <section>
+        <h2>26. Accesibilitate de bază</h2>
+        <p>O pagină bună trebuie să poată fi folosită de cât mai multe persoane.</p>
+        <ul>
+          <li>Folosește titlurile în ordine: <code>h1</code>, apoi <code>h2</code> și <code>h3</code>.</li>
+          <li>Scrie un atribut <code>alt</code> util pentru imaginile importante.</li>
+          <li>Asociază fiecare câmp de formular cu un <code>&lt;label&gt;</code>.</li>
+          <li>Folosește elementul <code>&lt;button&gt;</code> pentru acțiuni.</li>
+          <li>Verifică dacă pagina poate fi parcursă cu tasta <code>Tab</code>.</li>
+          <li>Nu folosi valori pozitive pentru <code>tabindex</code>; păstrează ordinea naturală.</li>
+        </ul>
+        <p class="exemplu"><code>&lt;img src="pisica.jpg" alt="O pisică neagră pe un scaun" /&gt;</code></p>
+      </section>
+
+      <section>
+        <h2>27. Reguli simple și greșeli frecvente</h2>
+        <ul>
+          <li>Închide elementele care au etichetă de închidere.</li>
+          <li>Imbrică elementele în ordinea corectă.</li>
+          <li>Scrie valorile atributelor între ghilimele.</li>
+          <li>Folosește litere mici și o indentare consecventă.</li>
+          <li>Preferă elementele semantice în loc de <code>&lt;div&gt;</code> când au sens.</li>
+          <li>Nu folosi elemente vechi precum <code>&lt;font&gt;</code> și <code>&lt;center&gt;</code>.</li>
+        </ul>
+        <p class="exemplu">
+          Corect: <code>&lt;p&gt;Text &lt;strong&gt;important&lt;/strong&gt;&lt;/p&gt;</code>
+        </p>
+      </section>
+
+      <section>
+        <h2>28. Mini-exercițiu final</h2>
+        <p>Creează o pagină personală care să conțină:</p>
+        <ol>
+          <li>un titlu și o scurtă descriere;</li>
+          <li>o fotografie cu text alternativ;</li>
+          <li>o listă cu hobby-uri;</li>
+          <li>un link către site-ul preferat;</li>
+          <li>un tabel simplu;</li>
+          <li>un formular de contact;</li>
+          <li><code>&lt;header&gt;</code>, <code>&lt;main&gt;</code> și <code>&lt;footer&gt;</code>.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>29. Mini-exercițiu: pagina unui mic festival</h2>
+        <p>
+          Creează un fișier numit <code>festival.html</code> pentru prezentarea
+          unui festival imaginar de muzică, film, gastronomie sau tehnologie.
+        </p>
+
+        <h3>Cerințe</h3>
+        <ol>
+          <li>
+            Adaugă un <code>&lt;header&gt;</code> cu numele festivalului, perioada și
+            o scurtă descriere.
+          </li>
+          <li>
+            Creează un <code>&lt;nav&gt;</code> cu linkuri interne către secțiunile
+            <em>Despre</em>, <em>Program</em> și <em>Contact</em>.
+          </li>
+          <li>
+            În secțiunea <em>Despre</em>, adaugă o imagine cu atributele
+            <code>src</code>, <code>alt</code>, <code>width</code> și
+            <code>height</code>.
+          </li>
+          <li>
+            Adaugă o listă neordonată cu minimum trei activități disponibile.
+          </li>
+          <li>
+            Creează un tabel cu trei coloane: <em>Ora</em>, <em>Activitatea</em>
+            și <em>Locul</em>. Adaugă minimum trei rânduri.
+          </li>
+          <li>
+            Folosește <code>&lt;details&gt;</code> și <code>&lt;summary&gt;</code> pentru
+            a ascunde și afișa regulile festivalului.
+          </li>
+          <li>
+            În secțiunea <em>Contact</em>, adaugă un link către o adresă de
+            e-mail și un link către un număr de telefon.
+          </li>
+          <li>
+            Încheie pagina cu un <code>&lt;footer&gt;</code> care conține anul și
+            numele festivalului.
+          </li>
+        </ol>
+
+        <h3>Structură orientativă</h3>
+        <pre class="exemplu"><code>&lt;header&gt;
+  &lt;h1&gt;Numele festivalului&lt;/h1&gt;
+  &lt;nav&gt;... linkuri interne ...&lt;/nav&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+  &lt;section id="despre"&gt;...&lt;/section&gt;
+  &lt;section id="program"&gt;...&lt;/section&gt;
+  &lt;section id="contact"&gt;...&lt;/section&gt;
+&lt;/main&gt;
+
+&lt;footer&gt;...&lt;/footer&gt;</code></pre>
+
+        <h3>Bonus</h3>
+        <p>
+          Folosește <code>&lt;mark&gt;</code> pentru activitatea recomandată și
+          <code>colspan</code> pentru un rând din tabel care anunță o pauză.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Exercițiu: modifică exemplele și observă rezultatul în browser.</p>
+    </footer>
+  </body>
+</html>

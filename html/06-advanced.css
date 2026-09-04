@@ -1,0 +1,181 @@
+/* Exemplele vizuale pentru lecția 06 - CSS Advanced */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background: #f7f7f7;
+}
+
+h1,
+h2 {
+  color: #67328f;
+}
+
+section {
+  margin: 24px 0;
+  padding: 24px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+code {
+  color: #b62d24;
+}
+
+pre {
+  padding: 14px;
+  overflow-x: auto;
+  background: #f0f0f0;
+  border-left: 4px solid #67328f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #aaa;
+  text-align: left;
+}
+
+.demo {
+  margin: 16px 0;
+  padding: 20px;
+  overflow: hidden;
+  background: #eee4f7;
+  border: 1px solid #67328f;
+  border-radius: 6px;
+}
+
+.nota {
+  padding: 12px;
+  background: #ecfdf3;
+  border-left: 4px solid #16803c;
+}
+
+.pozitie {
+  position: relative;
+  min-height: 130px;
+}
+
+.pozitie span {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  color: white;
+  background: #b42318;
+}
+
+.buton-tranzitie {
+  padding: 12px 18px;
+  color: white;
+  background: #67328f;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.buton-tranzitie:hover {
+  background: #16803c;
+  transform: translateY(-4px);
+}
+
+.transformari {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 35px 20px;
+}
+
+.transformari div {
+  width: 120px;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  background: #2563eb;
+}
+
+.translate {
+  transform: translateX(10px);
+}
+
+.scale {
+  transform: scale(1.15);
+}
+
+.rotate {
+  transform: rotate(8deg);
+}
+
+.skew {
+  transform: skewX(-10deg);
+}
+
+.card-hover {
+  max-width: 280px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.minge {
+  width: 60px;
+  height: 60px;
+  background: #b42318;
+  border-radius: 50%;
+  animation: plimbare 2s ease-in-out infinite alternate;
+}
+
+@keyframes plimbare {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(220px);
+  }
+}
+
+.puls {
+  display: inline-block;
+  padding: 12px 18px;
+  color: white;
+  background: #67328f;
+  border-radius: 6px;
+  animation: pulsare 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulsare {
+  to {
+    opacity: 0.55;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

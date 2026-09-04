@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Legătura dintre HTML, CSS și JavaScript</title>
+
+    <!-- CSS extern: regulile sunt citite din alt fișier. -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- CSS intern: regulile sunt scrise în elementul <style>. -->
+    <style>
+      .css-intern {
+        padding: 16px;
+        color: #5c2d91;
+        background: #eee4f7;
+        border: 2px solid #5c2d91;
+      }
+
+      #mesaj-script {
+        padding: 12px;
+        background: #eee;
+      }
+
+      .activ {
+        color: white;
+        background: #5c2d91 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <!-- CSS inline: atributul style modifică doar acest element. -->
+      <h1 style="color: #d43d32">HTML + CSS + JavaScript</h1>
+      <p>Un demo simplu care arată rolul și legătura dintre cele trei limbaje.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. HTML creează structura</h2>
+        <p>
+          HTML adaugă în pagină titluri, paragrafe, butoane, imagini și alte
+          elemente.
+        </p>
+        <ul>
+          <li><strong>HTML</strong> = structura;</li>
+          <li><strong>CSS</strong> = aspectul;</li>
+          <li><strong>JavaScript</strong> = comportamentul.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. CSS poate fi adăugat în trei moduri</h2>
+
+        <h3>CSS inline</h3>
+        <p style="padding: 12px; color: #9a3412; background: #ffedd5">
+          Acest element este stilizat direct cu atributul <code>style</code>.
+        </p>
+
+        <h3>CSS intern</h3>
+        <p class="css-intern">
+          Acest element este stilizat de regulile din <code>&lt;style&gt;</code>.
+        </p>
+
+        <h3>CSS extern</h3>
+        <p class="css-extern">
+          Acest element este stilizat din fișierul <code>styles.css</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. JavaScript inline</h2>
+        <p id="mesaj-inline">Apasă butonul pentru a modifica acest text.</p>
+        <button
+          type="button"
+          onclick="document.getElementById('mesaj-inline').style.color = 'red'; document.getElementById('mesaj-inline').textContent = 'JavaScript inline a schimbat textul!'"
+        >
+          Testează JavaScript inline
+        </button>
+        <p>
+          Codul JavaScript este scris direct în atributul <code>onclick</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>4. JavaScript în elementul script</h2>
+        <p id="mesaj-script">Acest mesaj își va schimba aspectul.</p>
+        <button id="buton-script" type="button">Testează elementul script</button>
+        <p>
+          Butonul este conectat la codul din <code>&lt;script&gt;</code>, aflat la
+          finalul acestei pagini HTML.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. JavaScript dintr-un fișier extern</h2>
+        <div id="cutie-externa" class="cutie">Sunt o cutie simplă.</div>
+        <button id="buton-extern" type="button">Schimbă această cutie</button>
+        <p id="numar-clickuri">Număr de clickuri: 0</p>
+        <p>
+          Acest comportament este definit în fișierul <code>script.js</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Flow-ul complet</h2>
+        <ol>
+          <li>Browserul citește <code>index.html</code> și creează structura.</li>
+          <li>HTML încarcă <code>styles.css</code> și aplică aspectul.</li>
+          <li>HTML încarcă <code>script.js</code> și activează interacțiunile.</li>
+          <li>Utilizatorul apasă un buton.</li>
+          <li>JavaScript modifică un element HTML sau o clasă CSS.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>7. Continuă lecțiile</h2>
+        <p>
+          <a href="../introducere-web/introducere-web.html">
+            Deschide lecția 01 - Introducere în Web
+          </a>
+        </p>
+        <p>
+          <a href="02-HTML-building-blocks.html">
+            Deschide lecția 02 - Elementele de bază HTML
+          </a>
+        </p>
+        <p>
+          <a href="03-HTML-forms.html">Deschide lecția 03 - Formulare HTML</a>
+        </p>
+        <p>
+          <a href="04-CSS-basics.html">Deschide lecția 04 - CSS Basics</a>
+        </p>
+        <p>
+          <a href="05-CSS-properties.html">Deschide lecția 05 - CSS Properties</a>
+        </p>
+        <p>
+          <a href="06-CSS-advanced.html">Deschide lecția 06 - CSS Advanced</a>
+        </p>
+        <p>
+          <a href="07-CSS-flexbox.html">Deschide lecția 07 - CSS Flexbox</a>
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Demo HTML, CSS și JavaScript</p>
+    </footer>
+
+    <!-- JavaScript intern: codul este scris în elementul <script>. -->
+    <script>
+      const butonScript = document.getElementById("buton-script");
+      const mesajScript = document.getElementById("mesaj-script");
+
+      butonScript.addEventListener("click", function () {
+        mesajScript.classList.toggle("activ");
+        mesajScript.textContent = "Codul din elementul <script> a funcționat!";
+      });
+    </script>
+
+    <!-- JavaScript extern: browserul citește codul din alt fișier. -->
+    <script src="script.js"></script>
+  </body>
+</html>

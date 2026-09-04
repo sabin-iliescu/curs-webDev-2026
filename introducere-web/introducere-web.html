@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01 - Introducere în Web</title>
+
+    <style>
+      body {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #222;
+        background: #f7f7f7;
+      }
+
+      h1,
+      h2 {
+        color: #67328f;
+      }
+
+      section {
+        margin: 24px 0;
+        padding: 24px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      code {
+        color: #b62d24;
+      }
+
+      .exemplu {
+        padding: 14px;
+        overflow-x: auto;
+        background: #f0f0f0;
+        border-left: 4px solid #67328f;
+      }
+
+      .flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .pas {
+        padding: 12px;
+        font-weight: bold;
+        text-align: center;
+        background: #eee4f7;
+        border: 1px solid #67328f;
+        border-radius: 6px;
+      }
+
+      .sageata {
+        color: #67328f;
+        font-size: 24px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #aaa;
+        text-align: left;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <p><a href="../html/index.html">&larr; Înapoi la pagina principală</a></p>
+      <h1>01 - Introducere în Web</h1>
+      <p>Ce se întâmplă, pe scurt, atunci când deschidem o pagină web?</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce este Internetul?</h2>
+        <p>
+          Internetul este o rețea globală care conectează calculatoare și alte
+          dispozitive. Acestea pot trimite și primi date.
+        </p>
+        <p>
+          Datele sunt împărțite în bucăți mici numite <strong>pachete</strong>,
+          trimise prin rețea și reasamblate la destinație.
+        </p>
+        <p class="exemplu">Internetul poate fi comparat cu un sistem poștal foarte rapid.</p>
+      </section>
+
+      <section>
+        <h2>2. Internetul și Web-ul nu sunt același lucru</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Internet</th>
+              <th>World Wide Web</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rețeaua care conectează dispozitivele.</td>
+              <td>Un serviciu care funcționează prin Internet.</td>
+            </tr>
+            <tr>
+              <td>Transportă pagini, e-mailuri, fișiere și alte date.</td>
+              <td>Conține pagini și site-uri legate prin hyperlinkuri.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Web-ul folosește în principal <strong>HTML</strong>, adrese
+          <strong>URL</strong> și protocolul <strong>HTTP</strong>.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Client și server</h2>
+        <p>
+          Browserul este <strong>clientul</strong>. El cere o resursă. Serverul
+          primește cererea, o procesează și trimite un răspuns.
+        </p>
+        <div class="flow">
+          <div class="pas">Browser<br />client</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Cerere</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Server</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Răspuns</div>
+        </div>
+        <p class="exemplu">Exemplu: Chrome cere pagina <code>index.html</code> de la server.</p>
+      </section>
+
+      <section>
+        <h2>4. Ce este o adresă IP?</h2>
+        <p>
+          Fiecare dispozitiv conectat la o rețea folosește o adresă IP pentru a
+          putea fi identificat.
+        </p>
+        <ul>
+          <li>Exemplu IPv4: <code>192.168.1.10</code></li>
+          <li>Exemplu IPv6: <code>2001:db8::1</code></li>
+        </ul>
+        <p>Putem privi adresa IP ca pe adresa unei case.</p>
+      </section>
+
+      <section>
+        <h2>5. Ce face DNS?</h2>
+        <p>
+          DNS este agenda telefonică a Internetului. El transformă un nume ușor
+          de reținut într-o adresă IP.
+        </p>
+        <div class="flow">
+          <div class="pas">exemplu.ro</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">DNS</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">192.0.2.10</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. Ce este un URL?</h2>
+        <p>URL-ul este adresa completă a unei resurse de pe Web.</p>
+        <p class="exemplu"><code>https://exemplu.ro/lectii/html?nivel=incepator#titluri</code></p>
+        <ul>
+          <li><code>https</code> - protocolul;</li>
+          <li><code>exemplu.ro</code> - domeniul;</li>
+          <li><code>/lectii/html</code> - calea;</li>
+          <li><code>?nivel=incepator</code> - parametrii;</li>
+          <li><code>#titluri</code> - secțiunea din pagină.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>7. Ce este TCP/IP?</h2>
+        <p>
+          TCP/IP este un set de reguli care permite dispozitivelor să comunice
+          prin rețea. Pentru început este suficient să reținem cele patru niveluri:
+        </p>
+        <ol>
+          <li><strong>Aplicație</strong> - HTTP, HTTPS, e-mail și alte servicii;</li>
+          <li><strong>Transport</strong> - TCP sau UDP transportă datele;</li>
+          <li><strong>Internet</strong> - IP găsește adresa și ruta;</li>
+          <li><strong>Acces la rețea</strong> - conexiunea fizică sau wireless.</li>
+        </ol>
+        <p>TCP verifică dacă pachetele ajung și le reasamblează în ordinea corectă.</p>
+      </section>
+
+      <section>
+        <h2>8. HTTP: cerere și răspuns</h2>
+        <p>HTTP este protocolul folosit pentru transferul resurselor Web.</p>
+        <div class="flow">
+          <div class="pas">Cerere HTTP</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Server</div>
+          <div class="sageata">&rarr;</div>
+          <div class="pas">Răspuns HTTP</div>
+        </div>
+
+        <h3>Metode HTTP întâlnite des</h3>
+        <ul>
+          <li><code>GET</code> - citește o resursă;</li>
+          <li><code>POST</code> - trimite sau creează date;</li>
+          <li><code>PUT</code> - actualizează date;</li>
+          <li><code>DELETE</code> - șterge date.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>9. Coduri de răspuns HTTP</h2>
+        <p>Codul de stare ne spune ce s-a întâmplat cu cererea.</p>
+        <ul>
+          <li><code>2xx</code> - cererea a reușit, de exemplu <code>200 OK</code>;</li>
+          <li><code>3xx</code> - redirecționare;</li>
+          <li><code>4xx</code> - problemă în cerere, de exemplu <code>404 Not Found</code>;</li>
+          <li><code>5xx</code> - problemă pe server, de exemplu <code>500 Internal Server Error</code>.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>10. HTTP și HTTPS</h2>
+        <p>
+          HTTPS este varianta securizată a HTTP. Datele trimise între browser și
+          server sunt criptate.
+        </p>
+        <p>
+          Pentru parole, date personale și plăți trebuie folosit întotdeauna
+          <strong>HTTPS</strong>.
+        </p>
+      </section>
+
+      <section>
+        <h2>11. Front-end și back-end</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Front-end</th>
+              <th>Back-end</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Partea pe care utilizatorul o vede în browser.</td>
+              <td>Partea care rulează pe server.</td>
+            </tr>
+            <tr>
+              <td>HTML, CSS și JavaScript.</td>
+              <td>Logică, autentificare, API-uri și baze de date.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="flow">
+          <div class="pas">Interfață<br />front-end</div>
+          <div class="sageata">&harr;</div>
+          <div class="pas">Logică<br />back-end</div>
+          <div class="sageata">&harr;</div>
+          <div class="pas">Bază de date</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>12. Browserul</h2>
+        <p>
+          Browserul cere resursele, citește HTML-ul, aplică CSS-ul, execută
+          JavaScript-ul și afișează rezultatul pe ecran.
+        </p>
+        <p>Exemple: Chrome, Firefox, Edge, Safari și Opera.</p>
+      </section>
+
+      <section>
+        <h2>13. Traseul complet al unei pagini</h2>
+        <ol>
+          <li>Scrii un URL în browser.</li>
+          <li>DNS găsește adresa IP a serverului.</li>
+          <li>Browserul trimite o cerere HTTP sau HTTPS.</li>
+          <li>Serverul procesează cererea.</li>
+          <li>Serverul trimite un răspuns cu HTML, CSS, JavaScript sau date.</li>
+          <li>Browserul construiește și afișează pagina.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>14. Developer Tools</h2>
+        <p>
+          Browserul are instrumente pentru dezvoltatori. În majoritatea
+          browserelor le poți deschide cu click dreapta și <strong>Inspect</strong>.
+        </p>
+        <ul>
+          <li><strong>Elements</strong> - vezi HTML-ul și CSS-ul;</li>
+          <li><strong>Console</strong> - vezi mesaje și erori JavaScript;</li>
+          <li><strong>Network</strong> - vezi cererile și răspunsurile;</li>
+          <li><strong>Application</strong> - vezi datele păstrate de site.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>15. Recapitulare</h2>
+        <ul>
+          <li>Internetul conectează dispozitive.</li>
+          <li>Web-ul conectează pagini și resurse.</li>
+          <li>DNS transformă domeniul într-o adresă IP.</li>
+          <li>Browserul cere resurse de la server prin HTTP sau HTTPS.</li>
+          <li>Serverul răspunde, iar browserul afișează pagina.</li>
+        </ul>
+        <p>
+          Următorul pas:
+          <a href="../html/02-HTML-building-blocks.html">învață elementele HTML de bază</a>.
+        </p>
+        <p>
+          Vezi și
+          <a href="web-developer-tools.html">instrumentele de bază ale unui web developer</a>.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Introducere în Web</p>
+    </footer>
+  </body>
+</html>
