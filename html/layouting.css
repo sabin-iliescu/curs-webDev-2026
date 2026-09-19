@@ -1,0 +1,199 @@
+/* Lecția 08 - Layouting: stilul lecției și exemple simple. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background: #f7f7f7;
+}
+
+h1,
+h2 {
+  color: #67328f;
+}
+
+/* Stilizăm secțiunile lecției, fără să afectăm secțiunea din exemplu. */
+main > section {
+  margin: 24px 0;
+  padding: 24px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+code {
+  color: #b62d24;
+}
+
+pre {
+  padding: 14px;
+  overflow-x: auto;
+  background: #f0f0f0;
+  border-left: 4px solid #67328f;
+}
+
+a {
+  color: #67328f;
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.nota {
+  padding: 12px;
+  background: #ecfdf3;
+  border-left: 4px solid #16803c;
+}
+
+/* Schema paginii: fiecare dreptunghi reprezintă o zonă. */
+.schema-demo {
+  padding: 12px;
+  border: 2px dashed #94a3b8;
+}
+
+.schema-demo > div {
+  margin: 8px 0;
+  padding: 12px;
+  text-align: center;
+  background: #eee4f7;
+}
+
+.schema-demo > .schema-coloane {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  background: white;
+}
+
+.schema-coloane > div {
+  flex: 1 1 160px;
+  padding: 24px 12px;
+  background: #e0f2fe;
+}
+
+/* Același element span, cu trei valori diferite pentru display. */
+.display-demo {
+  padding: 12px;
+  border: 1px dashed #94a3b8;
+  background: #f1f5f9;
+}
+
+.display-demo span {
+  padding: 4px 8px;
+  color: white;
+  background: #67328f;
+}
+
+.block-demo span {
+  display: block;
+  margin: 6px 0;
+}
+
+.inline-demo span {
+  display: inline;
+}
+
+.inline-block-demo span {
+  display: inline-block;
+  width: 120px;
+  margin: 6px 0;
+}
+
+/* Exemplul complet de la finalul lecției. */
+.pagina-demo {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px;
+  border: 2px dashed #94a3b8;
+  background: #f1f5f9;
+}
+
+.antet-demo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: #eee4f7;
+}
+
+.logo-demo {
+  font-weight: bold;
+}
+
+.meniu-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.continut-demo {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.articol-demo {
+  flex: 2;
+  min-width: 0;
+  padding: 16px;
+  background: white;
+}
+
+.lateral-demo {
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
+  background: #e0f2fe;
+}
+
+.pagina-demo h3 {
+  margin-top: 0;
+}
+
+.sectiune-demo {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.sectiune-demo h4 {
+  margin-top: 0;
+}
+
+.subsol-demo {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  background: #eee4f7;
+}
+
+@media (max-width: 600px) {
+  .continut-demo {
+    flex-direction: column;
+  }
+
+  body {
+    margin: 24px auto;
+    padding: 0 12px;
+  }
+
+  main > section {
+    padding: 16px;
+  }
+}

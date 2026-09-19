@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>09 - Responsive Web Design</title>
+    <link rel="stylesheet" href="responsive-web-design.css" />
+    <script src="responsive-web-design.js" defer></script>
+  </head>
+
+  <body>
+    <header id="sus">
+      <p><a href="layouting.html">&larr; Înapoi la lecția 08 - Layouting</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>09 - Responsive Web Design</h1>
+      <p>Același site, de la telefon la desktop. Schimbăm așezarea, păstrăm conținutul.</p>
+      <nav aria-label="Părțile lecției">
+        <ol>
+          <li><a href="#media-queries">CSS Media queries</a></li>
+          <li><a href="#bootstrap">Bootstrap și cele 12 coloane</a></li>
+          <li><a href="#tailwind">Tailwind, pe înțelesul tuturor</a></li>
+        </ol>
+      </nav>
+      <p><a href="#tema-simpla">Mergi la temele pentru acasă &darr;</a></p>
+    </header>
+
+    <main>
+      <section id="media-queries">
+        <h2>1. CSS Media queries</h2>
+        <h3>Mai întâi telefonul: mobile first</h3>
+        <p>
+          <strong>Responsive</strong> înseamnă că pagina se adaptează la lățimea
+          disponibilă. Textele rămân lizibile, iar cardurile trec pe rânduri noi.
+        </p>
+        <p>
+          <strong>Mobile first</strong> înseamnă să pornim cu varianta pentru un
+          ecran mic și să adăugăm reguli pentru ecrane mai mari.
+        </p>
+        <ul>
+          <li>Pe telefon avem puțin loc, deci alegem întâi conținutul esențial.</li>
+          <li>Linkurile și butoanele trebuie să fie ușor de apăsat cu degetul.</li>
+          <li>Pe ecrane mari folosim spațiul în plus pentru mai multe coloane.</li>
+        </ul>
+        <p class="nota">Începem cu o coloană. Când avem loc, adăugăm altele.</p>
+
+        <h3>Primul pas: viewport</h3>
+        <p>În <code>&lt;head&gt;</code>, adăugăm această linie în fiecare exemplu:</p>
+        <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</code></pre>
+        <p>Browserul mobil va folosi lățimea dispozitivului pentru a așeza pagina.</p>
+
+        <h3>O regulă care se activează de la o anumită lățime</h3>
+        <p>
+          Un <strong>media query</strong> aplică CSS doar dacă o condiție este
+          îndeplinită. <code>min-width: 768px</code> înseamnă „de la 768px în sus”.
+          Pragul se numește <strong>breakpoint</strong>.
+        </p>
+        <p>
+          Media queries fac parte din CSS și nu au nevoie de CDN.
+          În exemplul nostru, CSS-ul este într-un element <code>&lt;style&gt;</code>
+          din <code>&lt;head&gt;</code>.
+        </p>
+        <p>Construim un meniu de pauză cu patru carduri:</p>
+        <pre><code>&lt;div class="meniu"&gt;
+  &lt;div class="gustare"&gt;🍕 Pizza&lt;/div&gt;
+  &lt;div class="gustare"&gt;🍔 Burger&lt;/div&gt;
+  &lt;div class="gustare"&gt;🥗 Salată&lt;/div&gt;
+  &lt;div class="gustare"&gt;🍰 Desert&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <pre><code>/* Pornim cu o singură coloană. */
+.meniu {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* De la 768px: două coloane egale. */
+@media (min-width: 768px) {
+  .meniu {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* De la 1024px: patru coloane egale. */
+@media (min-width: 1024px) {
+  .meniu {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}</code></pre>
+        <p>
+          <code>grid</code> așază elementele în coloane și rânduri.
+          <code>repeat(2, 1fr)</code> creează două coloane care împart egal spațiul.
+          Regulile pentru ecrane mai mari sunt scrise după cele de bază.
+        </p>
+
+        <h3>Testează: meniul își găsește locul</h3>
+        <p>
+          Alege o lățime și urmărește cardurile. „Mobil”, „Tabletă” și „Desktop”
+          sunt exemple de dimensiuni; CSS verifică lățimea, nu tipul dispozitivului.
+        </p>
+        <p>Exemplele late sunt afișate micșorat aici. Linkul de dedesubt le deschide la mărime reală.</p>
+        <div class="demonstratie">
+          <div class="butoane-demo" role="group" aria-label="Lățimea exemplului CSS">
+            <button type="button" data-width="375" aria-pressed="true">Mobil</button>
+            <button type="button" data-width="800" aria-pressed="false">Tabletă</button>
+            <button type="button" data-width="1100" aria-pressed="false">Desktop</button>
+          </div>
+          <p class="stare-demo" aria-live="polite">Lățimea exemplului: 375px.</p>
+          <div class="fereastra-demo">
+            <iframe src="exemple-responsive/media-queries.html" title="Meniu realizat cu CSS Media queries"></iframe>
+          </div>
+        </div>
+        <p><a href="exemple-responsive/media-queries.html">Deschide exemplul CSS pe toată pagina &rarr;</a></p>
+        <p><strong>Încearcă:</strong> schimbă pragul de 768px în 600px în fișierul exemplului.</p>
+      </section>
+
+      <section id="bootstrap">
+        <h2>2. Bootstrap: un rând, 12 coloane</h2>
+        <p>
+          <strong>Bootstrap</strong>, cunoscut inițial ca Twitter Bootstrap,
+          oferă clase gata făcute pentru coloane, butoane și alte elemente.
+          În această lecție folosim Bootstrap 5.
+        </p>
+
+        <h3>Ce face Bootstrap, de fapt?</h3>
+        <p>
+          Bootstrap este o colecție de CSS deja scris. Noi alegem clasele și
+          le punem pe elementele HTML. Browserul găsește regulile din fișierul
+          Bootstrap și le aplică.
+        </p>
+        <ol>
+          <li>Încărcăm fișierul CSS prin CDN.</li>
+          <li>Scriem HTML-ul și adăugăm clase, de exemplu <code>btn btn-primary</code>.</li>
+          <li>Browserul aplică forma, spațierea și culorile definite de Bootstrap.</li>
+        </ol>
+        <p class="nota">
+          Noi scriem conținutul și structura. Bootstrap ne oferă stiluri gata
+          pregătite, dar nu construiește singur pagina.
+        </p>
+
+        <h3>Cum îl adăugăm prin CDN?</h3>
+        <p>
+          Un <strong>CDN</strong> este o rețea de servere de pe care browserul
+          poate încărca fișiere. Pentru exerciții, copiem un link și începem,
+          fără instalări. Avem nevoie de internet pentru încărcarea lor.
+        </p>
+        <p>În <code>&lt;head&gt;</code>, după linia pentru viewport:</p>
+        <pre><code>&lt;link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/&gt;</code></pre>
+        <p>
+          Pentru coloane și stiluri este suficient CSS-ul. Pentru componente
+          interactive, precum un meniu care se deschide, adăugăm și scriptul
+          înainte de <code>&lt;/body&gt;</code>:
+        </p>
+        <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</code></pre>
+
+        <h3>Cum funcționează cele 12 coloane?</h3>
+        <p>
+          Imaginează-ți că fiecare rând are <strong>12 locuri</strong>.
+          Un card poate ocupa toate locurile, jumătate sau doar o parte.
+          Nu trebuie să avem 12 carduri!
+        </p>
+        <div class="rigla-coloane" aria-label="Un rând împărțit în 12 coloane egale">
+          <span>1</span><span>2</span><span>3</span><span>4</span>
+          <span>5</span><span>6</span><span>7</span><span>8</span>
+          <span>9</span><span>10</span><span>11</span><span>12</span>
+        </div>
+        <div class="impartire impartire-una"><span>12 = tot rândul</span></div>
+        <div class="impartire impartire-doua"><span>6</span><span>6</span></div>
+        <div class="impartire impartire-trei"><span>4</span><span>4</span><span>4</span></div>
+        <div class="impartire impartire-patru"><span>3</span><span>3</span><span>3</span><span>3</span></div>
+        <p>
+          <code>6 + 6 = 12</code>: două carduri pe rând.
+          <code>3 + 3 + 3 + 3 = 12</code>: patru carduri pe rând.
+          Dacă următorul card nu mai încape în cele 12 locuri, trece pe rând nou.
+        </p>
+
+        <h3>Formula: container → row → col</h3>
+        <ul>
+          <li><code>container</code> ține conținutul la un loc și îl centrează.</li>
+          <li><code>row</code> grupează coloanele.</li>
+          <li><code>col-...</code> stabilește câte locuri ocupă fiecare coloană.</li>
+        </ul>
+        <pre><code>&lt;div class="container"&gt;
+  &lt;div class="row g-3"&gt;
+    &lt;div class="col-12 col-md-6 col-lg-3"&gt;
+      &lt;div class="p-3 bg-light border rounded"&gt;🍕 Pizza&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-3"&gt;
+      &lt;div class="p-3 bg-light border rounded"&gt;🍔 Burger&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-3"&gt;
+      &lt;div class="p-3 bg-light border rounded"&gt;🥗 Salată&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-12 col-md-6 col-lg-3"&gt;
+      &lt;div class="p-3 bg-light border rounded"&gt;🍰 Desert&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <div class="tabel-container">
+          <table>
+            <caption>Cum citim clasele din exemplu</caption>
+            <thead><tr><th scope="col">Clasă</th><th scope="col">Când?</th><th scope="col">Rezultat</th></tr></thead>
+            <tbody>
+              <tr><td><code>col-12</code></td><td>Regula de bază</td><td>12/12: un card pe rând</td></tr>
+              <tr><td><code>col-md-6</code></td><td>De la 768px</td><td>6/12: două carduri pe rând</td></tr>
+              <tr><td><code>col-lg-3</code></td><td>De la 992px</td><td>3/12: patru carduri pe rând</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Regula de bază se aplică peste tot, până când o regulă de la un prag mai
+          mare schimbă lățimea. <code>g-3</code> adaugă spațiu între coloane și
+          rânduri, iar <code>p-3</code> adaugă spațiu în card.
+        </p>
+        <p><code>bg-light</code>, <code>border</code> și <code>rounded</code> adaugă fundal, bordură și colțuri rotunjite.</p>
+
+        <h3>Testează cele 12 locuri</h3>
+        <div class="demonstratie">
+          <div class="butoane-demo" role="group" aria-label="Lățimea exemplului Bootstrap">
+            <button type="button" data-width="375" aria-pressed="true">Mobil</button>
+            <button type="button" data-width="800" aria-pressed="false">Tabletă</button>
+            <button type="button" data-width="1100" aria-pressed="false">Desktop</button>
+          </div>
+          <p class="stare-demo" aria-live="polite">Lățimea exemplului: 375px.</p>
+          <div class="fereastra-demo">
+            <iframe src="exemple-responsive/bootstrap.html" title="Meniu realizat cu grila Bootstrap" loading="lazy"></iframe>
+          </div>
+        </div>
+        <p><a href="exemple-responsive/bootstrap.html">Deschide exemplul Bootstrap pe toată pagina &rarr;</a></p>
+        <p><strong>Încearcă:</strong> schimbă <code>col-lg-3</code> în <code>col-lg-4</code> la toate cardurile. Pe desktop, al patrulea trece pe rândul următor.</p>
+
+        <h3>Nu doar coloane: un card gata de folosit</h3>
+        <p>
+          O <strong>componentă</strong> este o bucată de interfață, cum ar fi un
+          card. Bootstrap are clase care îi dau deja un aspect de bază.
+        </p>
+        <pre><code>&lt;div class="card"&gt;
+  &lt;div class="card-body"&gt;
+    &lt;h2 class="card-title h5"&gt;🍕 Pizza de vineri&lt;/h2&gt;
+    &lt;p class="card-text"&gt;Un card mic pentru o pauză mare.&lt;/p&gt;
+    &lt;a href="bootstrap.html" class="btn btn-primary"&gt;
+      Vezi meniul
+    &lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <ul>
+          <li><code>card</code> pregătește cutia, bordura și colțurile.</li>
+          <li><code>card-body</code> adaugă spațiu în interior.</li>
+          <li><code>card-title</code> și <code>card-text</code> aranjează textele; <code>h5</code> dă titlului o dimensiune mai mică.</li>
+          <li><code>btn</code> dă aspectul de buton, iar <code>btn-primary</code> alege varianta principală de culoare.</li>
+        </ul>
+        <p>
+          Elementul <code>a</code> rămâne un link și navighează prin
+          <code>href</code>, chiar dacă arată ca un buton. Acest exemplu are nevoie
+          doar de CSS, fără JavaScript Bootstrap.
+        </p>
+        <iframe class="exemplu-componente" src="exemple-responsive/bootstrap-componente.html" title="Card și link stilizat ca buton cu Bootstrap" loading="lazy"></iframe>
+        <p><a href="exemple-responsive/bootstrap-componente.html">Deschide exemplul cu componente Bootstrap &rarr;</a></p>
+
+        <h3>Clase mici pentru spațiere și aspect</h3>
+        <p>
+          Pe lângă componente, avem și <strong>clase utilitare</strong>, care
+          schimbă un singur lucru. <code>p</code> vine de la padding, iar
+          <code>m</code> de la margin.
+        </p>
+        <div class="tabel-container">
+          <table>
+            <caption>Câteva clase Bootstrap utile la început</caption>
+            <thead><tr><th scope="col">Clasă</th><th scope="col">Ce schimbă?</th></tr></thead>
+            <tbody>
+              <tr><td><code>p-3</code></td><td>Spațiu în interior, pe toate laturile.</td></tr>
+              <tr><td><code>mb-3</code></td><td>Spațiu în exterior, sub element. <code>b</code> vine de la bottom.</td></tr>
+              <tr><td><code>px-3</code></td><td>Padding în stânga și în dreapta.</td></tr>
+              <tr><td><code>py-2</code></td><td>Padding sus și jos.</td></tr>
+              <tr><td><code>text-center</code></td><td>Centrează textul.</td></tr>
+              <tr><td><code>bg-primary text-white</code></td><td>Fundal în culoarea principală și text alb.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Numărul este o treaptă de spațiere, nu un număr de pixeli.
+          Implicit, <code>p-3</code> înseamnă 1rem, de obicei 16px.
+          <code>p-0</code> elimină paddingul.
+        </p>
+        <pre><code>&lt;p class="p-3 mb-3 bg-primary text-white text-center"&gt;
+  Pauza de pizza începe acum!
+&lt;/p&gt;</code></pre>
+        <p><strong>Încearcă:</strong> în exemplul cu cardul, schimbă <code>btn-primary</code> în <code>btn-success</code>, apoi adaugă <code>text-center</code> pe <code>card-body</code>.</p>
+
+        <h3 id="modal-bootstrap">Un modal simplu: programul cafenelei</h3>
+        <p>
+          Un <strong>modal</strong> este o fereastră afișată peste pagină.
+          O închidem înainte să continuăm să folosim conținutul din spate.
+          Aici îl deschidem pentru a vedea programul cafenelei.
+        </p>
+        <p>
+          Pe lângă CSS-ul Bootstrap, avem nevoie de scriptul de mai jos,
+          adăugat o singură dată, înainte de <code>&lt;/body&gt;</code>:
+        </p>
+        <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</code></pre>
+        <p>Butonul și fereastra sunt legate prin același ID:</p>
+        <pre><code>&lt;button type="button" class="btn btn-primary"
+        data-bs-toggle="modal" data-bs-target="#program"&gt;
+  Vezi programul
+&lt;/button&gt;
+
+&lt;div class="modal fade" id="program" tabindex="-1"
+     aria-labelledby="titlu-program" aria-hidden="true"&gt;
+  &lt;div class="modal-dialog modal-dialog-centered"&gt;
+    &lt;div class="modal-content"&gt;
+      &lt;div class="modal-header"&gt;
+        &lt;h2 class="modal-title fs-5" id="titlu-program"&gt;Programul cafenelei&lt;/h2&gt;
+        &lt;button type="button" class="btn-close"
+                data-bs-dismiss="modal" aria-label="Închide"&gt;&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="modal-body"&gt;
+        &lt;p&gt;Luni-vineri: 09:00-18:00.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class="modal-footer"&gt;
+        &lt;button type="button" class="btn btn-primary" data-bs-dismiss="modal"&gt;
+          Am înțeles
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <ul>
+          <li><code>data-bs-toggle="modal"</code> spune ce componentă deschidem.</li>
+          <li><code>data-bs-target="#program"</code> caută elementul cu <code>id="program"</code>.</li>
+          <li><code>modal-header</code>, <code>modal-body</code> și <code>modal-footer</code> organizează conținutul.</li>
+          <li><code>data-bs-dismiss="modal"</code> închide fereastra.</li>
+          <li><code>aria-labelledby</code> leagă fereastra de titlu pentru cititoarele de ecran.</li>
+        </ul>
+        <p class="nota">
+          Bootstrap se ocupă de deschidere și închidere. Nu scriem JavaScript
+          propriu pentru acest exemplu, dar scriptul Bootstrap trebuie încărcat.
+        </p>
+        <iframe class="exemplu-componente" src="exemple-responsive/bootstrap-modal.html" title="Modal Bootstrap: programul cafenelei" loading="lazy"></iframe>
+        <p><a href="exemple-responsive/bootstrap-modal.html">Deschide exemplul cu modal Bootstrap pe toată pagina &rarr;</a></p>
+        <p><strong>Încearcă:</strong> deschide fereastra din chenar, apoi închide-o cu „Am înțeles”, cu ×, cu tasta Escape sau prin click în afara ei.</p>
+        <p class="sursa">
+          Documentație: <a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/">Bootstrap prin CDN</a>,
+          <a href="https://getbootstrap.com/docs/5.3/layout/grid/">grila de 12 coloane</a>,
+          <a href="https://getbootstrap.com/docs/5.3/components/card/">carduri</a>,
+          <a href="https://getbootstrap.com/docs/5.3/components/buttons/">butoane</a>,
+          <a href="https://getbootstrap.com/docs/5.3/utilities/spacing/">spațiere</a>,
+          <a href="https://getbootstrap.com/docs/5.3/components/modal/">modal</a>.
+        </p>
+      </section>
+
+      <section id="tailwind">
+        <h2>3. Tailwind: clase mici, puse împreună</h2>
+        <p>
+          <strong>Tailwind CSS</strong> oferă clase pentru câte o regulă simplă:
+          spațiere, culoare sau așezare. Le combinăm direct în atributul
+          <code>class</code>.
+        </p>
+
+        <h3>Cum îl adăugăm prin CDN?</h3>
+        <p>Într-un alt fișier HTML, în <code>&lt;head&gt;</code>, după viewport:</p>
+        <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt;</code></pre>
+        <p class="nota">
+          Play CDN este pentru învățare și prototipuri. Pentru un site publicat,
+          Tailwind se instalează în proiect și se generează fișierul CSS.
+          Aici rămânem la varianta simplă, pentru exerciții.
+        </p>
+        <p>În exemplele noastre, Bootstrap și Tailwind sunt folosite în fișiere separate.</p>
+
+        <h3>Ce face Tailwind, de fapt?</h3>
+        <p>
+          Cu Tailwind, construim aspectul din clase utilitare.
+          În <code>class="p-4 bg-purple-100 rounded-lg"</code>, fiecare clasă
+          are o sarcină: spațiu, fundal sau colțuri.
+        </p>
+        <ol>
+          <li>Scriem elementele HTML și clasele Tailwind.</li>
+          <li>În varianta Play CDN, scriptul citește clasele din pagină și generează CSS-ul necesar în browser.</li>
+          <li>Browserul aplică acel CSS elementelor noastre.</li>
+        </ol>
+        <p class="nota">
+          Tot CSS obținem la final. Într-un proiect instalat, generarea se face
+          înainte de publicare; pentru exercițiul nostru, o face Play CDN.
+        </p>
+
+        <h3>Același meniu, cu alte clase</h3>
+        <pre><code>&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"&gt;
+  &lt;div class="rounded-lg bg-purple-100 p-4"&gt;🍕 Pizza&lt;/div&gt;
+  &lt;div class="rounded-lg bg-purple-100 p-4"&gt;🍔 Burger&lt;/div&gt;
+  &lt;div class="rounded-lg bg-purple-100 p-4"&gt;🥗 Salată&lt;/div&gt;
+  &lt;div class="rounded-lg bg-purple-100 p-4"&gt;🍰 Desert&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        <ul>
+          <li><code>grid</code>: activează așezarea în grilă.</li>
+          <li><code>grid-cols-1</code>: o coloană, ca regulă de bază.</li>
+          <li><code>md:grid-cols-2</code>: două coloane de la 48rem, de obicei 768px.</li>
+          <li><code>lg:grid-cols-4</code>: patru coloane de la 64rem, de obicei 1024px.</li>
+          <li><code>gap-4</code>: spațiu între carduri.</li>
+          <li><code>p-4</code>: spațiu în interiorul cardului.</li>
+          <li><code>bg-purple-100</code>: fundal mov deschis.</li>
+          <li><code>rounded-lg</code>: colțuri rotunjite.</li>
+        </ul>
+        <p>
+          Tailwind nu ne obligă să împărțim rândul în 12.
+          Aici spunem direct câte coloane egale vrem în grilă.
+        </p>
+        <p class="nota">
+          Și aici lucrăm mobile first: clasa fără prefix este baza.
+          <code>md:</code> se aplică de la pragul mediu în sus.
+          <code>sm:</code> nu înseamnă „doar pe telefon”.
+        </p>
+
+        <h3>Testează: 1, 2, 4!</h3>
+        <div class="demonstratie">
+          <div class="butoane-demo" role="group" aria-label="Lățimea exemplului Tailwind">
+            <button type="button" data-width="375" aria-pressed="true">Mobil</button>
+            <button type="button" data-width="800" aria-pressed="false">Tabletă</button>
+            <button type="button" data-width="1100" aria-pressed="false">Desktop</button>
+          </div>
+          <p class="stare-demo" aria-live="polite">Lățimea exemplului: 375px.</p>
+          <div class="fereastra-demo">
+            <iframe src="exemple-responsive/tailwind.html" title="Meniu realizat cu Tailwind CSS" loading="lazy"></iframe>
+          </div>
+        </div>
+        <p><a href="exemple-responsive/tailwind.html">Deschide exemplul Tailwind pe toată pagina &rarr;</a></p>
+        <p><strong>Încearcă:</strong> schimbă <code>lg:grid-cols-4</code> în <code>lg:grid-cols-3</code>. Ce se întâmplă cu ultimul card?</p>
+
+        <h3>Construim același card, clasă cu clasă</h3>
+        <p>În acest exemplu alegem separat fundalul, spațierea, titlul și aspectul linkului.</p>
+        <pre><code>&lt;div class="rounded-lg bg-purple-100 p-4"&gt;
+  &lt;h2 class="mb-2 text-xl font-bold"&gt;🍕 Pizza de vineri&lt;/h2&gt;
+  &lt;p class="mb-4"&gt;Un card mic pentru o pauză mare.&lt;/p&gt;
+  &lt;a href="tailwind.html"
+     class="inline-block rounded bg-purple-700 px-4 py-2 text-white hover:bg-purple-900"&gt;
+    Vezi meniul
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+        <div class="tabel-container">
+          <table>
+            <caption>Cum citim clasele noului card</caption>
+            <thead><tr><th scope="col">Clasă</th><th scope="col">Ce schimbă?</th></tr></thead>
+            <tbody>
+              <tr><td><code>text-xl font-bold</code></td><td>Text mai mare și îngroșat.</td></tr>
+              <tr><td><code>mb-4</code></td><td>Spațiu în exterior, sub element.</td></tr>
+              <tr><td><code>inline-block</code></td><td>Linkul rămâne lângă text, dar poate primi dimensiuni și spațiere ca o cutie.</td></tr>
+              <tr><td><code>px-4 py-2</code></td><td>Padding lateral și padding sus/jos.</td></tr>
+              <tr><td><code>bg-purple-700 text-white</code></td><td>Fundal mov închis și text alb.</td></tr>
+              <tr><td><code>hover:bg-purple-900</code></td><td>Fundal mai închis când ținem cursorul deasupra linkului.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          La culori, <code>100</code> este o nuanță deschisă, iar
+          <code>700</code> și <code>900</code> sunt mai închise.
+          <code>hover:</code> schimbă aspectul; nu adaugă o acțiune la click.
+          Navigarea este dată tot de <code>href</code>.
+        </p>
+        <iframe class="exemplu-componente" src="exemple-responsive/tailwind-componente.html" title="Card și link stilizat cu clase Tailwind" loading="lazy"></iframe>
+        <p><a href="exemple-responsive/tailwind-componente.html">Deschide exemplul cu cardul Tailwind &rarr;</a></p>
+
+        <h3>Numerele și prefixele au roluri diferite</h3>
+        <p>
+          În spațierea implicită Tailwind, o unitate este 0,25rem:
+          <code>p-4</code> înseamnă 1rem, de obicei 16px, iar
+          <code>p-6</code> înseamnă 1,5rem, de obicei 24px.
+        </p>
+        <pre><code>&lt;div class="p-4 md:p-6"&gt;
+  Mai mult spațiu când avem un ecran mai mare.
+&lt;/div&gt;</code></pre>
+        <p>
+          <code>p-4</code> este baza. <code>md:p-6</code> mărește paddingul de la
+          pragul <code>md</code> în sus. Prefixul <code>md:</code> spune
+          <em>când</em>, iar <code>p-6</code> spune <em>ce</em> se aplică.
+        </p>
+        <p class="nota">
+          Scările diferă: Bootstrap <code>p-3</code> și Tailwind <code>p-4</code>
+          înseamnă implicit același padding de 1rem. Nu copiem numerele mecanic
+          dintr-un sistem în celălalt.
+        </p>
+        <p><strong>Încearcă:</strong> în cardul Tailwind, schimbă <code>bg-purple-100</code> în <code>bg-green-100</code> și <code>p-4</code> în <code>p-6</code>. Urmărește culoarea și spațiul din interior.</p>
+
+        <h3 id="modal-tailwind">Același modal, cu aspect Tailwind</h3>
+        <p>
+          Tailwind CSS de bază oferă stiluri, fără logica unui modal gata făcut.
+          Pentru un echivalent simplu, folosim elementul HTML
+          <code>&lt;dialog&gt;</code>, clase Tailwind și puțin JavaScript.
+          Păstrăm scriptul Play CDN din exemplul anterior.
+        </p>
+        <pre><code>&lt;button type="button" class="rounded bg-purple-700 px-4 py-2 text-white"
+        onclick="document.getElementById('program').showModal()"&gt;
+  Vezi programul
+&lt;/button&gt;
+
+&lt;dialog id="program" aria-labelledby="titlu-program"
+        class="m-auto w-11/12 max-w-sm rounded-lg bg-white p-6 text-gray-800 backdrop:bg-black/50"&gt;
+  &lt;h2 id="titlu-program" class="mb-3 text-xl font-bold"&gt;Programul cafenelei&lt;/h2&gt;
+  &lt;p class="mb-4"&gt;Luni-vineri: 09:00-18:00.&lt;/p&gt;
+  &lt;button type="button" autofocus
+          class="rounded bg-purple-700 px-4 py-2 text-white"
+          onclick="document.getElementById('program').close()"&gt;
+    Am înțeles
+  &lt;/button&gt;
+&lt;/dialog&gt;</code></pre>
+        <ul>
+          <li><code>onclick</code> rulează comanda când apăsăm butonul.</li>
+          <li><code>getElementById('program')</code> găsește dialogul după ID.</li>
+          <li><code>showModal()</code> îl deschide deasupra paginii, iar <code>close()</code> îl închide.</li>
+          <li><code>m-auto</code> centrează fereastra; <code>w-11/12 max-w-sm</code> îi limitează lățimea și lasă loc la margini.</li>
+          <li><code>backdrop:bg-black/50</code> întunecă fundalul din spate.</li>
+          <li><code>autofocus</code> pune focusul pe butonul de închidere la deschidere.</li>
+        </ul>
+        <p class="nota">
+          Tailwind controlează aspectul. Elementul <code>dialog</code> și browserul
+          gestionează comportamentul modal, inclusiv închiderea cu Escape și
+          blocarea interacțiunii cu restul paginii cât timp este deschis.
+        </p>
+        <iframe class="exemplu-componente" src="exemple-responsive/tailwind-modal.html" title="Dialog HTML stilizat cu Tailwind: programul cafenelei" loading="lazy"></iframe>
+        <p><a href="exemple-responsive/tailwind-modal.html">Deschide exemplul cu modal Tailwind pe toată pagina &rarr;</a></p>
+        <p><strong>Încearcă:</strong> deschide fereastra din chenar și închide-o cu „Am înțeles” sau Escape. Schimbă apoi textul programului în fișierul exemplului.</p>
+
+        <h3>Bootstrap și Tailwind, unul lângă altul</h3>
+        <div class="tabel-container">
+          <table>
+            <caption>Același rezultat poate fi construit în moduri diferite</caption>
+            <thead><tr><th scope="col">Ce facem?</th><th scope="col">Bootstrap</th><th scope="col">Tailwind</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Un card</th><td>Pornim de la <code>card</code> și <code>card-body</code>.</td><td>Combinăm fundal, padding și colțuri.</td></tr>
+              <tr><th scope="row">Un buton</th><td><code>btn btn-primary</code> oferă un stil pregătit.</td><td>Alegem clase pentru fiecare parte a aspectului.</td></tr>
+              <tr><th scope="row">Spațiere</th><td>Avem utilitare precum <code>p-3</code>.</td><td>Avem utilitare precum <code>p-4</code>.</td></tr>
+              <tr><th scope="row">Responsive</th><td><code>col-md-6</code> ocupă jumătate de rând de la <code>md</code>.</td><td><code>md:grid-cols-2</code> creează două coloane pe părinte de la <code>md</code>.</td></tr>
+              <tr><th scope="row">Un modal</th><td>Componenta <code>modal</code> folosește scriptul Bootstrap.</td><td>Stilizăm un <code>dialog</code> HTML și îl deschidem cu <code>showModal()</code>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          În ambele cazuri, HTML-ul descrie conținutul, iar CSS-ul îi dă aspectul.
+          Pentru o acțiune proprie, precum adăugarea unui produs în coș, avem
+          nevoie și de logică JavaScript.
+        </p>
+
+        <h3>Ce păstrăm din lecție?</h3>
+        <ul>
+          <li>Începem cu un ecran mic și adăugăm coloane când avem loc.</li>
+          <li>În CSS scriem reguli <code>@media</code>.</li>
+          <li>În Bootstrap împărțim cele 12 locuri ale unui rând.</li>
+          <li>În Tailwind combinăm clase simple și prefixe responsive.</li>
+        </ul>
+        <p>
+          Atenție la praguri: <code>lg</code> începe la 992px în Bootstrap și,
+          implicit, la 64rem (de obicei 1024px) în Tailwind.
+          La 1000px, exemplele pot arăta diferit.
+        </p>
+        <p>
+          <strong>Verificare rapidă:</strong> deschide fiecare exemplu și
+          verifică-l în DevTools la 375px, 800px și 1100px.
+          Ar trebui să vezi un card, două carduri și apoi patru carduri pe rând.
+        </p>
+        <p class="sursa">
+          Documentație: <a href="https://tailwindcss.com/docs/installation/play-cdn">Tailwind Play CDN</a>,
+          <a href="https://tailwindcss.com/docs/responsive-design">clase responsive</a>,
+          <a href="https://tailwindcss.com/docs/styling-with-utility-classes">clase utilitare</a>,
+          <a href="https://tailwindcss.com/docs/padding">padding</a>,
+          <a href="https://tailwindcss.com/docs/hover-focus-and-other-states">hover și alte stări</a>,
+          <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog">elementul HTML dialog</a>.
+        </p>
+      </section>
+
+      <section id="tema-simpla">
+        <h2>Temă simplă: meniul de pauză, cu CSS</h2>
+        <p>
+          Creează fișierele <code>meniu-responsive.html</code> și
+          <code>meniu-responsive.css</code>. Construiește un meniu cu patru
+          gustări, folosind HTML, CSS și media queries.
+        </p>
+        <ol>
+          <li>Adaugă linia pentru <code>viewport</code> și leagă fișierul CSS în <code>&lt;head&gt;</code>.</li>
+          <li>Scrie un titlu și adaugă patru carduri. Fiecare card să conțină numele gustării, o descriere scurtă și un preț.</li>
+          <li>Pornește mobile first: folosește <code>display: grid</code> și o singură coloană, fără media query.</li>
+          <li>De la 768px, afișează două coloane. De la 1024px, afișează patru coloane.</li>
+          <li>Adaugă <code>gap: 16px</code> între carduri, padding în interior și colțuri rotunjite.</li>
+          <li>Verifică pagina în DevTools la 375px, 800px și 1100px.</li>
+        </ol>
+        <p class="nota">
+          Rezultatul așteptat: un card pe rând la 375px, două la 800px și patru
+          la 1100px. Textul trebuie să fie lizibil, fără derulare orizontală a paginii.
+        </p>
+      </section>
+
+      <section id="tema-complexa">
+        <h2>Temă puțin mai complexă: o cafenea, două variante</h2>
+        <p>
+          Creează o mică pagină pentru o cafenea imaginară. Realizeaz-o în
+          <code>cafenea-bootstrap.html</code> și apoi în
+          <code>cafenea-tailwind.html</code>, păstrând aceleași texte și produse.
+        </p>
+        <ol>
+          <li>Adaugă viewport în ambele fișiere. Încarcă Bootstrap prin CDN în primul și Tailwind Play CDN în al doilea.</li>
+          <li>Creează un antet cu numele cafenelei, o descriere și linkuri către secțiunile <em>Meniu</em> și <em>Contact</em>.</li>
+          <li>În meniu, adaugă patru produse. Fiecare să aibă titlu, descriere, preț și un link „Vezi contactul”, stilizat ca buton.</li>
+          <li>În Bootstrap, folosește <code>container</code>, <code>row g-3</code> și <code>col-12 col-md-6 col-lg-3</code> pentru coloane. Construiește produsele cu <code>card</code> și <code>card-body</code>.</li>
+          <li>În Tailwind, folosește <code>grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4</code> pe părintele cardurilor. Alege clase pentru padding, fundal și colțuri rotunjite.</li>
+          <li>Stilizează linkurile cu <code>btn btn-primary</code> în Bootstrap, iar în Tailwind combină clase de culoare și spațiere cu o clasă <code>hover:</code>.</li>
+          <li>Adaugă în secțiunea Contact adresa cafenelei și programul, apoi încheie pagina cu un subsol.</li>
+          <li>Testează ambele variante la 375px, 800px și 1100px și verifică toate linkurile interne.</li>
+        </ol>
+        <p class="nota">
+          La dimensiunile de test, ambele variante trebuie să afișeze produsele
+          câte unul, două și apoi patru pe rând. La final, scrie două propoziții
+          despre ce clase ai folosit diferit în cele două variante.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="layouting.html">&larr; Înapoi la lecția 08 - Layouting</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+      <p class="sursa">Vezi și <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design">introducerea MDN în Responsive Web Design</a>.</p>
+    </footer>
+  </body>
+</html>

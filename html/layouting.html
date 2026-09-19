@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>08 - Layouting</title>
+    <link rel="stylesheet" href="layouting.css" />
+  </head>
+
+  <body>
+    <header id="sus">
+      <p><a href="07-CSS-flexbox.html">&larr; Înapoi la lecția 07 - CSS Flexbox</a></p>
+      <p><a href="Responsive-Web-Design.html">Continuă cu lecția 09 - Responsive Web Design &rarr;</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>08 - Layouting</h1>
+      <p>Cum așezăm elementele într-o pagină, pas cu pas.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Ce este un layout?</h2>
+        <p>
+          Un <strong>layout</strong> este modul în care așezăm elementele unei
+          pagini: meniul sus, conținutul în centru și alte informații alături.
+        </p>
+        <p>Putem privi pagina ca pe un grup de cutii, unele în interiorul altora.</p>
+        <div class="schema-demo" aria-label="Schema unei pagini web">
+          <div>Antet (header)</div>
+          <div>Meniu (nav)</div>
+          <div class="schema-coloane">
+            <div>Articol (article)</div>
+            <div>Bară laterală (aside)</div>
+          </div>
+          <div>Subsol (footer)</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Împărțim pagina în bucăți mici</h2>
+        <p>Înainte să scriem CSS, ne uităm la model și identificăm părțile lui.</p>
+        <ol>
+          <li>Găsim zonele mari: antet, conținut și subsol.</li>
+          <li>Împărțim fiecare zonă: antetul poate avea logo, meniu și contact.</li>
+          <li>Alegem elementele HTML potrivite pentru fiecare parte.</li>
+          <li>Decidem ce stă pe un rând și ce stă unul sub altul.</li>
+        </ol>
+        <p class="nota">
+          Lucrăm de la mare la mic. Așezăm mai întâi zonele paginii, apoi elementele
+          din interiorul lor.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Începem cu structura HTML</h2>
+        <ul>
+          <li><code>header</code> este antetul.</li>
+          <li><code>nav</code> grupează linkurile de navigare.</li>
+          <li><code>main</code> conține partea principală a paginii.</li>
+          <li><code>article</code> conține un material care are sens și singur.</li>
+          <li><code>aside</code> conține informații suplimentare.</li>
+          <li><code>footer</code> este subsolul.</li>
+        </ul>
+        <p>Într-o pagină separată, structura poate arăta așa:</p>
+        <pre><code>&lt;header&gt;Site-ul meu&lt;/header&gt;
+&lt;nav&gt;Linkuri de navigare&lt;/nav&gt;
+
+&lt;main class="continut-demo"&gt;
+  &lt;article class="articol-demo"&gt;
+    &lt;h1&gt;Prima mea pagină&lt;/h1&gt;
+    &lt;p&gt;Aici scriu conținutul principal.&lt;/p&gt;
+  &lt;/article&gt;
+
+  &lt;aside class="lateral-demo"&gt;
+    &lt;h2&gt;De reținut&lt;/h2&gt;
+    &lt;p&gt;Aici adaug informații suplimentare.&lt;/p&gt;
+  &lt;/aside&gt;
+&lt;/main&gt;
+
+&lt;footer&gt;Realizat de mine&lt;/footer&gt;</code></pre>
+        <p>
+          HTML descrie rolul elementelor. CSS stabilește cum sunt așezate.
+          Un <code>aside</code> nu apare automat în dreapta.
+        </p>
+      </section>
+
+      <section>
+        <h2>4. Block, inline și inline-block</h2>
+        <p>
+          Proprietatea <code>display</code> schimbă felul în care un element
+          ocupă spațiul.
+        </p>
+        <h3>Block</h3>
+        <p>În așezarea normală, începe pe un rând nou și ocupă lățimea disponibilă.</p>
+        <div class="display-demo block-demo">
+          <span>Cutia 1</span>
+          <span>Cutia 2</span>
+        </div>
+        <h3>Inline</h3>
+        <p>
+          Curge odată cu textul. Pentru un element de text, precum
+          <code>span</code>, <code>width</code> și <code>height</code> nu se aplică.
+        </p>
+        <div class="display-demo inline-demo">
+          Text înainte <span>Cutia 1</span> <span>Cutia 2</span> text după.
+        </div>
+        <h3>Inline-block</h3>
+        <p>Poate sta lângă alte elemente și acceptă lățime și înălțime.</p>
+        <div class="display-demo inline-block-demo">
+          <span>Cutia 1</span>
+          <span>Cutia 2</span>
+        </div>
+        <pre><code>.block-demo span {
+  display: block;
+}
+
+.inline-demo span {
+  display: inline;
+}
+
+.inline-block-demo span {
+  display: inline-block;
+  width: 120px;
+}</code></pre>
+      </section>
+
+      <section>
+        <h2>5. Centrăm containerul</h2>
+        <p>
+          Containerul este cutia care ține conținutul la un loc.
+          Îi dăm o lățime maximă și margini automate în stânga și în dreapta.
+        </p>
+        <pre><code>.pagina-demo {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px;
+}</code></pre>
+        <ul>
+          <li><code>max-width</code> limitează lățimea, dar permite micșorarea.</li>
+          <li><code>margin: 0 auto</code> centrează containerul pe orizontală.</li>
+          <li><code>padding</code> lasă spațiu în interiorul cutiei.</li>
+        </ul>
+        <p>Folosim și această regulă pentru a calcula mai ușor dimensiunile:</p>
+        <pre><code>* {
+  box-sizing: border-box;
+}</code></pre>
+        <p>Astfel, lățimea declarată include paddingul și bordura.</p>
+      </section>
+
+      <section>
+        <h2>6. Punem logo-ul și meniul pe un rând</h2>
+        <p>
+          Antetul este părintele. Logo-ul și meniul sunt copiii lui direcți.
+          Aplicăm Flexbox pe părinte.
+        </p>
+        <pre><code>&lt;header class="antet-demo"&gt;
+  &lt;a href="index.html"&gt;Site-ul meu&lt;/a&gt;
+  &lt;nav aria-label="Meniul exemplului"&gt;
+    &lt;ul class="meniu-demo"&gt;
+      &lt;li&gt;&lt;a href="index.html"&gt;Acasă&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="07-CSS-flexbox.html"&gt;Flexbox&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;</code></pre>
+        <pre><code>.antet-demo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.meniu-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}</code></pre>
+        <p class="nota">
+          Avem două containere flex: antetul așază logo-ul și meniul, iar lista
+          așază linkurile din meniu. Fiecare părinte își organizează copiii direcți.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Facem două coloane</h2>
+        <p>
+          Punem articolul și bara laterală în același container.
+          Articolul primește mai mult spațiu.
+        </p>
+        <pre><code>.continut-demo {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.articol-demo {
+  flex: 2;
+  min-width: 0;
+}
+
+.lateral-demo {
+  flex: 1;
+  min-width: 0;
+}</code></pre>
+        <p>
+          <code>flex: 2</code> și <code>flex: 1</code> împart lățimea disponibilă
+          pentru coloane în raport de aproximativ 2 la 1. <code>min-width: 0</code>
+          le permite să se micșoreze, iar <code>gap</code> le separă.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Adaptăm pagina pentru telefon</h2>
+        <p>
+          Pe un ecran îngust, coloanele devin prea mici. Cu o regulă
+          <code>@media</code>, le așezăm una sub alta.
+        </p>
+        <pre><code>@media (max-width: 600px) {
+  .continut-demo {
+    flex-direction: column;
+  }
+}</code></pre>
+        <p>
+          Regula se aplică atunci când lățimea ferestrei este de cel mult 600px.
+          Micșorează fereastra browserului și urmărește exemplul de mai jos.
+        </p>
+      </section>
+
+      <section id="exemplu">
+        <h2>9. Rezultatul: o pagină simplă</h2>
+        <p>
+          Aici sunt puse împreună antetul, meniul, cele două coloane și subsolul.
+          Am adăugat culori și spațiu ca să vedem mai ușor fiecare zonă.
+        </p>
+        <div class="pagina-demo">
+          <header class="antet-demo">
+            <a class="logo-demo" href="index.html">Site-ul meu</a>
+            <nav aria-label="Meniul exemplului">
+              <ul class="meniu-demo">
+                <li><a href="index.html">Acasă</a></li>
+                <li><a href="07-CSS-flexbox.html">Flexbox</a></li>
+              </ul>
+            </nav>
+          </header>
+
+          <div class="continut-demo">
+            <article class="articol-demo">
+              <h3>Prima mea pagină</h3>
+              <p>Acesta este articolul. El ocupă partea mai mare a rândului.</p>
+              <section class="sectiune-demo">
+                <h4>Ce am învățat?</h4>
+                <p>Împart pagina în zone și așez fiecare zonă cu CSS.</p>
+              </section>
+            </article>
+            <aside class="lateral-demo">
+              <h3>De reținut</h3>
+              <p>Aceasta este bara laterală, cu informații suplimentare.</p>
+              <a href="04-CSS-basics.html">Recapitulează CSS</a>
+            </aside>
+          </div>
+
+          <footer class="subsol-demo">
+            <span>Realizat de mine</span>
+            <a href="#sus">Înapoi sus &uarr;</a>
+          </footer>
+        </div>
+        <p>
+          Codul acestui exemplu este în <code>layouting.html</code>, iar stilurile
+          sunt în <code>layouting.css</code>, în același folder.
+        </p>
+      </section>
+
+      <section id="tema-simpla">
+        <h2>10. Temă simplă: pagina mea de prezentare</h2>
+        <p>
+          Creează o pagină despre tine, un hobby sau un loc preferat.
+          Folosește HTML și CSS și pornește de la ideile din lecție.
+        </p>
+        <ol>
+          <li>Creează fișierele <code>prezentare.html</code> și <code>prezentare.css</code> și leagă CSS-ul în <code>&lt;head&gt;</code>.</li>
+          <li>Adaugă un <code>header</code> cu numele paginii și un <code>nav</code> cu linkuri către două secțiuni: <em>Despre</em> și <em>Contact</em>.</li>
+          <li>Așază numele și meniul pe același rând cu Flexbox. Folosește <code>gap</code> și <code>flex-wrap</code>.</li>
+          <li>În <code>main</code>, adaugă cele două secțiuni, una sub alta, fiecare cu un titlu și un paragraf.</li>
+          <li>Centrează conținutul cu <code>max-width: 800px</code> și <code>margin: 0 auto</code>. Adaugă padding ca textul să nu atingă marginile.</li>
+          <li>Încheie cu un <code>footer</code> care conține numele tău și un link „Înapoi sus”.</li>
+        </ol>
+        <p class="nota">
+          Verifică: linkurile duc la secțiunile potrivite, iar la 375px meniul
+          poate trece pe rând nou fără să iasă din pagină.
+        </p>
+      </section>
+
+      <section id="tema-complexa">
+        <h2>11. Temă puțin mai complexă: un mini-blog</h2>
+        <p>
+          Creează fișierele <code>mini-blog.html</code> și <code>mini-blog.css</code>
+          pentru un blog despre călătorii, jocuri sau mâncare.
+        </p>
+        <ol>
+          <li>Desenează pe hârtie zonele mari: antet, conținut, bară laterală și subsol.</li>
+          <li>Leagă fișierul CSS și creează un antet cu numele blogului și trei linkuri interne: <em>Articol</em>, <em>Despre autor</em> și <em>Contact</em>.</li>
+          <li>În <code>main</code>, adaugă un <code>article</code> și un <code>aside</code>, așezate pe un rând cu Flexbox.</li>
+          <li>Articolul să aibă un titlu, două paragrafe și o secțiune cu trei recomandări.</li>
+          <li>În bara laterală, scrie câteva cuvinte despre autor și adaugă o listă cu trei subiecte ale blogului.</li>
+          <li>Dă articolului <code>flex: 2</code>, barei laterale <code>flex: 1</code> și containerului <code>gap: 16px</code>.</li>
+          <li>La cel mult 600px, așază articolul și bara laterală unul sub altul cu <code>flex-direction: column</code>.</li>
+          <li>Adaugă datele de contact în subsol, spațiere între zone și culori diferite pentru articol și bara laterală.</li>
+        </ol>
+        <p class="nota">
+          Verifică la 375px și la 1100px: pe ecranul mic ai o coloană, iar pe
+          ecranul mare articolul și bara laterală stau alături. Toate linkurile
+          din meniu trebuie să funcționeze.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="07-CSS-flexbox.html">&larr; Înapoi la lecția 07 - CSS Flexbox</a></p>
+      <p><a href="Responsive-Web-Design.html">Continuă cu lecția 09 - Responsive Web Design &rarr;</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meniul de pauză - CSS Media queries</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #222;
+      }
+      h1 { margin: 0 0 8px; font-size: 24px; color: #67328f; }
+      a { color: #67328f; }
+      .meniu {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .gustare { padding: 16px; background: #eee4f7; border-radius: 8px; }
+      @media (min-width: 768px) {
+        .meniu { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (min-width: 1024px) {
+        .meniu { grid-template-columns: repeat(4, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Meniul de pauză</h1>
+      <p>Patru gustări. Câte încap pe un rând?</p>
+      <div class="meniu">
+        <div class="gustare">🍕 Pizza</div>
+        <div class="gustare">🍔 Burger</div>
+        <div class="gustare">🥗 Salată</div>
+        <div class="gustare">🍰 Desert</div>
+      </div>
+    </main>
+    <footer><p><a href="../Responsive-Web-Design.html#media-queries" target="_top">&larr; Înapoi la lecție</a></p></footer>
+  </body>
+</html>

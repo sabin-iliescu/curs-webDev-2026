@@ -1,0 +1,199 @@
+/* Lecția 09 - Responsive Web Design. Pornim cu stilurile pentru mobil. */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background: #f7f7f7;
+}
+
+h1,
+h2,
+a {
+  color: #67328f;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h3 {
+  margin-top: 28px;
+}
+
+main > section {
+  margin: 24px 0;
+  padding: 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+code {
+  color: #b62d24;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  padding: 14px;
+  overflow-x: auto;
+  background: #f0f0f0;
+  border-left: 4px solid #67328f;
+}
+
+pre code {
+  overflow-wrap: normal;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #67328f;
+  outline-offset: 4px;
+}
+
+.nota {
+  padding: 12px;
+  background: #ecfdf3;
+  border-left: 4px solid #16803c;
+}
+
+.tabel-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+caption {
+  margin-bottom: 8px;
+  font-weight: bold;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #aaa;
+  text-align: left;
+}
+
+/* O reprezentare simplă a celor 12 locuri dintr-un rând. */
+.rigla-coloane {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2px;
+  margin: 16px 0;
+  font-size: 12px;
+}
+
+.rigla-coloane span {
+  padding: 8px 0;
+  text-align: center;
+  color: white;
+  background: #67328f;
+}
+
+.impartire {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.impartire span {
+  padding: 10px;
+  text-align: center;
+  background: #eee4f7;
+  border: 1px solid #67328f;
+  border-radius: 4px;
+}
+
+.impartire-doua {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.impartire-trei {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.impartire-patru {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Controalele schimbă lățimea ferestrei exemplului, nu codul cursantului. */
+.butoane-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.butoane-demo button {
+  min-height: 44px;
+  padding: 8px 14px;
+  font: inherit;
+  color: #67328f;
+  background: white;
+  border: 1px solid #67328f;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.butoane-demo button[aria-pressed="true"] {
+  color: white;
+  background: #67328f;
+}
+
+.stare-demo {
+  font-weight: bold;
+}
+
+.fereastra-demo {
+  overflow: hidden;
+  background: #f1f5f9;
+  border: 2px dashed #94a3b8;
+}
+
+.fereastra-demo iframe {
+  display: block;
+  width: 100%;
+  height: 520px;
+  border: 0;
+  transform-origin: top left;
+  background: white;
+}
+
+.sursa {
+  font-size: 14px;
+  color: #555;
+}
+
+.exemplu-componente {
+  display: block;
+  width: 100%;
+  height: 360px;
+  margin: 16px 0;
+  border: 2px dashed #94a3b8;
+  background: white;
+}
+
+@media (min-width: 600px) {
+  body {
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  main > section {
+    padding: 24px;
+  }
+}
