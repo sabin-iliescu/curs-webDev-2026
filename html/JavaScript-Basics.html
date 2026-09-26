@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10 - JavaScript Basics</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <script src="javascript-basics.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="Responsive-Web-Design.html">&larr; Înapoi la lecția 09 - Responsive Web Design</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <p><a href="JavaScript-Functions.html">Continuă cu lecția 11 - JavaScript Functions &rarr;</a></p>
+      <h1>10 - JavaScript Basics</h1>
+      <p>HTML pune butonul în pagină. CSS îl face frumos. JavaScript face ceva când îl apeși.</p>
+      <p>Deschidem o cafenea imaginară și învățăm să ținem minte valori, să calculăm un bon și să luăm decizii. Pas cu pas, fără biblioteci.</p>
+      <nav aria-label="Părțile lecției">
+        <ol>
+          <li><a href="#start">Primul script și consola</a></li>
+          <li><a href="#variabile">Variabile, tipuri de date și calcule</a></li>
+          <li><a href="#liste">Liste și obiecte</a></li>
+          <li><a href="#comparatii">Comparații, condiții și bucle</a></li>
+          <li><a href="#functii">Funcții și primul buton conectat</a></li>
+          <li><a href="#recapitulare">Recapitulare și teme</a></li>
+        </ol>
+      </nav>
+      <p class="nota">Încearcă exemplele pe rând. Schimbă o valoare, ghicește rezultatul, apoi rulează codul.</p>
+      <noscript><p class="nota">JavaScript este dezactivat. Poți citi lecția și codul, dar activează JavaScript în browser pentru demonstrațiile interactive.</p></noscript>
+    </header>
+
+    <main>
+      <section id="start">
+        <h2>1. Ce face JavaScript?</h2>
+        <p>JavaScript este un limbaj de programare. În browser îl folosim pentru reacții la click, calcule, validarea formularelor sau actualizarea conținutului unei pagini.</p>
+        <ul>
+          <li><strong>HTML:</strong> avem un meniu și un buton „Comandă”.</li>
+          <li><strong>CSS:</strong> meniul are culori, spațiere și se adaptează la telefon.</li>
+          <li><strong>JavaScript:</strong> apăsăm butonul și apare un mesaj.</li>
+        </ul>
+        <p>A apărut în 1995, creat de Brendan Eich. Java și JavaScript sunt limbaje diferite. <strong>ECMAScript</strong> este standardul care descrie limbajul. JavaScript poate rula și în afara browserului, de exemplu cu Node.js; aici lucrăm în browser.</p>
+        <div class="demo">
+          <h3>Un click, o schimbare</h3>
+          <button id="salut-buton" type="button">Deschide cafeneaua ☕</button>
+          <p id="salut-rezultat" class="rezultat" aria-live="polite">Cafeneaua așteaptă primul click.</p>
+        </div>
+        <p>La finalul lecției vei vedea codul care conectează un buton la un mesaj.</p>
+      </section>
+
+      <section id="primul-script">
+        <h2>2. Unde scriem codul?</h2>
+        <p>Creează un folder cu două fișiere: <code>index.html</code> și <code>script.js</code>. Deschide HTML-ul în browser. Nu avem nevoie de CDN sau de instalări pentru JavaScript simplu.</p>
+        <h3>Fișierul index.html</h3>
+        <pre><code>&lt;!doctype html&gt;
+&lt;html lang="ro"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Prima mea cafenea&lt;/title&gt;
+    &lt;script src="script.js" defer&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Cafea și cod&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        <h3>Fișierul script.js</h3>
+        <pre><code>console.log("Cafeneaua este deschisă!");</code></pre>
+        <p><code>src</code> indică fișierul. <code>defer</code> permite descărcarea scriptului în timp ce browserul citește HTML-ul și amână rularea până când acesta a fost parcurs. Astfel, elementele HTML sunt disponibile când le căutăm în script.</p>
+        <p class="nota">În fișierul <code>.js</code> scriem direct JavaScript, fără etichete <code>&lt;script&gt;</code>. Salvăm fișierul și reîncărcăm pagina pentru a vedea schimbările.</p>
+        <details>
+          <summary>Alternativă: JavaScript direct în HTML</summary>
+          <p>Pentru un test scurt, poți pune acest cod înainte de <code>&lt;/body&gt;</code>. Alege o singură variantă pentru același exemplu, ca să nu îl rulezi de două ori.</p>
+          <pre><code>&lt;script&gt;
+  console.log("Salut din HTML!");
+&lt;/script&gt;</code></pre>
+          <p><code>defer</code> se folosește pe scripturi externe clasice; nu are efect pe acest script scris direct în HTML. Un <code>src</code> poate indica și un URL extern, ca la bibliotecile din lecția precedentă.</p>
+        </details>
+      </section>
+
+      <section id="consola">
+        <h2>3. Consola: locul în care vedem ce se întâmplă</h2>
+        <ol>
+          <li>În Chrome sau Edge, click dreapta pe pagină → <strong>Inspect / Inspectează</strong>.</li>
+          <li>Deschide fila <strong>Console</strong>.</li>
+          <li>Scrie <code>2 + 3</code> și apasă Enter. Rezultatul este <code>5</code>.</li>
+          <li>Reîncarcă pagina creată mai sus. Apare mesajul din <code>script.js</code>.</li>
+        </ol>
+        <pre><code>// Comentariu pe o linie: explică, dar nu se execută.
+console.log("Salut!"); // Afișează textul în consolă.
+console.log(2 + 3);    // Afișează 5.
+
+/* Un comentariu poate ocupa
+   mai multe linii. */</code></pre>
+        <p><code>console.log()</code> afișează valori în consolă, nu în pagină. Ghilimelele delimitează textul; parantezele conțin ce vrem să afișăm. În exemple încheiem instrucțiunile cu <code>;</code>.</p>
+        <p class="nota">După un <code>console.log()</code> rulat direct în consolă poți vedea și <code>undefined</code>. Este valoarea returnată de apel, nu o eroare. Mesajul tău apare separat.</p>
+      </section>
+
+      <section id="variabile">
+        <h2>4. Variabile: valori cu un nume</h2>
+        <p>O variabilă ne permite să păstrăm o valoare și să o folosim după nume. În loc să repetăm prețul cafelei peste tot, scriem <code>pretCafea</code>.</p>
+        <pre><code>const pretCafea = 12;
+let cafeleVandute = 0;
+
+cafeleVandute = 1;
+console.log(pretCafea);     // 12
+console.log(cafeleVandute); // 1</code></pre>
+        <ul>
+          <li><code>const</code>: nu putem atribui ulterior altă valoare aceleiași variabile. Îi dăm o valoare de la început.</li>
+          <li><code>let</code>: putem atribui altă valoare mai târziu, ca la un contor.</li>
+          <li><code>var</code>: o formă mai veche de declarare, pe care o vei întâlni în cod existent. Pentru exercițiile noastre alegem <code>const</code> și <code>let</code>.</li>
+        </ul>
+        <pre><code>let numeClient;       // Declarare: creăm variabila; valoarea este undefined.
+numeClient = "Mara";  // Atribuire: îi dăm o valoare.
+numeClient = "Ana";   // Reatribuire: schimbăm valoarea.
+const oras = "Iași";  // Declarare și inițializare într-un singur pas.</code></pre>
+        <p><code>=</code> înseamnă <strong>atribuire</strong>: valoarea din dreapta ajunge în variabila din stânga. Nu este o întrebare de tipul „sunt egale?”.</p>
+        <h3>Nume care ne ajută să citim codul</h3>
+        <p>Folosim <strong>camelCase</strong>: <code>pretCafea</code>, <code>numeClient</code>, <code>esteDeschis</code>. Numele nu conține spații, nu începe cu o cifră și nu poate fi un cuvânt rezervat, precum <code>const</code>. Literele, <code>_</code> și <code>$</code> sunt permise la început.</p>
+        <p><code>total</code> și <code>Total</code> sunt nume diferite: JavaScript ține cont de majuscule.</p>
+        <div class="demo">
+          <h3>Tu vinzi cafeaua, let ține scorul</h3>
+          <div class="controale">
+            <button id="cafea-adauga" type="button">Am vândut o cafea +1</button>
+            <button id="cafea-reset" class="secundar" type="button">Ia-o de la zero</button>
+          </div>
+          <p id="cafea-rezultat" class="rezultat" aria-live="polite">Cafele vândute: 0</p>
+          <pre><code>let cafeleVandute = 0;
+
+// La fiecare click executăm:
+cafeleVandute = cafeleVandute + 1;</code></pre>
+          <p>Luăm valoarea veche, adăugăm 1 și păstrăm rezultatul. Variabila este declarată o singură dată, înainte de clickuri.</p>
+        </div>
+        <p class="nota">Pornește cu <code>const</code>. Folosește <code>let</code> dacă vei reatribui valoarea. La liste și obiecte vom vedea că <code>const</code> nu îngheață conținutul.</p>
+      </section>
+
+      <section id="tipuri">
+        <h2>5. Tipuri de date: 12 și "12" nu sunt același lucru</h2>
+        <p>Valoarea are un tip. Un preț este un număr, un nume este text, iar răspunsul la „este deschis?” poate fi adevărat sau fals.</p>
+        <div class="tabel-container" role="region" aria-label="Tipuri primitive, tabel derulabil" tabindex="0">
+          <table>
+            <caption>Cele 7 tipuri primitive</caption>
+            <thead><tr><th scope="col">Tip</th><th scope="col">Exemplu</th><th scope="col">Ce reprezintă</th></tr></thead>
+            <tbody>
+              <tr><td><code>number</code></td><td><code>12</code>, <code>4.5</code></td><td>Numere întregi și zecimale. În cod folosim punctul zecimal.</td></tr>
+              <tr><td><code>string</code></td><td><code>"Cafea"</code></td><td>Text între ghilimele.</td></tr>
+              <tr><td><code>boolean</code></td><td><code>true</code>, <code>false</code></td><td>Adevărat sau fals, fără ghilimele.</td></tr>
+              <tr><td><code>undefined</code></td><td><code>let client;</code></td><td>De exemplu, valoarea unei variabile declarate fără inițializare.</td></tr>
+              <tr><td><code>null</code></td><td><code>let masa = null;</code></td><td>Marcăm intenționat lipsa unei valori: încă nu am ales o masă.</td></tr>
+              <tr><td><code>bigint</code></td><td><code>123n</code></td><td>Numere întregi, inclusiv foarte mari. Deocamdată doar îl recunoaștem.</td></tr>
+              <tr><td><code>symbol</code></td><td><code>Symbol("id")</code></td><td>O valoare unică, utilă ca identificator. Nu avem nevoie de ea în exerciții.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Primitive</strong> înseamnă valori simple. Listele și obiectele, pe care le vedem imediat, pot grupa mai multe valori.</p>
+        <h3>typeof: întrebăm ce tip are valoarea</h3>
+        <pre><code>console.log(typeof 12);       // "number"
+console.log(typeof "12");     // "string"
+console.log(typeof true);     // "boolean"
+console.log(typeof undefined); // "undefined"
+console.log(typeof null);     // "object" — o particularitate istorică!</code></pre>
+        <p><code>typeof</code> întoarce numele tipului sub formă de text. Deși rezultatul pentru <code>null</code> este <code>"object"</code>, <code>null</code> este o valoare primitivă.</p>
+        <div class="demo">
+          <h3>Detectivul de tipuri</h3>
+          <label for="tip-valoare">Alege o valoare și verifică-i tipul</label>
+          <select id="tip-valoare">
+            <option value="numar">12</option>
+            <option value="text">"12"</option>
+            <option value="boolean">true</option>
+            <option value="nedefinit">undefined</option>
+            <option value="nul">null</option>
+            <option value="mare">123n</option>
+            <option value="simbol">Symbol("id")</option>
+          </select>
+          <p id="tip-rezultat" class="rezultat" aria-live="polite">typeof 12 → "number"</p>
+        </div>
+        <h3>JavaScript are tipizare dinamică</h3>
+        <pre><code>let valoare = 12;
+valoare = "douăsprezece"; // Permis: noua valoare are alt tip.</code></pre>
+        <p>Nu declarăm un tip fix pentru variabilă. Totuși, numele și tipurile consecvente fac programul mai ușor de urmărit.</p>
+      </section>
+
+      <section id="calcule">
+        <h2>6. Numere și operatori: facem bonul</h2>
+        <pre><code>const pret = 12;
+const cantitate = 3;
+const total = pret * cantitate;
+console.log(total); // 36</code></pre>
+        <p><code>pret * cantitate</code> este o <strong>expresie</strong>: produce o valoare. <code>const total = pret * cantitate;</code> este o declarație care păstrează acea valoare.</p>
+        <div class="tabel-container" role="region" aria-label="Operatori aritmetici, tabel derulabil" tabindex="0">
+          <table>
+            <caption>Operatorii aritmetici</caption>
+            <thead><tr><th scope="col">Operator</th><th scope="col">Rol</th><th scope="col">Exemplu → rezultat</th></tr></thead>
+            <tbody>
+              <tr><td><code>+</code></td><td>Adunare</td><td><code>12 + 3</code> → 15</td></tr>
+              <tr><td><code>-</code></td><td>Scădere</td><td><code>12 - 3</code> → 9</td></tr>
+              <tr><td><code>*</code></td><td>Înmulțire</td><td><code>12 * 3</code> → 36</td></tr>
+              <tr><td><code>/</code></td><td>Împărțire</td><td><code>12 / 3</code> → 4</td></tr>
+              <tr><td><code>%</code></td><td>Restul împărțirii</td><td><code>13 % 3</code> → 1</td></tr>
+              <tr><td><code>**</code></td><td>Ridicare la putere</td><td><code>2 ** 3</code> → 8</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Înmulțirea se face înaintea adunării: <code>2 + 3 * 4</code> este <code>14</code>. Parantezele schimbă ordinea: <code>(2 + 3) * 4</code> este <code>20</code>.</p>
+        <pre><code>let puncte = 10;
+puncte += 5; // Același efect ca puncte = puncte + 5; acum 15.
+puncte++;    // Adaugă 1; acum 16.
+puncte--;    // Scade 1; acum 15.</code></pre>
+        <p>Există și <code>-=</code>, <code>*=</code>, <code>/=</code>. Pentru început folosim <code>++</code> și <code>--</code> separat, pe propria linie.</p>
+        <div class="demo">
+          <h3>Bonul de la pauză</h3>
+          <p>O cafea costă 12 lei. Câte cafele comandăm?</p>
+          <form id="bon-form" novalidate>
+            <div class="controale">
+              <div><label for="bon-cantitate">Cantitate (1–10)</label><input id="bon-cantitate" type="number" min="1" max="10" step="1" value="3" required aria-describedby="bon-rezultat" /></div>
+              <button type="submit">Calculează bonul</button>
+            </div>
+          </form>
+          <p id="bon-rezultat" class="rezultat" aria-live="polite">12 × 3 = 36 lei</p>
+        </div>
+        <details>
+          <summary>Două rezultate surprinzătoare: NaN și Infinity</summary>
+          <pre><code>console.log(Number("cafea")); // NaN: textul nu poate deveni un număr valid.
+console.log(10 / 0);         // Infinity
+console.log(typeof NaN);     // "number"</code></pre>
+          <p><code>NaN</code> înseamnă „Not a Number”, dar este o valoare specială a tipului <code>number</code>. Și <code>Infinity</code> aparține acestui tip.</p>
+        </details>
+      </section>
+
+      <section id="texte">
+        <h2>7. Texte: mesaje care folosesc valorile noastre</h2>
+        <p>Un <code>string</code> poate folosi ghilimele duble, simple sau backticks. Deschidem și închidem textul cu același semn.</p>
+        <pre><code>const produs = "cafea";
+const client = 'Mara';
+const cantitate = 2;
+
+console.log(client + " comandă " + cantitate + " cafele.");
+console.log(`${client} comandă ${cantitate} cafele.`);
+// Ambele afișează: Mara comandă 2 cafele.</code></pre>
+        <p>Cu <code>+</code> lipim texte: operația se numește <strong>concatenare</strong>. Cu backticks (<code>`</code>) putem introduce valori sau calcule între <code>${</code> și <code>}</code>. Aceasta este o formă de <strong>template literal</strong>.</p>
+        <pre><code>console.log(`Total: ${12 * 2} lei`); // Total: 24 lei
+console.log("Prima linie\nA doua linie"); // \n trece pe o linie nouă.
+console.log('Clientul a spus: "Mulțumesc!"');</code></pre>
+        <h3>Capcana lui +: text sau număr?</h3>
+        <pre><code>console.log(5 + 2);           // 7
+console.log("5" + 2);         // "52"
+console.log(Number("5") + 2); // 7</code></pre>
+        <p>În aceste exemple, dacă un operand este text, <code>+</code> concatenează. <code>Number()</code> convertește explicit textul într-un număr; <code>String()</code> face conversia la text.</p>
+        <p class="nota">Valoarea citită prin <code>input.value</code> este text, inclusiv pentru un câmp <code>type="number"</code>. O convertim înainte de calcule și verificăm datele. Atenție: <code>Number("")</code> produce <code>0</code>, nu o eroare.</p>
+        <details>
+          <summary>Ghicește înainte să deschizi: cât face "10" + 5 + 2?</summary>
+          <p><code>"1052"</code>. Operațiile se fac de la stânga la dreapta: <code>"10" + 5</code> produce <code>"105"</code>, apoi se lipește și <code>2</code>.</p>
+          <p>Cu paranteze, <code>"10" + (5 + 2)</code> produce <code>"107"</code>. Cu conversie, <code>Number("10") + 5 + 2</code> produce <code>17</code>.</p>
+        </details>
+      </section>
+
+      <section id="liste">
+        <h2>8. Arrays: mai multe valori într-o listă</h2>
+        <p>Un <strong>array</strong> păstrează o listă ordonată. Îl scriem între <code>[ ]</code>, cu elementele separate prin virgulă.</p>
+        <pre><code>const meniu = ["Espresso", "Latte", "Ceai"];
+
+console.log(meniu[0]);     // "Espresso"
+console.log(meniu[1]);     // "Latte"
+console.log(meniu.length); // 3
+console.log(meniu[meniu.length - 1]); // "Ceai"
+console.log(meniu[3]);     // undefined: nu există un element la indexul 3.</code></pre>
+        <p><strong>Indexul începe de la 0.</strong> O listă cu 3 elemente are indicii 0, 1 și 2. <code>length</code> spune câte elemente există.</p>
+        <div class="demo">
+          <h3>Comandă după index</h3>
+          <label for="meniu-index">Ce poziție citim din meniu?</label>
+          <select id="meniu-index">
+            <option value="0">Index 0</option><option value="1">Index 1</option><option value="2">Index 2</option><option value="3">Index 3</option>
+          </select>
+          <p id="meniu-rezultat" class="rezultat" aria-live="polite">meniu[0] → "Espresso"</p>
+        </div>
+        <pre><code>const produse = ["Espresso", "Latte"];
+produse.push("Ceai"); // Adaugă la final.
+produse[0] = "Decaf"; // Modifică primul element.
+console.log(produse); // ["Decaf", "Latte", "Ceai"]</code></pre>
+        <p><code>push()</code> este o <strong>metodă</strong>: o funcție pe care o apelăm prin listă. Parantezele declanșează acțiunea; <code>length</code> este o proprietate și se citește fără paranteze.</p>
+        <p class="nota"><code>const</code> nu ne lasă să înlocuim lista cu alta prin <code>produse = [...]</code>, dar putem modifica elementele listei existente.</p>
+        <details>
+          <summary>Bonus mic: sortarea unei liste</summary>
+          <pre><code>const bauturi = ["Latte", "Ceai", "Espresso"];
+bauturi.sort();
+console.log(bauturi); // ["Ceai", "Espresso", "Latte"]</code></pre>
+          <p><code>sort()</code> modifică lista existentă. Implicit compară elementele ca texte, deci <code>[2, 10, 3].sort()</code> produce <code>[10, 2, 3]</code>. Sortarea numerică o lăsăm pentru o lecție viitoare.</p>
+        </details>
+      </section>
+
+      <section id="obiecte">
+        <h2>9. Obiecte: fișa unui produs</h2>
+        <p>Un <strong>obiect</strong> grupează informații sub nume de proprietăți. Pentru un produs vrem să ținem împreună numele, prețul și disponibilitatea.</p>
+        <pre><code>const cafea = {
+  nume: "Latte",
+  pret: 15,
+  disponibil: true
+};
+
+console.log(cafea.nume); // "Latte"
+console.log(cafea.pret); // 15
+cafea.pret = 16;
+console.log(cafea.pret); // 16</code></pre>
+        <p>Folosim acolade <code>{ }</code>. Fiecare pereche are forma <code>proprietate: valoare</code>; perechile sunt separate prin virgulă. Punctul din <code>cafea.pret</code> citește proprietatea <code>pret</code>.</p>
+        <p><code>const</code> permite modificarea proprietăților obiectului existent, la fel ca la elementele unei liste.</p>
+        <p class="nota"><strong>Listă:</strong> „Ce produse avem?” → <code>["Latte", "Ceai"]</code>.<br /><strong>Obiect:</strong> „Ce știm despre un produs?” → <code>{ nume: "Latte", pret: 15 }</code>.</p>
+      </section>
+
+      <section id="comparatii">
+        <h2>10. Comparații: întrebări cu răspuns true sau false</h2>
+        <pre><code>console.log(12 &gt; 10);     // true
+console.log(12 &lt; 10);     // false
+console.log(12 &gt;= 12);    // true
+console.log(12 &lt;= 10);    // false
+console.log(12 === 12);   // true
+console.log(12 !== 10);   // true
+console.log(12 === "12"); // false: tipurile sunt diferite.</code></pre>
+        <p><code>===</code> verifică egalitatea strictă, fără conversia tipurilor. <code>!==</code> verifică inegalitatea strictă. În exerciții le preferăm pe acestea.</p>
+        <pre><code>console.log(5 == "5");  // true: == permite conversii de tip.
+console.log(5 === "5"); // false: === nu face acele conversii.</code></pre>
+        <p class="nota"><code>=</code> atribuie, <code>===</code> compară. <code>pret = 12</code> schimbă prețul; <code>pret === 12</code> întreabă dacă prețul este 12.</p>
+        <h3>Legăm întrebările cu operatori logici</h3>
+        <pre><code>const esteDeschis = true;
+const avemCafea = false;
+
+console.log(esteDeschis &amp;&amp; avemCafea); // false: trebuie să fie ambele true.
+console.log(esteDeschis || avemCafea); // true: cel puțin una este true.
+console.log(!esteDeschis);            // false: inversăm valoarea booleană.</code></pre>
+        <p><code>&amp;&amp;</code> înseamnă „și”, <code>||</code> înseamnă „sau”, iar <code>!</code> înseamnă „nu”. Aici lucrăm cu valori booleene.</p>
+        <details>
+          <summary>Ghicește: true &amp;&amp; false || true</summary>
+          <p>Rezultatul este <code>true</code>. <code>&amp;&amp;</code> se evaluează înainte de <code>||</code>: <code>(true &amp;&amp; false) || true</code> devine <code>false || true</code>.</p>
+          <p>Folosește paranteze când vrei să arăți clar cum grupezi condițiile.</p>
+        </details>
+      </section>
+
+      <section id="decizii">
+        <h2>11. if / else: codul alege o variantă</h2>
+        <p>Livrarea este gratuită de la 50 lei inclusiv. <code>if</code> execută blocul său când condiția este adevărată. <code>else</code> acoperă cealaltă situație.</p>
+        <pre><code>const total = 36;
+
+if (total &gt;= 50) {
+  console.log("Livrare gratuită!");
+} else {
+  console.log(`Mai adaugă produse de ${50 - total} lei pentru livrare gratuită.`);
+}
+// Mai adaugă produse de 14 lei pentru livrare gratuită.</code></pre>
+        <div class="demo">
+          <h3>Prinde pragul de livrare</h3>
+          <form id="livrare-form" novalidate>
+            <div class="controale">
+              <div><label for="livrare-total">Total produse (lei)</label><input id="livrare-total" type="number" min="0" step="1" value="36" required aria-describedby="livrare-rezultat" /></div>
+              <button type="submit">Verifică livrarea</button>
+            </div>
+          </form>
+          <p id="livrare-rezultat" class="rezultat" aria-live="polite">Mai adaugă produse de 14 lei pentru livrare gratuită.</p>
+          <p>În acest demo folosim sume întregi. Încearcă 49, 50 și 51: la ce valoare se schimbă ramura?</p>
+        </div>
+        <h3>Mai mult de două variante: else if</h3>
+        <pre><code>const ora = 14;
+
+if (ora &lt; 12) {
+  console.log("Bună dimineața!");
+} else if (ora &lt; 18) {
+  console.log("Bună ziua!");
+} else {
+  console.log("Bună seara!");
+}
+// Bună ziua!</code></pre>
+        <p>Verificăm de sus în jos. Se execută doar prima ramură cu o condiție adevărată, sau <code>else</code> dacă niciuna nu este adevărată. Aici presupunem o oră validă, de la 0 la 23.</p>
+        <h3>Truthy și falsy, fără mister</h3>
+        <p>În condiții, și alte valori sunt interpretate ca adevărat sau fals. <code>false</code>, <code>0</code>, <code>-0</code>, <code>0n</code>, <code>""</code>, <code>null</code>, <code>undefined</code> și <code>NaN</code> sunt <strong>falsy</strong>. Un text nevid, de exemplu <code>"Mara"</code>, este <strong>truthy</strong>.</p>
+        <pre><code>const nume = "";
+if (nume) {
+  console.log(`Salut, ${nume}!`);
+} else {
+  console.log("Scrie un nume.");
+}
+
+console.log(Boolean(""));      // false
+console.log(Boolean("false")); // true: este text nevid!
+console.log(Boolean("0"));     // true: și acesta este text nevid.</code></pre>
+        <p><code>Boolean()</code> ne arată conversia la <code>true</code> sau <code>false</code>. Un spațiu, <code>" "</code>, este tot text nevid; verificarea din exemplu nu este o validare completă de formular.</p>
+      </section>
+
+      <section id="alte-decizii">
+        <h2>12. Alte două moduri de a alege</h2>
+        <h3>switch: comparăm aceeași valoare cu mai multe variante</h3>
+        <pre><code>const marime = "M";
+
+switch (marime) {
+  case "S":
+    console.log("Cafea mică");
+    break;
+  case "M":
+    console.log("Cafea medie");
+    break;
+  case "L":
+    console.log("Cafea mare");
+    break;
+  default:
+    console.log("Alege S, M sau L.");
+}
+// Cafea medie</code></pre>
+        <p><code>case</code> este o variantă, comparată strict cu valoarea din <code>switch</code>. <code>break</code> oprește execuția acelui <code>switch</code>; fără el, codul poate continua în cazul următor. <code>default</code> se folosește când nimic nu se potrivește.</p>
+        <h3>Operatorul ternar: alegem una dintre două valori</h3>
+        <pre><code>const total = 60;
+const mesaj = total &gt;= 50 ? "Livrare gratuită" : "Livrare cu plată";
+console.log(mesaj); // "Livrare gratuită"</code></pre>
+        <p>Citim: <code>condiție ? valoareDacăDa : valoareDacăNu</code>. Este util pentru alegeri scurte. Pentru mai mulți pași, <code>if / else</code> rămâne mai ușor de citit.</p>
+      </section>
+
+      <section id="bucle">
+        <h2>13. Bucle: repetăm fără copy-paste</h2>
+        <p>Avem trei cafele de pregătit. În loc să scriem trei mesaje aproape identice, folosim o buclă.</p>
+        <h3>for: pornire → condiție → cod → actualizare</h3>
+        <pre><code>for (let i = 1; i &lt;= 3; i++) {
+  console.log(`Pregătesc cafeaua ${i}`);
+}
+// Pregătesc cafeaua 1
+// Pregătesc cafeaua 2
+// Pregătesc cafeaua 3</code></pre>
+        <ol>
+          <li><code>let i = 1</code>: pornim contorul, o singură dată.</li>
+          <li><code>i &lt;= 3</code>: înaintea fiecărei repetări verificăm condiția.</li>
+          <li>Executăm codul dintre acolade.</li>
+          <li><code>i++</code>: adăugăm 1 și revenim la verificare. La 4, condiția devine falsă și ne oprim.</li>
+        </ol>
+        <div class="demo">
+          <h3>Barista la treabă</h3>
+          <div class="controale">
+            <div><label for="bucla-numar">Cafele de pregătit</label><select id="bucla-numar"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></div>
+            <button id="bucla-ruleaza" type="button">Rulează bucla</button>
+          </div>
+          <div id="bucla-rezultat" class="rezultat" aria-live="polite"><p>Alege cantitatea și urmărește fiecare repetare.</p></div>
+        </div>
+        <h3>Parcurgem o listă cu for</h3>
+        <pre><code>const meniu = ["Espresso", "Latte", "Ceai"];
+
+for (let i = 0; i &lt; meniu.length; i++) {
+  console.log(meniu[i]);
+}
+// Espresso, apoi Latte, apoi Ceai, pe linii separate.</code></pre>
+        <p>Pornim de la <code>0</code> pentru primul index și folosim <code>&lt; meniu.length</code>, nu <code>&lt;=</code>, ca să nu citim dincolo de ultimul element.</p>
+        <h3>while: repetăm cât timp condiția este adevărată</h3>
+        <pre><code>let cafeleRamase = 3;
+
+while (cafeleRamase &gt; 0) {
+  console.log(`Mai am ${cafeleRamase} cafele de pregătit.`);
+  cafeleRamase--;
+}
+console.log("Comanda este gata!");</code></pre>
+        <p class="nota">Nu uita să actualizezi contorul. Fără <code>cafeleRamase--</code>, condiția ar rămâne adevărată și bucla ar continua fără oprire, blocând pagina.</p>
+        <details>
+          <summary>do...while: executăm cel puțin o dată</summary>
+          <pre><code>let cafeleRamase = 0;
+
+do {
+  console.log("Verific espressorul.");
+} while (cafeleRamase &gt; 0);
+// Mesajul apare o dată, chiar dacă avem 0 cafele.</code></pre>
+          <p><code>while</code> verifică înaintea blocului. <code>do...while</code> verifică după bloc, deci prima execuție are loc întotdeauna.</p>
+        </details>
+      </section>
+
+      <section id="functii">
+        <h2>14. O funcție: dăm un nume unei acțiuni</h2>
+        <p>O funcție grupează cod pe care îl putem folosi de mai multe ori. <strong>Parametrii</strong> sunt numele intrărilor; <code>return</code> ne dă rezultatul și încheie apelul funcției.</p>
+        <pre><code>function calculeazaTotal(pret, cantitate) {
+  return pret * cantitate;
+}
+
+console.log(calculeazaTotal(12, 2)); // 24
+console.log(calculeazaTotal(15, 3)); // 45</code></pre>
+        <p>Definirea funcției nu face încă un calcul. O <strong>apelăm</strong> scriind numele și parantezele. Valorile concrete, precum <code>12</code> și <code>2</code>, se numesc <strong>argumente</strong>.</p>
+        <p><code>return</code> oferă o valoare codului care a apelat funcția; <code>console.log()</code> o afișează. Nu au același rol.</p>
+      </section>
+
+      <section id="buton">
+        <h2>15. Legăm JavaScript de un buton real</h2>
+        <p><strong>DOM</strong> este reprezentarea elementelor paginii cu care putem lucra din JavaScript. Căutăm un element, ascultăm un eveniment și schimbăm textul.</p>
+        <p>În proiectul de la început, adaugă în <code>&lt;body&gt;</code>:</p>
+        <pre><code>&lt;button id="salut" type="button"&gt;Deschide cafeneaua&lt;/button&gt;
+&lt;p id="mesaj" aria-live="polite"&gt;Aștept primul click.&lt;/p&gt;</code></pre>
+        <p>În <code>script.js</code>:</p>
+        <pre><code>const buton = document.getElementById("salut");
+const mesaj = document.getElementById("mesaj");
+
+function deschideCafeneaua() {
+  mesaj.textContent = "Bine ai venit! Ce cafea îți pregătim?";
+}
+
+buton.addEventListener("click", deschideCafeneaua);</code></pre>
+        <ol>
+          <li><code>getElementById()</code> găsește elementul după <code>id</code>, fără <code>#</code>.</li>
+          <li><code>addEventListener()</code> leagă evenimentul <code>"click"</code> de funcție.</li>
+          <li>La click, browserul apelează funcția și <code>textContent</code> schimbă textul paragrafului.</li>
+        </ol>
+        <p class="nota">La conectare scriem <code>deschideCafeneaua</code> fără <code>()</code>: îi dăm browserului funcția de apelat mai târziu. Cu <code>()</code> am executa-o imediat. Păstrează <code>defer</code> pe scriptul extern din <code>&lt;head&gt;</code>.</p>
+      </section>
+
+      <section id="recapitulare">
+        <h2>16. Greșeli mici, indicii utile</h2>
+        <ul>
+          <li><strong>Nu apare mesajul?</strong> Verifică salvarea, calea din <code>src</code> și fila Console. <code>console.log()</code> nu scrie în pagină.</li>
+          <li><strong>SyntaxError:</strong> verifică ghilimelele, parantezele și acoladele. Codul nu are o formă validă.</li>
+          <li><strong>ReferenceError:</strong> verifică dacă ai declarat variabila și ai scris numele identic, inclusiv majusculele.</li>
+          <li><strong>TypeError:</strong> poate apărea dacă reatribui un <code>const</code> sau încerci o operație nepotrivită pe o valoare.</li>
+          <li><strong>Elementul găsit este null?</strong> Verifică <code>id</code>-ul și dacă scriptul rulează după ce HTML-ul a fost parcurs.</li>
+          <li><strong>„Identifier has already been declared”?</strong> Ai declarat același nume de două ori în același bloc. Exemplele sunt independente: înlocuiește codul din <code>script.js</code> când treci la altul.</li>
+        </ul>
+        <h3>Trei întrebări înainte de pauză</h3>
+        <details><summary>1. Pot modifica pret într-un obiect declarat cu const?</summary><p>Da: <code>const produs = { pret: 12 };</code> urmat de <code>produs.pret = 15;</code> este valid. Nu putem reatribui variabila <code>produs</code> unui alt obiect.</p></details>
+        <details><summary>2. O listă are 4 elemente. Care este ultimul index?</summary><p><code>3</code>, adică <code>lista.length - 1</code>. Primul index este 0.</p></details>
+        <details><summary>3. De câte ori rulează for (let i = 0; i &lt; 3; i++)?</summary><p>De 3 ori, cu <code>i</code> egal cu 0, 1 și 2. La 3, condiția este falsă.</p></details>
+      </section>
+
+      <section id="tema-simpla">
+        <h2>Temă simplă: legitimația de barista</h2>
+        <p>Creează <code>barista.html</code> și <code>barista.js</code>, legate printr-un script extern cu <code>defer</code>. Lucrăm în consolă.</p>
+        <ol>
+          <li>Declară cu <code>const</code> un nume, băutura preferată și prețul ei.</li>
+          <li>Declară cu <code>let</code> numărul de cafele pregătite, inițial <code>0</code>.</li>
+          <li>Crește contorul la <code>1</code> și apoi la <code>2</code>.</li>
+          <li>Afișează, folosind backticks, un mesaj cu numele, băutura și numărul de cafele.</li>
+          <li>Calculează valoarea cafelelor pregătite și afișează dacă aceasta este cel puțin 20 lei, folosind o comparație.</li>
+          <li>Afișează cu <code>typeof</code> tipul numelui și tipul prețului.</li>
+        </ol>
+        <p class="nota">Pentru Mara, Latte și 12 lei: mesajul poate fi „Mara a pregătit 2 cafele. Preferata ei este Latte.” Totalul este <code>24</code>, comparația cu 20 produce <code>true</code>, iar tipurile sunt <code>"string"</code> și <code>"number"</code>.</p>
+      </section>
+
+      <section id="tema-complexa">
+        <h2>Temă puțin mai complexă: bonul cafenelei</h2>
+        <p>Creează <code>cafenea.html</code> și <code>cafenea.js</code>. Calculele și mesajele pot rămâne în consolă.</p>
+        <ol>
+          <li>Creează o listă cu trei obiecte: <code>{ nume: "Espresso", pret: 10, cantitate: 2 }</code>, <code>{ nume: "Latte", pret: 15, cantitate: 1 }</code> și <code>{ nume: "Ceai", pret: 8, cantitate: 1 }</code>.</li>
+          <li>Scrie funcția <code>calculeazaSubtotal(pret, cantitate)</code>, care returnează produsul celor două valori.</li>
+          <li>Pornește cu <code>let total = 0;</code>. Parcurge lista cu <code>for</code>, apelează funcția pentru fiecare produs și adună subtotalul în total.</li>
+          <li>Pentru fiecare produs afișează un rând, de exemplu „Espresso × 2 = 20 lei”.</li>
+          <li>Folosește <code>if / else</code>: livrare gratuită de la 50 lei, altfel livrarea costă 7 lei. Afișează totalul final, inclusiv livrarea.</li>
+          <li>Schimbă numărul de Latte de la 1 la 2 și rulează din nou. Verifică ambele ramuri ale condiției.</li>
+        </ol>
+        <details><summary>Indiciu: cum arată o listă de obiecte?</summary><pre><code>const comanda = [
+  { nume: "Espresso", pret: 10, cantitate: 2 },
+  { nume: "Latte", pret: 15, cantitate: 1 },
+  { nume: "Ceai", pret: 8, cantitate: 1 }
+];
+
+console.log(comanda[0].nume); // "Espresso"
+// În buclă, comanda[i] este obiectul de la pasul curent.</code></pre></details>
+        <p class="nota">Verificare: comanda inițială are produse de <code>43 lei</code> și total final de <code>50 lei</code>. Cu două Latte, produsele costă <code>58 lei</code>, livrarea este gratuită și totalul final rămâne <code>58 lei</code>. Pragul se verifică înainte să adaugi transportul.</p>
+        <p><strong>Bonus opțional:</strong> adaugă un buton „Arată totalul” și afișează totalul într-un paragraf cu <code>textContent</code>, folosind modelul din secțiunea 15.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p><a href="JavaScript-Functions.html">Continuă cu lecția 11 - JavaScript Functions &rarr;</a></p>
+      <p><a href="Responsive-Web-Design.html">&larr; Înapoi la lecția 09 - Responsive Web Design</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>11 - JavaScript Functions</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <link rel="stylesheet" href="javascript-functions.css" />
+    <script src="javascript-functions.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="JavaScript-Basics.html">&larr; Înapoi la lecția 10 - JavaScript Basics</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>11 - JavaScript Functions</h1>
+      <p>Scriem o dată, folosim de câte ori avem nevoie. Funcțiile transformă pașii unui program în acțiuni cu nume clare.</p>
+      <nav aria-label="Părțile lecției">
+        <ol>
+          <li><a href="#functii">Funcții, parametri și return</a></li>
+          <li><a href="#forme">Function expression, arrow și callback</a></li>
+          <li><a href="#liste">Liste, parcurgere și metode</a></li>
+          <li><a href="#obiecte">Obiecte și metode proprii</a></li>
+          <li><a href="#pregatire">Cum lucrăm la probleme</a></li>
+          <li><a href="#incepator">Problemele 1–10: nivel începător</a></li>
+          <li><a href="#mediu">Problemele 11–23: nivel mediu</a></li>
+          <li><a href="#avansat">Problemele 24–34: nivel avansat</a></li>
+        </ol>
+      </nav>
+      <p class="nota">Fiecare problemă are o rezolvare ascunsă. Încearcă singur, apoi apasă „Vezi rezolvarea și explicația”. Un al doilea click o închide.</p>
+      <noscript><p class="nota">Explicațiile și rezolvările se pot citi și fără JavaScript. Activează-l pentru cele două demonstrații interactive.</p></noscript>
+    </header>
+    <main>
+<section id="functii"><h2>1. Funcția: o rețetă cu un nume</h2>
+
+<p>La cafenea, rețeta rămâne aceeași, dar comenzile diferă. O funcție primește valori, execută pași și poate întoarce un rezultat.</p>
+<div class="flux" aria-label="Intrări: 12 și 2. Funcția înmulțește. Rezultat: 24."><span>Intrări<br /><strong>12 și 2</strong></span><span>Funcție<br /><strong>preț × cantitate</strong></span><span>Rezultat<br /><strong>24</strong></span></div>
+<pre><code>function calculeazaTotal(pret, cantitate) {
+  const total = pret * cantitate;
+  return total;
+}
+
+const bon = calculeazaTotal(12, 2);
+console.log(bon); // 24
+console.log(calculeazaTotal(15, 3)); // 45</code></pre>
+<ul>
+<li><code>function</code> începe declarația funcției.</li>
+<li><code>calculeazaTotal</code> este numele. Alegem un verb care descrie acțiunea.</li>
+<li><code>pret</code> și <code>cantitate</code> sunt <strong>parametri</strong>: nume folosite în interior.</li>
+<li><code>12</code> și <code>2</code> sunt <strong>argumente</strong>: valorile concrete date la apel.</li>
+<li><code>return</code> trimite rezultatul înapoi către codul care a apelat funcția.</li>
+</ul>
+<p>Declarația pregătește rețeta; apelul, cu <code>()</code>, execută pașii. O funcție poate avea și zero parametri sau poate face o acțiune fără să întoarcă un rezultat util.</p>
+<div class="demo">
+<h3>Același cod, alt bon</h3>
+<form id="functie-bon" novalidate><div class="controale">
+<div><label for="functie-pret">Preț (0–1000 lei întregi)</label><input id="functie-pret" type="number" min="0" max="1000" step="1" value="12" required aria-describedby="functie-bon-rezultat" /></div>
+<div><label for="functie-cantitate">Cantitate (1–20)</label><input id="functie-cantitate" type="number" min="1" max="20" step="1" value="2" required aria-describedby="functie-bon-rezultat" /></div>
+<button type="submit">Apelează funcția</button>
+</div></form>
+<p id="functie-bon-rezultat" class="rezultat" aria-live="polite">calculeazaTotal(12, 2) → 24 lei</p>
+</div>
+</section>
+<section id="return"><h2>2. return și console.log au roluri diferite</h2>
+
+<p><code>console.log()</code> arată ceva în consolă. <code>return</code> oferă o valoare pe care o putem păstra sau folosi în alt calcul.</p>
+<pre><code>function doarAfiseaza(a, b) {
+  console.log(a + b);
+}
+
+function aduna(a, b) {
+  return a + b;
+}
+
+const primul = doarAfiseaza(2, 3); // Afișează 5.
+console.log(primul);              // undefined: nu am returnat o valoare.
+const alDoilea = aduna(2, 3);      // Nu afișează nimic singur.
+console.log(alDoilea * 2);         // 10</code></pre>
+<h3>return oprește imediat apelul curent</h3>
+<pre><code>function imparte(a, b) {
+  if (b === 0) {
+    return "Nu putem împărți la zero.";
+  }
+  return a / b;
+}
+
+console.log(imparte(12, 3)); // 4
+console.log(imparte(12, 0)); // "Nu putem împărți la zero."</code></pre>
+<p>În cazul lui zero ieșim din funcție înainte de împărțire. Acest tip de verificare la început se numește uneori <em>early return</em>.</p>
+<p class="nota">Scrie valoarea returnată pe aceeași linie cu <code>return</code>. Dacă sari imediat pe linia următoare, poți obține <code>undefined</code> în locul rezultatului dorit.</p>
+</section>
+<section id="parametri"><h2>3. Parametri impliciți: avem și o variantă de rezervă</h2>
+
+<p>O valoare implicită se folosește când argumentul lipsește sau este <code>undefined</code>.</p>
+<pre><code>function saluta(nume = "vizitator") {
+  return `Salut, ${nume}!`;
+}
+
+console.log(saluta("Mara"));    // "Salut, Mara!"
+console.log(saluta());          // "Salut, vizitator!"
+console.log(saluta(undefined)); // "Salut, vizitator!"
+console.log(saluta(""));        // "Salut, !" — textul gol este o valoare.
+console.log(saluta(null));      // "Salut, null!" — null nu activează valoarea implicită.</code></pre>
+<p>Fără o valoare implicită, un parametru pentru care nu trimiți argument primește <code>undefined</code>. De exemplu, <code>2 + undefined</code> produce <code>NaN</code>.</p>
+<details><summary>De recunoscut: arguments</summary>
+<p>O funcție obișnuită are un obiect <code>arguments</code> cu argumentele primite, inclusiv cele în plus față de parametrii declarați. Seamănă cu o listă, dar nu este un array obișnuit.</p>
+<pre><code>function primulArgument() {
+  return arguments[0];
+}
+console.log(primulArgument("Latte", "Ceai")); // "Latte"</code></pre>
+<p>Funcțiile arrow nu au propriul <code>arguments</code>. În exercițiile noastre folosim parametri expliciți, ca să fie ușor de urmărit.</p></details>
+</section>
+<section id="scope"><h2>4. Variabile locale: ce se întâmplă în funcție</h2>
+
+<p>Parametrii și variabilele declarate în corpul funcției sunt locale. Le putem folosi acolo; nu devin automat variabile ale întregului program.</p>
+<pre><code>const nume = "Mara";
+
+function pregatesteComanda() {
+  const bautura = "Latte";
+  return `${nume} primește ${bautura}.`;
+}
+
+console.log(pregatesteComanda()); // "Mara primește Latte."
+// console.log(bautura); // Ar produce ReferenceError: este variabilă locală.</code></pre>
+<p>Funcția poate citi o variabilă din exterior. Pentru calcule ușor de refolosit, e util să primească datele prin parametri.</p>
+<p class="nota">O funcție <strong>pură</strong> dă același rezultat pentru aceleași argumente și nu schimbă lucruri în exterior. <code>calculeazaTotal(12, 2)</code> este un exemplu: întoarce 24 fără să modifice pagina sau alte variabile.</p>
+</section>
+<section id="forme"><h2>5. Trei feluri de a scrie o funcție</h2>
+
+<p>Toate cele trei exemple de mai jos adună două numere. Numele diferă ca să le putem rula împreună.</p>
+<h3>Declarație de funcție</h3>
+<pre><code>function aduna(a, b) {
+  return a + b;
+}
+console.log(aduna(2, 3)); // 5</code></pre>
+<h3>Function expression: păstrăm o funcție într-o variabilă</h3>
+<pre><code>const adunaExpresie = function (a, b) {
+  return a + b;
+};
+console.log(adunaExpresie(2, 3)); // 5</code></pre>
+<h3>Arrow function: o formă scurtă pentru un calcul mic</h3>
+<pre><code>const adunaArrow = (a, b) =&gt; a + b;
+console.log(adunaArrow(2, 3)); // 5
+
+const dubleaza = numar =&gt; numar * 2;
+console.log(dubleaza(4)); // 8</code></pre>
+<p>La un singur parametru simplu putem omite parantezele. Fără acolade, expresia de după săgeată este returnată automat. Cu acolade, scriem din nou <code>return</code>:</p>
+<pre><code>const calculeaza = (pret, cantitate) =&gt; {
+  const total = pret * cantitate;
+  return total;
+};
+console.log(calculeaza(12, 2)); // 24</code></pre>
+<p class="nota">Funcțiile arrow nu sunt identice cu funcțiile obișnuite: de exemplu, nu au propriul <code>this</code>. Pentru metodele obiectelor folosim forma obișnuită din secțiunea 10.</p>
+<details><summary>Pot apela funcția înainte să o scriu?</summary><p>O declarație <code>function</code> poate fi apelată mai sus în același domeniu de vizibilitate. O funcție atribuită unui <code>const</code> se apelează după inițializarea variabilei. Pentru început, scrie definiția înaintea apelului în ambele cazuri.</p></details>
+</section>
+<section id="callback"><h2>6. Callback: trimitem o acțiune altei funcții</h2>
+
+<p>O funcție este și o valoare: o putem păstra într-o variabilă sau trimite ca argument. O funcție transmisă astfel se numește <strong>callback</strong>. Funcția care o primește decide când o apelează.</p>
+<pre><code>function aduna(a, b) {
+  return a + b;
+}
+
+function inmulteste(a, b) {
+  return a * b;
+}
+
+function aplicaOperatia(a, b, operatie) {
+  return operatie(a, b);
+}
+
+console.log(aplicaOperatia(2, 3, aduna));      // 5
+console.log(aplicaOperatia(2, 3, inmulteste)); // 6</code></pre>
+<p>Trimitem <code>aduna</code>, fără <code>()</code>. Apoi <code>operatie(a, b)</code> apelează funcția primită. Dacă am trimite <code>aduna(2, 3)</code>, am trimite rezultatul 5, nu funcția.</p>
+<div class="demo"><h3>Schimbăm acțiunea, păstrăm numerele</h3>
+<label for="callback-operatie">Ce funcție trimitem pentru 2 și 3?</label>
+<select id="callback-operatie"><option value="aduna">aduna</option><option value="inmulteste">inmulteste</option></select>
+<p id="callback-rezultat" class="rezultat" aria-live="polite">aplicaOperatia(2, 3, aduna) → 5</p>
+</div>
+<p>Un callback nu înseamnă automat „mai târziu”: aici se execută imediat, în interiorul apelului. În <code>buton.addEventListener("click", saluta)</code>, browserul îl apelează când apare clickul.</p>
+</section>
+<section id="liste"><h2>7. Listele și funcțiile lucrează bine împreună</h2>
+
+<p>Obiectele grupează date; listele sunt obiecte speciale, cu elemente accesibile prin index. Și funcțiile sunt obiecte speciale: pot fi apelate. Pentru început, ne concentrăm pe rolul fiecăruia.</p>
+<pre><code>const meniu = ["Espresso", "Latte", "Ceai"];
+console.log(meniu[0]);     // "Espresso"
+console.log(meniu.length); // 3
+
+meniu.push("Cacao");       // Adaugă la final.
+const ultimul = meniu.pop(); // Scoate și returnează "Cacao".
+meniu.unshift("Apă");      // Adaugă la început.
+const primul = meniu.shift(); // Scoate și returnează "Apă".
+console.log(meniu);        // ["Espresso", "Latte", "Ceai"]</code></pre>
+<p><code>push</code>, <code>pop</code>, <code>unshift</code> și <code>shift</code> modifică lista. <code>const</code> împiedică reatribuirea variabilei, nu modificarea conținutului ei.</p>
+<h3>for când ne trebuie indexul; for...of când ne trebuie valoarea</h3>
+<pre><code>const preturi = [10, 15, 8];
+
+for (let i = 0; i &lt; preturi.length; i++) {
+  console.log(i, preturi[i]); // 0 10, apoi 1 15, apoi 2 8.
+}
+
+for (const pret of preturi) {
+  console.log(pret); // 10, apoi 15, apoi 8.
+}</code></pre>
+<p>În <code>for...of</code> primim direct fiecare element. <code>const pret</code> este creat pentru fiecare repetare, deci îl putem folosi fără reatribuire.</p>
+<pre><code>function sumaPreturilor(preturi) {
+  let total = 0;
+  for (const pret of preturi) {
+    total += pret;
+  }
+  return total;
+}
+
+console.log(sumaPreturilor([10, 15, 8])); // 33
+console.log(sumaPreturilor([]));         // 0</code></pre>
+<p>Recapitulare: <code>for</code> grupează contorul, condiția și actualizarea; <code>while</code> verifică înaintea fiecărei repetări; <code>do...while</code> verifică după, deci execută blocul cel puțin o dată.</p>
+</section>
+<section id="metode-liste"><h2>8. map, filter și forEach: trei întrebări diferite</h2>
+
+<p>Aceste metode primesc un callback și îl aplică elementelor listei.</p>
+<pre><code>const preturi = [10, 15, 8];
+
+const duble = preturi.map(pret =&gt; pret * 2);
+console.log(duble); // [20, 30, 16]
+
+const accesibile = preturi.filter(pret =&gt; pret &lt;= 10);
+console.log(accesibile); // [10, 8]
+
+preturi.forEach(pret =&gt; console.log(`${pret} lei`));
+// Afișează 10 lei, 15 lei, 8 lei, pe linii separate.
+
+console.log(preturi); // [10, 15, 8]: aceste callbackuri nu au modificat lista.</code></pre>
+<ul><li><code>map</code>: „Ce valoare nouă obțin pentru fiecare element?” Returnează o listă nouă.</li>
+<li><code>filter</code>: „Ce elemente respectă condiția?” Returnează o listă nouă cu cele păstrate.</li>
+<li><code>forEach</code>: „Ce acțiune fac pentru fiecare element?” Nu construiește o listă rezultat; returnează <code>undefined</code>.</li></ul>
+<p class="nota">În <code>filter</code>, callbackul nostru returnează <code>true</code> pentru elementele păstrate. Metoda nu șterge elemente din lista inițială.</p>
+<details><summary>Încă cinci metode de recunoscut</summary>
+<pre><code>const preturi = [10, 15, 8];
+console.log(preturi.find(pret =&gt; pret &gt; 10));  // 15: primul găsit.
+console.log(preturi.some(pret =&gt; pret &gt; 10));  // true: există cel puțin unul.
+console.log(preturi.every(pret =&gt; pret &gt; 10)); // false: nu sunt toate.
+console.log(preturi.indexOf(8));              // 2: indexul valorii.
+console.log(preturi.indexOf(99));             // -1: valoare absentă.
+
+const total = preturi.reduce((suma, pret) =&gt; suma + pret, 0);
+console.log(total); // 33</code></pre>
+<p><code>reduce</code> adună într-un singur rezultat: pornește cu <code>suma = 0</code>, apoi calculează 10, 25 și 33. Nu trebuie să memorezi toate metodele acum; problemele pot fi rezolvate cu bucle simple.</p></details>
+</section>
+<section id="obiecte"><h2>9. Obiectele: date care au legătură între ele</h2>
+
+<p>Un obiect literal folosește acolade și perechi <code>cheie: valoare</code>. Putem avea și obiecte în interiorul altor obiecte.</p>
+<pre><code>const cafenea = {
+  nume: "Cafea și cod",
+  "locuri-libere": 8,
+  adresa: { oras: "Iași", strada: "Florilor" }
+};
+
+console.log(cafenea.nume);             // "Cafea și cod"
+console.log(cafenea["locuri-libere"]); // 8
+console.log(cafenea.adresa.oras);      // "Iași"
+
+const proprietate = "nume";
+console.log(cafenea[proprietate]);     // "Cafea și cod"
+cafenea["locuri-libere"] = 6;</code></pre>
+<p>Punctul este potrivit pentru nume simple. Parantezele drepte sunt utile pentru o cheie cu cratimă sau pentru o cheie păstrată într-o variabilă. <code>cafenea.proprietate</code> ar căuta chiar cheia „proprietate”.</p>
+</section>
+<section id="metode-obiecte"><h2>10. O funcție dintr-un obiect se numește metodă</h2>
+<pre><code>const comanda = {
+  produs: "Latte",
+  pret: 15,
+  cantitate: 2,
+  calculeazaTotal() {
+    return this.pret * this.cantitate;
+  }
+};
+
+console.log(comanda.produs);           // "Latte": citim o proprietate.
+console.log(comanda.calculeazaTotal()); // 30: apelăm o metodă.</code></pre>
+<p>În apelul <code>comanda.calculeazaTotal()</code>, <code>this</code> este obiectul <code>comanda</code>. Astfel, metoda citește prețul și cantitatea acelui obiect.</p>
+<p>Forma <code>calculeazaTotal() { ... }</code> este o scriere scurtă a unei metode. Pentru acest exemplu am putea scrie și <code>calculeazaTotal: function () { ... }</code>.</p>
+<p class="nota"><code>this</code> depinde de modul de apelare. Pentru început, apelează metoda prin obiect, ca mai sus. O funcție arrow preia <code>this</code> din contextul exterior, deci nu o folosim aici în locul metodei.</p>
+</section>
+<section id="pregatire"><h2>11. Atelier: cum lucrăm la cele 34 de probleme</h2>
+
+<ol><li>Citește cerința și identifică datele de intrare.</li><li>Scrie pașii în cuvinte: „pornesc cu zero, parcurg lista, adun”.</li><li>Transformă pașii într-o funcție și apeleaz-o cu exemplele date.</li><li>Testează și un caz diferit: zero, numere negative, valori egale sau listă goală, unde au sens.</li><li>Abia apoi deschide rezolvarea și compară ideile.</li></ol>
+<p>Folosește un fișier <code>exercitii.js</code>, încărcat într-un HTML cu <code>&lt;script src="exercitii.js" defer&gt;&lt;/script&gt;</code>. Vezi rezultatele în <strong>DevTools → Console</strong>. Rulează câte o rezolvare pe rând; fiecare bloc este complet și independent.</p>
+<p>În majoritatea exercițiilor, datele sunt argumentele funcției, iar <code>console.log()</code> afișează rezultatul. La problemele 18 și 23 folosim <code>prompt()</code> pentru citirea repetată de la tastatură până la 0. Dialogurile apar doar când rulezi tu codul copiat.</p>
+<h3>Unelte mici pe care le întâlnești în soluții</h3>
+<ul><li><code>Number(text)</code> convertește textul în număr; <code>Number.isSafeInteger(n)</code> verifică un întreg reprezentat exact în intervalul sigur.</li><li><code>Math.sqrt(n)</code> calculează rădăcina pătrată; <code>Math.abs(n)</code> dă valoarea absolută.</li><li><code>lista.join(" ")</code> transformă lista în text, cu spații între elemente.</li><li><code>text.toLowerCase()</code> trece la litere mici; <code>text.trim()</code> elimină spațiile albe de la capete.</li><li><code>break</code> oprește bucla; <code>continue</code> sare la următoarea repetare.</li></ul>
+<p>Lucrăm cu numere mici, finite, de tipul cerut în enunț. Pentru intervale folosim întregi; la calculele zecimale pot apărea mici aproximări. Soluțiile Fibonacci cu <code>Number</code> limitează numărul de termeni la 79 pentru a păstra rezultate întregi exacte.</p>
+<p>La problemele cu litera „a” numărăm atât <code>a</code>, cât și <code>A</code>; <code>ă</code> și <code>â</code> sunt litere diferite. Indicii din texte încep de la 0. Folosim cuvinte obișnuite, fără emoji.</p>
+<p class="nota">Reține două rezultate corecte: <strong>1 nu este prim</strong>; maximul listei <code>[4, 5, 3, 0, -3, 1]</code> este <strong>5</strong>. Nivelurile sunt orientative: începe cu primele zece, apoi continuă în ritmul tău.</p>
+
+</section>
+<section id="incepator" class="atelier"><h2>Nivel începător: problemele 1–10</h2>
+<nav aria-label="Nivel începător: problemele 1–10"><ol class="lista-probleme" start="1">
+<li><a href="#problema-1">Numărul următor</a></li>
+<li><a href="#problema-2">Opusul unui număr</a></li>
+<li><a href="#problema-3">Pozitiv, negativ sau nul?</a></li>
+<li><a href="#problema-4">Schimb de locuri</a></li>
+<li><a href="#problema-5">Suma și produsul</a></li>
+<li><a href="#problema-6">Minimul și maximul a două numere</a></li>
+<li><a href="#problema-7">Din mile în kilometri</a></li>
+<li><a href="#problema-8">Împărțirea cu o verificare</a></li>
+<li><a href="#problema-9">Viteza medie</a></li>
+<li><a href="#problema-10">Ecuația de gradul I</a></li>
+</ol></nav>
+<article id="problema-1" class="problema">
+<h3>1. Numărul următor</h3>
+<p>Primești un număr întreg. Afișează numărul care urmează după el.</p>
+<p class="exemplu"><strong>Exemple:</strong> 3 → 4; -4 → -3.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 1</span></summary>
+<p>Adăugăm 1 și returnăm rezultatul. Funcția poate fi apelată cu orice întreg mic, inclusiv unul negativ.</p>
+<pre><code class="solutie">function urmatorul(numar) {
+  return numar + 1;
+}
+console.log(urmatorul(3));  // 4
+console.log(urmatorul(-4)); // -3</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-2" class="problema">
+<h3>2. Opusul unui număr</h3>
+<p>Primești un număr întreg. Afișează opusul lui.</p>
+<p class="exemplu"><strong>Exemple:</strong> 3 → -3; -4 → 4; 0 → 0.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 2</span></summary>
+<p>Minusul din fața numărului îi schimbă semnul. Tratăm separat zero, ca să afișăm 0 și nu valoarea specială -0 din JavaScript.</p>
+<pre><code class="solutie">function opusul(numar) {
+  if (numar === 0) {
+    return 0;
+  }
+  return -numar;
+}
+console.log(opusul(3));  // -3
+console.log(opusul(-4)); // 4
+console.log(opusul(0));  // 0</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-3" class="problema">
+<h3>3. Pozitiv, negativ sau nul?</h3>
+<p>Primești un număr întreg. Afișează dacă este pozitiv, negativ sau nul.</p>
+<p class="exemplu"><strong>Exemple:</strong> 3 → pozitiv; -4 → negativ; 0 → nul.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 3</span></summary>
+<p>Verificăm întâi dacă numărul este peste zero, apoi sub zero. Dacă nu este în niciuna dintre aceste situații, este zero.</p>
+<pre><code class="solutie">function descrieSemnul(numar) {
+  if (numar &gt; 0) {
+    return "S-a introdus o valoare pozitivă";
+  }
+  if (numar &lt; 0) {
+    return "S-a introdus o valoare negativă";
+  }
+  return "S-a introdus o valoare nulă";
+}
+console.log(descrieSemnul(3));  // S-a introdus o valoare pozitivă
+console.log(descrieSemnul(-4)); // S-a introdus o valoare negativă
+console.log(descrieSemnul(0));  // S-a introdus o valoare nulă</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-4" class="problema">
+<h3>4. Schimb de locuri</h3>
+<p>Primești două numere. Interschimbă valorile din cele două variabile și afișează-le.</p>
+<p class="exemplu"><strong>Exemple:</strong> 3, 2 → 2, 3; -3, 2 → 2, -3.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 4</span></summary>
+<p>Păstrăm prima valoare într-o variabilă temporară, ca să nu o pierdem. Schimbăm parametrii locali și returnăm valorile în noua ordine; variabilele apelantului nu se modifică automat.</p>
+<pre><code class="solutie">function interschimba(a, b) {
+  const temporar = a;
+  a = b;
+  b = temporar;
+  return [a, b];
+}
+console.log(interschimba(3, 2).join(" "));  // 2 3
+console.log(interschimba(-3, 2).join(" ")); // 2 -3</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-5" class="problema">
+<h3>5. Suma și produsul</h3>
+<p>Primești două numere. Afișează suma și produsul lor.</p>
+<p class="exemplu"><strong>Exemple:</strong> 3, 2 → sumă 5, produs 6; -3, 2 → sumă -1, produs -6; 0, 2 → sumă 2, produs 0.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 5</span></summary>
+<p>Calculăm cele două rezultate și le punem într-un mesaj. Într-un template literal, expresiile dintre ${ și } sunt evaluate.</p>
+<pre><code class="solutie">function sumaSiProdusul(a, b) {
+  return `Suma este ${a + b}. Produsul este ${a * b}.`;
+}
+console.log(sumaSiProdusul(3, 2));
+// Suma este 5. Produsul este 6.
+console.log(sumaSiProdusul(-3, 2));
+// Suma este -1. Produsul este -6.
+console.log(sumaSiProdusul(0, 2));
+// Suma este 2. Produsul este 0.</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-6" class="problema">
+<h3>6. Minimul și maximul a două numere</h3>
+<p>Primești două numere. Afișează valoarea minimă și valoarea maximă.</p>
+<p class="exemplu"><strong>Exemple:</strong> 4, 2 → minim 2, maxim 4; -6, 2 → minim -6, maxim 2.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 6</span></summary>
+<p>Pornim cu prima valoare ca minim și a doua ca maxim. Dacă ordinea este inversă, schimbăm valorile. Pentru două numere egale, minimul și maximul sunt egale.</p>
+<pre><code class="solutie">function minimSiMaxim(a, b) {
+  let minim = a;
+  let maxim = b;
+  if (a &gt; b) {
+    minim = b;
+    maxim = a;
+  }
+  return `Valoarea minimă: ${minim}. Valoarea maximă: ${maxim}.`;
+}
+console.log(minimSiMaxim(4, 2));  // Valoarea minimă: 2. Valoarea maximă: 4.
+console.log(minimSiMaxim(-6, 2)); // Valoarea minimă: -6. Valoarea maximă: 2.
+console.log(minimSiMaxim(3, 3));  // Valoarea minimă: 3. Valoarea maximă: 3.</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-7" class="problema">
+<h3>7. Din mile în kilometri</h3>
+<p>Transformă o distanță din mile în kilometri, folosind 1 milă = 1.60934 km. Respinge o distanță negativă.</p>
+<p class="exemplu"><strong>Exemple:</strong> 10 → 16.0934 km; -10 → distanță invalidă.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 7</span></summary>
+<p>Verificăm mai întâi distanța, apoi înmulțim cu factorul de conversie. O distanță de zero este validă.</p>
+<pre><code class="solutie">function mileInKilometri(mile) {
+  if (mile &lt; 0) {
+    return "Distanță invalidă";
+  }
+  return `${mile} mile = ${mile * 1.60934} km`;
+}
+console.log(mileInKilometri(10));  // 10 mile = 16.0934 km
+console.log(mileInKilometri(-10)); // Distanță invalidă
+console.log(mileInKilometri(0));   // 0 mile = 0 km</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-8" class="problema">
+<h3>8. Împărțirea cu o verificare</h3>
+<p>Împarte primul număr la al doilea. Dacă împărțitorul este zero, afișează un mesaj de eroare.</p>
+<p class="exemplu"><strong>Exemple:</strong> 4, 2 → 2; -6, 2 → -3; 3, 0 → operație imposibilă.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 8</span></summary>
+<p>Verificarea lui b trebuie făcută înaintea împărțirii. Ieșim din funcție prin return dacă nu putem continua.</p>
+<pre><code class="solutie">function impartire(a, b) {
+  if (b === 0) {
+    return "Operație imposibilă; împărțitorul este nul";
+  }
+  return `Rezultatul împărțirii este ${a / b}`;
+}
+console.log(impartire(4, 2));  // Rezultatul împărțirii este 2
+console.log(impartire(-6, 2)); // Rezultatul împărțirii este -3
+console.log(impartire(3, 0));  // Operație imposibilă; împărțitorul este nul</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-9" class="problema">
+<h3>9. Viteza medie</h3>
+<p>Primești distanța în kilometri și durata în ore. Calculează viteza medie. Respinge distanța sau durata negativă și tratează separat durata zero. Distanța zero cu durată pozitivă este validă.</p>
+<p class="exemplu"><strong>Exemple:</strong> 100, 2 → 50 km/oră; 60, 0 → mesaj despre teleportare; -30, 3 sau 30, -3 → date invalide.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 9</span></summary>
+<p>Mai întâi respingem valorile negative, inclusiv situația în care ambele sunt negative. Abia apoi verificăm durata zero. Pentru date valide, viteza este distanță / durată.</p>
+<pre><code class="solutie">function vitezaMedie(distanta, durata) {
+  if (distanta &lt; 0 || durata &lt; 0) {
+    return "Distanța și durata nu pot fi negative";
+  }
+  if (durata === 0) {
+    return "Felicitări! Se pare că ai inventat teleportarea!";
+  }
+  return `Viteza medie a fost ${distanta / durata} km/oră`;
+}
+console.log(vitezaMedie(100, 2));  // Viteza medie a fost 50 km/oră
+console.log(vitezaMedie(60, 0));   // Felicitări! Se pare că ai inventat teleportarea!
+console.log(vitezaMedie(-30, 3));  // Distanța și durata nu pot fi negative
+console.log(vitezaMedie(30, -3));  // Distanța și durata nu pot fi negative
+console.log(vitezaMedie(-30, -3)); // Distanța și durata nu pot fi negative</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-10" class="problema">
+<h3>10. Ecuația de gradul I</h3>
+<p>Primești a și b pentru ecuația a × x + b = 0. Afișează ecuația și soluția. Tratează și cazurile în care a este zero.</p>
+<p class="exemplu"><strong>Exemple:</strong> a = 2, b = 4 → x = -2; a = 0, b = 0 → orice număr real; a = 0, b = 2 → fără soluție.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 10</span></summary>
+<p>Pentru a diferit de zero, mutăm b în dreapta și împărțim la a: x = -b / a. Dacă a este zero, ecuația fie este adevărată pentru orice x (b = 0), fie nu are soluție.</p>
+<pre><code class="solutie">function ecuatieGradulUnu(a, b) {
+  const ecuatie = `Ecuația: ${a} * x + (${b}) = 0. `;
+  if (a === 0) {
+    if (b === 0) {
+      return ecuatie + "Soluție: orice număr real";
+    }
+    return ecuatie + "Ecuația nu are soluție";
+  }
+  return ecuatie + `Soluție: x = ${-b / a}`;
+}
+console.log(ecuatieGradulUnu(2, 4)); // ... Soluție: x = -2
+console.log(ecuatieGradulUnu(0, 0)); // ... Soluție: orice număr real
+console.log(ecuatieGradulUnu(0, 2)); // ... Ecuația nu are soluție</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#incepator">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+</section>
+<section id="mediu" class="atelier"><h2>Nivel mediu: problemele 11–23</h2>
+<nav aria-label="Nivel mediu: problemele 11–23"><ol class="lista-probleme" start="11">
+<li><a href="#problema-11">Ecuația de gradul al II-lea</a></li>
+<li><a href="#problema-12">De la 1 la N</a></li>
+<li><a href="#problema-13">Înapoi până la zero</a></li>
+<li><a href="#problema-14">Strict între două numere</a></li>
+<li><a href="#problema-15">Intervalul cu tot cu capete</a></li>
+<li><a href="#problema-16">Doar numerele pare</a></li>
+<li><a href="#problema-17">Intervalul, indiferent de ordine</a></li>
+<li><a href="#problema-18">Adunăm până la 0</a></li>
+<li><a href="#problema-19">Primii N termeni Fibonacci, fără liste</a></li>
+<li><a href="#problema-20">Fibonacci până la o limită, fără liste</a></li>
+<li><a href="#problema-21">Divizorii unui număr</a></li>
+<li><a href="#problema-22">Este numărul prim?</a></li>
+<li><a href="#problema-23">Verificăm numere prime până la 0</a></li>
+</ol></nav>
+<article id="problema-11" class="problema">
+<h3>11. Ecuația de gradul al II-lea</h3>
+<p>Primești a, b și c pentru a × x² + b × x + c = 0. Afișează soluțiile reale. Dacă a = 0, rezolvă ecuația rămasă.</p>
+<p class="exemplu"><strong>Exemple:</strong> 2, 1, 2 → fără soluții reale; 2, 4, 2 → -1; 1, 1, -6 → -3 și 2; 0, 0, 0 → orice număr real.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 11</span></summary>
+<p>Dacă a = 0, rămâne ecuația b × x + c = 0. Altfel calculăm delta = b² - 4ac. Delta negativă: fără soluții reale; zero: o soluție; pozitivă: două soluții, (-b ± √delta) / (2a).</p>
+<pre><code class="solutie">function ecuatieGradulDoi(a, b, c) {
+  if (a === 0) {
+    if (b !== 0) {
+      return `Soluție: x = ${-c / b}`;
+    }
+    if (c === 0) {
+      return "Soluție: orice număr real";
+    }
+    return "Ecuația nu are soluție";
+  }
+
+  const delta = b * b - 4 * a * c;
+  if (delta &lt; 0) {
+    return "Ecuația nu are soluții reale";
+  }
+  if (delta === 0) {
+    return `Soluție: x = ${-b / (2 * a)}`;
+  }
+  const x1 = (-b - Math.sqrt(delta)) / (2 * a);
+  const x2 = (-b + Math.sqrt(delta)) / (2 * a);
+  return `Soluții: x1 = ${x1}, x2 = ${x2}`;
+}
+console.log(ecuatieGradulDoi(2, 1, 2));  // Ecuația nu are soluții reale
+console.log(ecuatieGradulDoi(2, 4, 2));  // Soluție: x = -1
+console.log(ecuatieGradulDoi(1, 1, -6)); // Soluții: x1 = -3, x2 = 2
+console.log(ecuatieGradulDoi(0, 0, 0));  // Soluție: orice număr real
+console.log(ecuatieGradulDoi(0, 2, 4));  // Soluție: x = -2
+console.log(ecuatieGradulDoi(0, 0, 2));  // Ecuația nu are soluție</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-12" class="problema">
+<h3>12. De la 1 la N</h3>
+<p>Primești un întreg pozitiv N. Afișează numerele de la 1 la N, inclusiv, în ordine crescătoare.</p>
+<p class="exemplu"><strong>Exemple:</strong> 5 → 1 2 3 4 5.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 12</span></summary>
+<p>Pornim contorul la 1, îl mărim cu 1 și includem N prin condiția i &lt;= n. Păstrăm rezultatele într-o listă și le afișăm separate prin spațiu.</p>
+<pre><code class="solutie">function deLaUnuLaN(n) {
+  const rezultat = [];
+  for (let i = 1; i &lt;= n; i++) {
+    rezultat.push(i);
+  }
+  return rezultat;
+}
+console.log(deLaUnuLaN(5).join(" ")); // 1 2 3 4 5
+console.log(deLaUnuLaN(1).join(" ")); // 1</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-13" class="problema">
+<h3>13. Înapoi până la zero</h3>
+<p>Primești un întreg pozitiv N. Afișează numerele nenegative strict mai mici decât N, în ordine descrescătoare.</p>
+<p class="exemplu"><strong>Exemple:</strong> 5 → 4 3 2 1 0.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 13</span></summary>
+<p>Primul număr este n - 1, deoarece n nu se include. Scădem contorul până la zero, inclusiv.</p>
+<pre><code class="solutie">function inapoiLaZero(n) {
+  const rezultat = [];
+  for (let i = n - 1; i &gt;= 0; i--) {
+    rezultat.push(i);
+  }
+  return rezultat;
+}
+console.log(inapoiLaZero(5).join(" ")); // 4 3 2 1 0
+console.log(inapoiLaZero(1).join(" ")); // 0</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-14" class="problema">
+<h3>14. Strict între două numere</h3>
+<p>Primești două numere întregi a ≤ b. Afișează întregii strict dintre ele, fără capete. Dacă nu există, afișează un mesaj.</p>
+<p class="exemplu"><strong>Exemple:</strong> -2, 4 → -1 0 1 2 3; 3, 4 sau 4, 4 → nicio valoare.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 14</span></summary>
+<p>Pornim la a + 1 și continuăm cât timp i &lt; b. Lista goală ne arată că nu există numere de afișat.</p>
+<pre><code class="solutie">function strictIntre(a, b) {
+  const rezultat = [];
+  for (let i = a + 1; i &lt; b; i++) {
+    rezultat.push(i);
+  }
+  if (rezultat.length === 0) {
+    return "Nu există nicio valoare de afișat";
+  }
+  return rezultat.join(" ");
+}
+console.log(strictIntre(-2, 4)); // -1 0 1 2 3
+console.log(strictIntre(3, 4));  // Nu există nicio valoare de afișat
+console.log(strictIntre(4, 4));  // Nu există nicio valoare de afișat</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-15" class="problema">
+<h3>15. Intervalul cu tot cu capete</h3>
+<p>Primești două numere întregi a ≤ b. Afișează toate numerele întregi din intervalul [a, b].</p>
+<p class="exemplu"><strong>Exemple:</strong> -2, 4 → -2 -1 0 1 2 3 4; 3, 4 → 3 4; 4, 4 → 4.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 15</span></summary>
+<p>Pornim chiar de la a și folosim &lt;= b. Dacă a și b sunt egale, bucla rulează o singură dată.</p>
+<pre><code class="solutie">function intervalInchis(a, b) {
+  const rezultat = [];
+  for (let i = a; i &lt;= b; i++) {
+    rezultat.push(i);
+  }
+  return rezultat;
+}
+console.log(intervalInchis(-2, 4).join(" ")); // -2 -1 0 1 2 3 4
+console.log(intervalInchis(3, 4).join(" "));  // 3 4
+console.log(intervalInchis(4, 4).join(" "));  // 4</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-16" class="problema">
+<h3>16. Doar numerele pare</h3>
+<p>Primești două numere întregi a ≤ b. Afișează numerele pare din interval, inclusiv capetele dacă sunt pare. Dacă nu există, afișează un mesaj.</p>
+<p class="exemplu"><strong>Exemple:</strong> -3, 3 → -2 0 2; 3, 4 → 4; 3, 3 → nicio valoare.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 16</span></summary>
+<p>Un întreg este par dacă restul împărțirii la 2 este zero. Condiția funcționează și pentru numere negative și pentru zero.</p>
+<pre><code class="solutie">function pareInInterval(a, b) {
+  const rezultat = [];
+  for (let i = a; i &lt;= b; i++) {
+    if (i % 2 === 0) {
+      rezultat.push(i);
+    }
+  }
+  if (rezultat.length === 0) {
+    return "Nicio valoare de afișat";
+  }
+  return rezultat.join(" ");
+}
+console.log(pareInInterval(-3, 3)); // -2 0 2
+console.log(pareInInterval(3, 4));  // 4
+console.log(pareInInterval(3, 3));  // Nicio valoare de afișat</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-17" class="problema">
+<h3>17. Intervalul, indiferent de ordine</h3>
+<p>Primești două numere întregi, în orice ordine. Afișează crescător toate numerele dintre minim și maxim, inclusiv capetele.</p>
+<p class="exemplu"><strong>Exemple:</strong> -3, 3 și 3, -3 → -3 -2 -1 0 1 2 3; 3, 3 → 3.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 17</span></summary>
+<p>Punem întâi limitele în ordine, apoi folosim aceeași buclă ca la un interval închis.</p>
+<pre><code class="solutie">function intervalOrdonat(a, b) {
+  let minim = a;
+  let maxim = b;
+  if (a &gt; b) {
+    minim = b;
+    maxim = a;
+  }
+  const rezultat = [];
+  for (let i = minim; i &lt;= maxim; i++) {
+    rezultat.push(i);
+  }
+  return rezultat;
+}
+console.log(intervalOrdonat(-3, 3).join(" ")); // -3 -2 -1 0 1 2 3
+console.log(intervalOrdonat(3, -3).join(" ")); // -3 -2 -1 0 1 2 3
+console.log(intervalOrdonat(3, 3).join(" "));  // 3</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-18" class="problema">
+<h3>18. Adunăm până la 0</h3>
+<p>Citește întregi de la tastatură până când utilizatorul introduce 0. Afișează suma. Butonul Cancel poate opri citirea mai devreme.</p>
+<p class="exemplu"><strong>Exemple:</strong> -3, 2, 5, -1, 0 → 3; 5, 10, -3, -5, -2, 0 → 5; 0 → 0.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 18</span></summary>
+<p>prompt() întoarce text sau null la Cancel. Respingem textul gol și valorile care nu sunt întregi valizi. Zero este semnalul de oprire, nu o nouă valoare de prelucrat. Acumulatorul suma păstrează totalul.</p>
+<pre><code class="solutie">function citesteSuma() {
+  let suma = 0;
+  while (true) {
+    const text = prompt("Introdu un întreg; 0 oprește citirea:");
+    if (text === null) {
+      break;
+    }
+    const numar = Number(text);
+    if (text.trim() === "" || !Number.isSafeInteger(numar)) {
+      console.log("Introdu un număr întreg valid.");
+      continue;
+    }
+    if (numar === 0) {
+      break;
+    }
+    suma += numar;
+  }
+  return suma;
+}
+console.log(`Suma numerelor introduse este ${citesteSuma()}`);
+// Pentru -3, 2, 5, -1, 0: Suma numerelor introduse este 3</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-19" class="problema">
+<h3>19. Primii N termeni Fibonacci, fără liste</h3>
+<p>Primești un întreg pozitiv N. Afișează primii N termeni Fibonacci fără arrays. Șirul începe cu 0, 1, iar fiecare termen următor este suma ultimilor doi. Folosim 1 ≤ N ≤ 79.</p>
+<p class="exemplu"><strong>Exemple:</strong> 8 → 0 1 1 2 3 5 8 13; 1 → 0; 4 → 0 1 1 2.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 19</span></summary>
+<p>Păstrăm doar două numere consecutive. Afișăm primul, calculăm suma și mutăm cele două valori cu un pas înainte. Rezultatele apar pe linii separate; nu le stocăm într-o listă.</p>
+<pre><code class="solutie">function afiseazaFibonacciN(n) {
+  if (!Number.isSafeInteger(n) || n &lt; 1 || n &gt; 79) {
+    console.log("Alege un întreg de la 1 la 79.");
+    return;
+  }
+  let primul = 0;
+  let alDoilea = 1;
+  for (let i = 0; i &lt; n; i++) {
+    console.log(primul);
+    const urmatorul = primul + alDoilea;
+    primul = alDoilea;
+    alDoilea = urmatorul;
+  }
+}
+afiseazaFibonacciN(8); // 0, 1, 1, 2, 3, 5, 8, 13, pe linii separate.</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-20" class="problema">
+<h3>20. Fibonacci până la o limită, fără liste</h3>
+<p>Primești un întreg pozitiv care poate fi reprezentat exact cu Number. Afișează toți termenii Fibonacci mai mici sau egali cu el, fără arrays. Păstrează ambele apariții ale lui 1.</p>
+<p class="exemplu"><strong>Exemple:</strong> 13 → 0 1 1 2 3 5 8 13; 1 → 0 1 1; 6 → 0 1 1 2 3 5.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 20</span></summary>
+<p>Față de exercițiul anterior nu știm numărul repetărilor. Folosim while cât timp termenul curent nu depășește limita și actualizăm perechea după fiecare afișare.</p>
+<pre><code class="solutie">function afiseazaFibonacciPanaLa(limita) {
+  if (!Number.isSafeInteger(limita) || limita &lt; 1) {
+    console.log("Introdu un întreg pozitiv din intervalul sigur.");
+    return;
+  }
+  let primul = 0;
+  let alDoilea = 1;
+  while (primul &lt;= limita) {
+    console.log(primul);
+    const urmatorul = primul + alDoilea;
+    primul = alDoilea;
+    alDoilea = urmatorul;
+  }
+}
+afiseazaFibonacciPanaLa(6); // 0, 1, 1, 2, 3, 5, pe linii separate.</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-21" class="problema">
+<h3>21. Divizorii unui număr</h3>
+<p>Primești un întreg. Afișează divizorii lui pozitivi. Pentru un număr negativ folosește valoarea absolută; pentru zero afișează un mesaj, deoarece orice întreg pozitiv îl divide.</p>
+<p class="exemplu"><strong>Exemple:</strong> 12 → 1 2 3 4 6 12; 11 → 1 11; 9 → 1 3 9.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 21</span></summary>
+<p>Încercăm fiecare candidat de la 1 la valoarea absolută a numărului. Dacă n % d este 0, d este divizor. Este o variantă simplă, potrivită pentru numere mici.</p>
+<pre><code class="solutie">function divizorii(numar) {
+  if (!Number.isSafeInteger(numar)) {
+    return "Introdu un număr întreg valid";
+  }
+  if (numar === 0) {
+    return "Zero are o infinitate de divizori pozitivi";
+  }
+  const n = Math.abs(numar);
+  const rezultat = [];
+  for (let d = 1; d &lt;= n; d++) {
+    if (n % d === 0) {
+      rezultat.push(d);
+    }
+  }
+  return rezultat.join(" ");
+}
+console.log(divizorii(12)); // 1 2 3 4 6 12
+console.log(divizorii(11)); // 1 11
+console.log(divizorii(9));  // 1 3 9
+console.log(divizorii(-6)); // 1 2 3 6
+console.log(divizorii(0));  // Zero are o infinitate de divizori pozitivi</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-22" class="problema">
+<h3>22. Este numărul prim?</h3>
+<p>Primești un întreg. Afișează dacă este prim: trebuie să fie mai mare decât 1 și să aibă exact doi divizori pozitivi, 1 și el însuși.</p>
+<p class="exemplu"><strong>Exemple:</strong> 1 → nu este prim; 2 → este prim; 16 → nu este prim.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 22</span></summary>
+<p>Valorile sub 2 nu sunt prime. Căutăm un divizor de la 2 până când d × d depășește n: dacă ar exista un divizor mai mare decât √n, perechea lui ar fi mai mică decât √n. La primul divizor găsit returnăm false.</p>
+<pre><code class="solutie">function estePrim(n) {
+  if (!Number.isSafeInteger(n) || n &lt; 2) {
+    return false;
+  }
+  for (let d = 2; d * d &lt;= n; d++) {
+    if (n % d === 0) {
+      return false;
+    }
+  }
+  return true;
+}
+function mesajPrim(n) {
+  return estePrim(n) ? "Numărul este prim" : "Numărul nu este prim";
+}
+console.log(mesajPrim(1));  // Numărul nu este prim
+console.log(mesajPrim(2));  // Numărul este prim
+console.log(mesajPrim(16)); // Numărul nu este prim
+console.log(mesajPrim(13)); // Numărul este prim</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-23" class="problema">
+<h3>23. Verificăm numere prime până la 0</h3>
+<p>Citește întregi de la tastatură. Pentru fiecare, afișează dacă este prim. Oprește citirea la 0 sau Cancel, fără să mai clasifici valoarea de oprire.</p>
+<p class="exemplu"><strong>Exemple:</strong> 1 → nu este prim; 15 → nu este prim; 2 → este prim; 10 → nu este prim; 0 → stop.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 23</span></summary>
+<p>Combinăm funcția de verificare cu o buclă de citire. Testăm oprirea înainte de apelul estePrim. Am inclus din nou funcția, ca să poți rula acest bloc singur.</p>
+<pre><code class="solutie">function estePrim(n) {
+  if (!Number.isSafeInteger(n) || n &lt; 2) {
+    return false;
+  }
+  for (let d = 2; d * d &lt;= n; d++) {
+    if (n % d === 0) {
+      return false;
+    }
+  }
+  return true;
+}
+function citesteNumerePrime() {
+  while (true) {
+    const text = prompt("Introdu un întreg; 0 oprește citirea:");
+    if (text === null) {
+      break;
+    }
+    const numar = Number(text);
+    if (text.trim() === "" || !Number.isSafeInteger(numar)) {
+      console.log("Introdu un număr întreg valid.");
+      continue;
+    }
+    if (numar === 0) {
+      break;
+    }
+    const mesaj = estePrim(numar) ? "este prim" : "nu este prim";
+    console.log(`${numar}: ${mesaj}`);
+  }
+}
+citesteNumerePrime();
+// Pentru 1, 15, 2, 10, 0: afișează patru mesaje; 0 doar oprește citirea.</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#mediu">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+</section>
+<section id="avansat" class="atelier"><h2>Nivel avansat: problemele 24–34</h2>
+<nav aria-label="Nivel avansat: problemele 24–34"><ol class="lista-probleme" start="24">
+<li><a href="#problema-24">Minimul unei liste</a></li>
+<li><a href="#problema-25">Maximul unei liste</a></li>
+<li><a href="#problema-26">Minimele locale</a></li>
+<li><a href="#problema-27">Fibonacci într-o listă</a></li>
+<li><a href="#problema-28">Suma elementelor unei liste</a></li>
+<li><a href="#problema-29">Valorile mai mici decât media</a></li>
+<li><a href="#problema-30">De câte ori apare „a”?</a></li>
+<li><a href="#problema-31">Pe ce poziții apare „a”?</a></li>
+<li><a href="#problema-32">Câte cuvinte are propoziția?</a></li>
+<li><a href="#problema-33">Procentajul de vocale</a></li>
+<li><a href="#problema-34">Litera „a” într-o listă de texte</a></li>
+</ol></nav>
+<article id="problema-24" class="problema">
+<h3>24. Minimul unei liste</h3>
+<p>Primești o listă de numere întregi. Afișează minimul. Pentru o listă goală, funcția întoarce null.</p>
+<p class="exemplu"><strong>Exemple:</strong> [4, 5, 3, 0, -3, 1] → -3.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 24</span></summary>
+<p>Pornim cu primul element, nu cu zero: zero ar da un rezultat greșit dacă toate valorile ar fi pozitive. Păstrăm cel mai mic element găsit până la pasul curent.</p>
+<pre><code class="solutie">function minimLista(lista) {
+  if (lista.length === 0) {
+    return null;
+  }
+  let minim = lista[0];
+  for (let i = 1; i &lt; lista.length; i++) {
+    if (lista[i] &lt; minim) {
+      minim = lista[i];
+    }
+  }
+  return minim;
+}
+console.log(minimLista([4, 5, 3, 0, -3, 1])); // -3
+console.log(minimLista([7]));                 // 7
+console.log(minimLista([]));                  // null</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-25" class="problema">
+<h3>25. Maximul unei liste</h3>
+<p>Primești o listă de numere întregi. Afișează maximul. Pentru o listă goală, funcția întoarce null.</p>
+<p class="exemplu"><strong>Exemple:</strong> [4, 5, 3, 0, -3, 1] → 5.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 25</span></summary>
+<p>Pornim tot de la primul element, dar păstrăm valoarea mai mare. Astfel, soluția funcționează și când toate numerele sunt negative.</p>
+<pre><code class="solutie">function maximLista(lista) {
+  if (lista.length === 0) {
+    return null;
+  }
+  let maxim = lista[0];
+  for (let i = 1; i &lt; lista.length; i++) {
+    if (lista[i] &gt; maxim) {
+      maxim = lista[i];
+    }
+  }
+  return maxim;
+}
+console.log(maximLista([4, 5, 3, 0, -3, 1])); // 5
+console.log(maximLista([-8, -2, -5]));        // -2
+console.log(maximLista([]));                  // null</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-26" class="problema">
+<h3>26. Minimele locale</h3>
+<p>Afișează valorile strict mai mici decât vecinii lor. Primul element se compară doar cu al doilea, iar ultimul doar cu penultimul. Pentru o listă cu mai puțin de două elemente, alegem să nu raportăm minime locale.</p>
+<p class="exemplu"><strong>Exemple:</strong> [4, 1, 3, 0, -3, 1] → 1, -3; [0, 2, 4, 2, 3, 1] → 0, 2, 1.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 26</span></summary>
+<p>Tratăm separat capetele și parcurgem interiorul de la indexul 1 până înainte de ultimul. Folosim comparații stricte: într-o listă [2, 2], niciun element nu este minim local.</p>
+<pre><code class="solutie">function minimeLocale(lista) {
+  const rezultat = [];
+  if (lista.length &lt; 2) {
+    return rezultat;
+  }
+  if (lista[0] &lt; lista[1]) {
+    rezultat.push(lista[0]);
+  }
+  for (let i = 1; i &lt; lista.length - 1; i++) {
+    if (lista[i] &lt; lista[i - 1] &amp;&amp; lista[i] &lt; lista[i + 1]) {
+      rezultat.push(lista[i]);
+    }
+  }
+  const ultimul = lista.length - 1;
+  if (lista[ultimul] &lt; lista[ultimul - 1]) {
+    rezultat.push(lista[ultimul]);
+  }
+  return rezultat;
+}
+console.log(minimeLocale([4, 1, 3, 0, -3, 1])); // [1, -3]
+console.log(minimeLocale([0, 2, 4, 2, 3, 1]));  // [0, 2, 1]
+console.log(minimeLocale([2, 2]));              // []
+console.log(minimeLocale([7]));                 // []</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-27" class="problema">
+<h3>27. Fibonacci într-o listă</h3>
+<p>Primești un întreg pozitiv N și construiește o listă cu primii N termeni Fibonacci. Aici folosim arrays. Pentru rezultate exacte cu Number, alegem 1 ≤ N ≤ 79.</p>
+<p class="exemplu"><strong>Exemple:</strong> 9 → [0, 1, 1, 2, 3, 5, 8, 13, 21]; 1 → [0]; 2 → [0, 1].</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 27</span></summary>
+<p>Pornim cu [0]. Adăugăm 1 doar dacă sunt ceruți cel puțin doi termeni. Fiecare element nou este suma ultimelor două elemente deja calculate.</p>
+<pre><code class="solutie">function listaFibonacci(n) {
+  if (!Number.isSafeInteger(n) || n &lt; 1 || n &gt; 79) {
+    return "Alege un întreg de la 1 la 79";
+  }
+  const rezultat = [0];
+  if (n &gt;= 2) {
+    rezultat.push(1);
+  }
+  for (let i = 2; i &lt; n; i++) {
+    rezultat.push(rezultat[i - 1] + rezultat[i - 2]);
+  }
+  return rezultat;
+}
+console.log(listaFibonacci(9)); // [0, 1, 1, 2, 3, 5, 8, 13, 21]
+console.log(listaFibonacci(1)); // [0]
+console.log(listaFibonacci(2)); // [0, 1]</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-28" class="problema">
+<h3>28. Suma elementelor unei liste</h3>
+<p>Primești o listă de numere. Afișează suma elementelor. Suma listei goale este 0.</p>
+<p class="exemplu"><strong>Exemple:</strong> [4, 5, 3, 0, -3, 1] → 10.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 28</span></summary>
+<p>Folosim un acumulator pornit de la zero. for...of ne dă direct fiecare valoare, pe care o adunăm o singură dată.</p>
+<pre><code class="solutie">function sumaListei(lista) {
+  let suma = 0;
+  for (const numar of lista) {
+    suma += numar;
+  }
+  return suma;
+}
+console.log(sumaListei([4, 5, 3, 0, -3, 1])); // 10
+console.log(sumaListei([]));                  // 0</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-29" class="problema">
+<h3>29. Valorile mai mici decât media</h3>
+<p>Primești o listă de numere. Afișează elementele strict mai mici decât media aritmetică. Pentru lista goală întoarce o listă goală.</p>
+<p class="exemplu"><strong>Exemple:</strong> [4, 0, 7, -3, 3, 1] → media 2; rezultat [0, -3, 1].</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 29</span></summary>
+<p>Avem nevoie de două parcurgeri: prima calculează suma și media; a doua alege valorile sub medie. Verificăm lista goală înainte de împărțire.</p>
+<pre><code class="solutie">function subMedie(lista) {
+  if (lista.length === 0) {
+    return [];
+  }
+  let suma = 0;
+  for (const numar of lista) {
+    suma += numar;
+  }
+  const media = suma / lista.length;
+  const rezultat = [];
+  for (const numar of lista) {
+    if (numar &lt; media) {
+      rezultat.push(numar);
+    }
+  }
+  return rezultat;
+}
+console.log(subMedie([4, 0, 7, -3, 3, 1])); // [0, -3, 1]
+console.log(subMedie([2, 2]));              // []
+console.log(subMedie([]));                  // []</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-30" class="problema">
+<h3>30. De câte ori apare „a”?</h3>
+<p>Primești un text. Numără aparițiile literei „a”, fără diferență între a și A.</p>
+<p class="exemplu"><strong>Exemple:</strong> „Ana are mere” → 3.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 30</span></summary>
+<p>Transformăm textul în litere mici și creștem un contor pentru fiecare a. Un text fără această literă, inclusiv textul gol, produce zero.</p>
+<pre><code class="solutie">function numaraA(text) {
+  let total = 0;
+  for (const caracter of text.toLowerCase()) {
+    if (caracter === "a") {
+      total++;
+    }
+  }
+  return total;
+}
+console.log(numaraA("Ana are mere")); // 3
+console.log(numaraA("CAFEA"));        // 2
+console.log(numaraA(""));             // 0</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-31" class="problema">
+<h3>31. Pe ce poziții apare „a”?</h3>
+<p>Primești un text. Afișează indicii literei „a”, ignorând diferența dintre a și A. Numerotarea începe de la zero.</p>
+<p class="exemplu"><strong>Exemple:</strong> „programare” → 5, 7; „algoritmica” → 0, 10.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 31</span></summary>
+<p>Avem nevoie de index, deci folosim for cu un contor. Când găsim litera, păstrăm indexul, nu caracterul.</p>
+<pre><code class="solutie">function pozitiiA(text) {
+  const rezultat = [];
+  for (let i = 0; i &lt; text.length; i++) {
+    if (text[i].toLowerCase() === "a") {
+      rezultat.push(i);
+    }
+  }
+  return rezultat;
+}
+console.log(pozitiiA("programare"));  // [5, 7]
+console.log(pozitiiA("algoritmica")); // [0, 10]
+console.log(pozitiiA("Ana"));         // [0, 2]
+console.log(pozitiiA("mere"));        // []</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-32" class="problema">
+<h3>32. Câte cuvinte are propoziția?</h3>
+<p>Numără cuvintele dintr-un text. În acest exercițiu, un cuvânt este un grup de caractere separat de spații albe: spațiu, tab sau linie nouă. Spațiile consecutive nu adaugă cuvinte.</p>
+<p class="exemplu"><strong>Exemple:</strong> „Imi place sa fac programare” → 5; „Vreau sa fiu programator!” → 4; text gol → 0.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 32</span></summary>
+<p>Urmărim dacă suntem deja în interiorul unui cuvânt. Numărăm doar trecerea de la spațiu alb la un caracter. caracter.trim() === &quot;&quot; recunoaște spațiile albe. Punctuația lipită rămâne parte din cuvânt; nu facem analiză lingvistică.</p>
+<pre><code class="solutie">function numaraCuvinte(text) {
+  let total = 0;
+  let inCuvant = false;
+  for (const caracter of text) {
+    if (caracter.trim() === "") {
+      inCuvant = false;
+    } else if (!inCuvant) {
+      total++;
+      inCuvant = true;
+    }
+  }
+  return total;
+}
+console.log(numaraCuvinte("Imi place sa fac programare")); // 5
+console.log(numaraCuvinte("Vreau sa fiu programator!"));    // 4
+console.log(numaraCuvinte("  Ana   are mere  "));          // 3
+console.log(numaraCuvinte(""));                           // 0</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-33" class="problema">
+<h3>33. Procentajul de vocale</h3>
+<p>Calculează procentajul vocalelor dintr-un text, ignorând spațiile albe la numărul total de caractere. Considerăm vocale a, e, i, o, u, ă, â, î, indiferent de majuscule. Celelalte caractere, inclusiv punctuația, intră în total.</p>
+<p class="exemplu"><strong>Exemple:</strong> „Ana are mere” → 6 vocale din 10 caractere fără spații → 60%.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 33</span></summary>
+<p>Numărăm separat vocalele și toate caracterele care nu sunt spații albe. Procentajul este vocale / caractere × 100. Pentru text gol sau doar spații alegem 0%, ca să evităm împărțirea la zero.</p>
+<pre><code class="solutie">function procentVocale(text) {
+  const vocale = "aeiouăâî";
+  let totalCaractere = 0;
+  let totalVocale = 0;
+  for (const caracter of text.toLowerCase()) {
+    if (caracter.trim() === "") {
+      continue;
+    }
+    totalCaractere++;
+    if (vocale.includes(caracter)) {
+      totalVocale++;
+    }
+  }
+  if (totalCaractere === 0) {
+    return 0;
+  }
+  return totalVocale / totalCaractere * 100;
+}
+console.log(`${procentVocale("Ana are mere")}%`); // 60%
+console.log(`${procentVocale("ĂÂÎ")}%`);          // 100%
+console.log(`${procentVocale("   ")}%`);          // 0%
+// includes() verifică dacă textul conține caracterul căutat.</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+<article id="problema-34" class="problema">
+<h3>34. Litera „a” într-o listă de texte</h3>
+<p>Primești o listă de stringuri. Numără toate aparițiile literei „a” sau „A” din toate textele.</p>
+<p class="exemplu"><strong>Exemple:</strong> [&quot;Ana&quot;, &quot;are&quot;, &quot;mere&quot;] → 3.</p>
+<details class="rezolvare">
+<summary>Vezi rezolvarea și explicația <span class="sr-only">pentru problema 34</span></summary>
+<p>Reutilizăm o funcție care numără litera într-un text. Funcția principală parcurge lista și adună rezultatele. Acesta este avantajul funcțiilor: împărțim o problemă în acțiuni mici.</p>
+<pre><code class="solutie">function numaraA(text) {
+  let total = 0;
+  for (const caracter of text.toLowerCase()) {
+    if (caracter === "a") {
+      total++;
+    }
+  }
+  return total;
+}
+function numaraAInLista(texte) {
+  let total = 0;
+  for (const text of texte) {
+    total += numaraA(text);
+  }
+  return total;
+}
+console.log(numaraAInLista(["Ana", "are", "mere"])); // 3
+console.log(numaraAInLista(["A", "a", "cafea"]));   // 4
+console.log(numaraAInLista([]));                     // 0</code></pre>
+</details>
+<p class="inapoi-nivel"><a href="#avansat">Înapoi la lista acestui nivel ↑</a></p>
+</article>
+</section>
+    </main>
+    <footer>
+      <p><a href="JavaScript-Basics.html">&larr; Înapoi la lecția 10 - JavaScript Basics</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>

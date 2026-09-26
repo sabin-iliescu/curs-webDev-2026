@@ -1,0 +1,48 @@
+/* Stilurile de bază sunt comune cu lecția JavaScript Basics. */
+.flux {
+  display: grid;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.flux span {
+  padding: 14px;
+  text-align: center;
+  color: #512571;
+  background: #faf5ff;
+  border: 1px solid #d8bfe9;
+  border-radius: 8px;
+}
+
+.lista-probleme { padding-left: 26px; }
+.lista-probleme li { margin: 8px 0; padding-left: 4px; }
+.problema {
+  margin-top: 32px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+  scroll-margin-top: 16px;
+}
+.problema h3 { margin-top: 12px; color: #67328f; }
+.exemplu { padding: 12px; background: #f7f7f7; overflow-wrap: anywhere; }
+.rezolvare { border-color: #d8bfe9; }
+.rezolvare summary { color: #67328f; padding: 4px 0; min-height: 36px; }
+.rezolvare[open] { background: #faf5ff; }
+.rezolvare pre { background: #f0f0f0; }
+.inapoi-nivel { font-size: 14px; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 600px) {
+  .flux { grid-template-columns: repeat(3, 1fr); }
+  .lista-probleme { columns: 2; column-gap: 32px; }
+  .lista-probleme li { break-inside: avoid; }
+}

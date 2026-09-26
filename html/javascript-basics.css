@@ -1,0 +1,83 @@
+/* Lecția 10: aceleași culori și spațieri ca în lecțiile precedente. */
+* { box-sizing: border-box; }
+
+body {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background: #f7f7f7;
+}
+
+h1, h2, a { color: #67328f; }
+h1 { font-size: 28px; }
+h3 { margin-top: 28px; }
+main > section {
+  margin: 24px 0;
+  padding: 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+section { scroll-margin-top: 16px; }
+code { color: #b62d24; overflow-wrap: anywhere; }
+pre {
+  padding: 14px;
+  overflow-x: auto;
+  background: #f0f0f0;
+  border-left: 4px solid #67328f;
+}
+pre code { overflow-wrap: normal; }
+.nota {
+  padding: 12px;
+  background: #ecfdf3;
+  border-left: 4px solid #16803c;
+}
+.tabel-container { overflow-x: auto; }
+table { width: 100%; min-width: 540px; border-collapse: collapse; }
+table code { overflow-wrap: normal; }
+caption { text-align: left; font-weight: bold; margin-bottom: 8px; }
+th, td { padding: 10px; border: 1px solid #aaa; text-align: left; }
+.demo {
+  margin-top: 20px;
+  padding: 16px;
+  background: #faf5ff;
+  border: 1px solid #d8bfe9;
+  border-radius: 8px;
+}
+.demo h3 { margin-top: 0; }
+.controale { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; }
+label { display: block; font-weight: bold; }
+input, select, button { max-width: 100%; min-height: 44px; font: inherit; }
+input, select {
+  padding: 8px;
+  color: #222;
+  background: white;
+  border: 1px solid #777;
+  border-radius: 5px;
+}
+input[type="number"] { width: 110px; }
+button {
+  padding: 8px 14px;
+  color: white;
+  background: #67328f;
+  border: 1px solid #67328f;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.secundar { color: #67328f; background: white; }
+button:hover { background: #512571; color: white; }
+:focus-visible { outline: 3px solid #67328f; outline-offset: 3px; }
+.rezultat { font-weight: bold; overflow-wrap: anywhere; }
+.rezultat pre { font-weight: normal; background: white; }
+details { margin: 12px 0; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+summary { cursor: pointer; font-weight: bold; }
+footer { margin: 32px 0; }
+
+@media (min-width: 768px) {
+  body { margin: 40px auto; padding: 0 20px; }
+  h1 { font-size: 32px; }
+  main > section { padding: 24px; }
+}
