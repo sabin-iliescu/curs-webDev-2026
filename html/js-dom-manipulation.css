@@ -1,0 +1,24 @@
+/* Extindem stilul comun al lecțiilor JavaScript. */
+.carduri-filme { display: grid; gap: 8px; list-style: none; padding: 0; }
+.film { padding: 14px; border: 3px solid transparent; border-radius: 6px; background: white; }
+.film.reperat { border-color: #67328f; background: #eee4f7; font-weight: bold; }
+.bifa { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+input[type="checkbox"] { min-height: 24px; width: 24px; flex-shrink: 0; accent-color: #67328f; }
+button:disabled { color: #555; background: #e2e2e2; border-color: #999; cursor: not-allowed; }
+.scena { padding: 18px; border: 1px solid #d8bfe9; border-radius: 8px; background: white; }
+.scena.mod-seara { color: #f8fafc; background: #20162c; }
+.scena.mod-seara button { border-color: #d8bfe9; }
+.lista-interactiva { padding-left: 0; list-style: none; }
+.lista-interactiva li { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; padding: 10px; background: white; border-radius: 6px; }
+.lista-interactiva span { flex: 1; min-width: 90px; overflow-wrap: anywhere; }
+.lista-interactiva button { font-size: 14px; }
+.zona-click { display: flex; flex-wrap: wrap; gap: 16px; padding: 16px; border: 2px dashed #b69acc; border-radius: 8px; }
+.cinema-demo { display: block; width: 100%; height: 1120px; border: 1px solid #67328f; border-radius: 10px; background: #20162c; }
+.traseu { display: grid; gap: 8px; margin: 16px 0; }
+.traseu span { padding: 10px 14px; border-left: 4px solid #67328f; background: #faf5ff; }
+.arbore { font-size: 14px; }
+#nume-demo { width: 100%; }
+@media (min-width: 650px) {
+  .carduri-filme { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cinema-demo { height: 1000px; }
+}

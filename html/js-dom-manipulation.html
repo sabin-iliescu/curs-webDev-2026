@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12 - JavaScript DOM Manipulation</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <link rel="stylesheet" href="js-dom-manipulation.css" />
+    <script src="js-dom-manipulation.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="JavaScript-Functions.html">&larr; Înapoi la lecția 11 - JavaScript Functions</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>12 - JavaScript DOM Manipulation</h1>
+      <p>Pagina devine interactivă: găsim un element, ascultăm un eveniment și schimbăm ceva vizibil.</p>
+      <p>Construim mici experiențe pentru o seară la cinema. La final le legăm într-un proiect Movie Tickets: alegi filmul și locurile, iar pagina calculează biletele și totalul.</p>
+      <nav aria-label="Părțile lecției"><ol>
+        <li><a href="#dom">DOM-ul și momentul potrivit pentru JavaScript</a></li>
+        <li><a href="#selectori">Găsim elemente și schimbăm conținutul</a></li>
+        <li><a href="#atribute">Atribute, clase și stiluri</a></li>
+        <li><a href="#creare">Creăm, ștergem și parcurgem elemente</a></li>
+        <li><a href="#evenimente">Evenimente și delegare</a></li>
+        <li><a href="#movie-tickets">Movie Tickets: demo și construcție pe etape</a></li>
+        <li><a href="#teme">Două teme pentru acasă</a></li>
+      </ol></nav>
+      <p class="nota">Fără biblioteci sau CDN. Ne ajung HTML, CSS, JavaScript și un browser. Exemplele scurte se testează separat; pașii workshopului se construiesc unul peste altul.</p>
+      <noscript><p class="nota">Activează JavaScript pentru demonstrațiile interactive. Explicațiile și codul se pot citi și fără el.</p></noscript>
+    </header>
+    <main>
+<section id="dom">
+<h2>1. DOM-ul: pagina văzută ca un arbore</h2>
+
+<p><strong>DOM</strong> înseamnă <em>Document Object Model</em>. Browserul citește HTML-ul și construiește obiecte legate între ele. JavaScript poate găsi aceste obiecte și le poate modifica.</p>
+<pre><code>&lt;body&gt;
+  &lt;main id="cinema"&gt;
+    &lt;h1&gt;Seară de film&lt;/h1&gt;
+    &lt;button id="rezerva" type="button"&gt;Alege un loc&lt;/button&gt;
+  &lt;/main&gt;
+&lt;/body&gt;</code></pre>
+<pre class="arbore" aria-label="Arbore DOM: document conține html, care conține head și body. Body conține main, iar main conține h1 și button.">document
+└── html
+    ├── head
+    └── body
+        └── main#cinema
+            ├── h1
+            └── button#rezerva</pre>
+<ul><li><code>main</code> este <strong>părintele</strong> lui <code>h1</code> și al butonului.</li><li><code>h1</code> și <code>button</code> sunt <strong>copii</strong> ai lui <code>main</code> și <strong>frați</strong> între ei.</li><li>Și textul din elemente este reprezentat prin noduri. Nu toate nodurile sunt elemente HTML.</li></ul>
+<p><code>document</code> reprezintă pagina curentă; <code>window</code> reprezintă fereastra browserului și oferă, de exemplu, <code>alert()</code>. Putem începe căutarea din <code>document</code>, apoi căuta doar în interiorul unui element găsit.</p>
+<p class="nota">Modificarea DOM-ului schimbă pagina deschisă în browser, nu fișierul HTML de pe disc. Fără salvare separată, schimbările nu devin permanente.</p>
+</section>
+<section id="pregatire">
+<h2>2. Mai întâi HTML-ul, apoi codul care îl caută</h2>
+
+<p>Într-un folder de exercițiu creează <code>index.html</code> și <code>script.js</code>. În <code>&lt;head&gt;</code> leagă scriptul astfel:</p>
+<pre><code>&lt;script src="script.js" defer&gt;&lt;/script&gt;</code></pre>
+<p><code>defer</code> permite descărcarea fișierului în timp ce se citește HTML-ul și amână execuția până după parcurgerea HTML-ului. Butonul există deja când îl căutăm.</p>
+<pre><code>// În script.js, fără etichete &lt;script&gt;:
+const buton = document.getElementById("rezerva");
+console.log(buton); // Elementul găsit, dacă HTML-ul de mai sus există.</code></pre>
+<h3>DOMContentLoaded și load</h3>
+<p><code>DOMContentLoaded</code> anunță că HTML-ul a fost parcurs și scripturile amânate au rulat. Nu așteaptă încărcarea tuturor imaginilor; unele pot fi deja încărcate. Evenimentul <code>load</code> al ferestrei așteaptă și resursele dependente obișnuite, precum imaginile care nu sunt încărcate leneș.</p>
+<pre><code>document.addEventListener("DOMContentLoaded", function () {
+  console.log("Structura paginii este pregătită.");
+});
+
+window.addEventListener("load", function () {
+  console.log("Pagina și resursele așteptate sunt încărcate.");
+});</code></pre>
+<p class="nota">Pentru exercițiile noastre folosim script extern cu <code>defer</code>. Nu mai avem nevoie să învelim tot codul și într-un listener <code>DOMContentLoaded</code>.</p>
+</section>
+<section id="selectori">
+<h2>3. Selectori: pe cine vrem să schimbăm?</h2>
+
+<p>Un selector este o adresă către un element sau un grup de elemente. <code>querySelector</code> și <code>querySelectorAll</code> folosesc selectorii cunoscuți din CSS.</p>
+<div class="tabel-container" tabindex="0" role="region" aria-label="Metode de selecție DOM, tabel derulabil"><table><caption>Cinci metode de recunoscut</caption><thead><tr><th scope="col">Metodă</th><th scope="col">Exemplu</th><th scope="col">Rezultat</th></tr></thead><tbody>
+<tr><td><code>getElementById</code></td><td><code>document.getElementById("rezerva")</code></td><td>Un element sau null. ID fără #.</td></tr>
+<tr><td><code>querySelector</code></td><td><code>document.querySelector(".film")</code></td><td>Primul element potrivit sau null.</td></tr>
+<tr><td><code>querySelectorAll</code></td><td><code>document.querySelectorAll(".film")</code></td><td>Un NodeList cu toate potrivirile, posibil gol.</td></tr>
+<tr><td><code>getElementsByClassName</code></td><td><code>document.getElementsByClassName("film")</code></td><td>O colecție de elemente. Clasă fără punct.</td></tr>
+<tr><td><code>getElementsByTagName</code></td><td><code>document.getElementsByTagName("button")</code></td><td>O colecție de elemente cu acel nume de etichetă.</td></tr>
+</tbody></table></div>
+<div class="demo" id="demo-selectori"><h3>Lanterna de selectori</h3><p>Alege selectorul. Cardurile potrivite primesc un contur mov.</p>
+<label for="selector-demo">Ce căutăm?</label><select id="selector-demo">
+<option value="#filme-demo .film">Toate filmele: .film</option>
+<option value="#filme-demo .comedie">Doar comediile: .comedie</option>
+<option value="#film-spatiu">Un singur ID: #film-spatiu</option>
+<option value="#filme-demo .horror">O clasă absentă: .horror</option>
+</select>
+<ul id="filme-demo" class="carduri-filme"><li class="film comedie">🍿 Pauză de râs</li><li class="film" id="film-spatiu">🚀 Drum spre Marte</li><li class="film comedie">🐈 Pisica regizor</li></ul>
+<p id="selector-rezultat" class="rezultat" aria-live="polite">#filme-demo .film → 3 elemente</p></div>
+<pre><code>const primulFilm = document.querySelector("#filme-demo .film");
+const toateFilmele = document.querySelectorAll("#filme-demo .film");
+console.log(primulFilm.textContent); // 🍿 Pauză de râs
+console.log(toateFilmele.length);    // 3
+
+for (const film of toateFilmele) {
+  film.classList.add("reperat");
+}</code></pre>
+<p><code>#filme-demo .film</code> înseamnă „elemente cu clasa film din interiorul lui filme-demo”. Un <code>NodeList</code> este o colecție, nu un singur element: îl parcurgem înainte de a modifica elementele.</p>
+<p><code>querySelectorAll()</code> oferă o listă statică a potrivirilor de la acel moment. Dacă adaugi ulterior un film, cauți din nou ca să-l incluzi. Colecțiile întoarse de <code>getElementsByClassName</code> și <code>getElementsByTagName</code> se actualizează automat.</p>
+<details><summary>Codul complet al lanternei</summary><pre><code>const selector = document.getElementById("selector-demo");
+const filme = document.querySelectorAll("#filme-demo .film");
+const selectorRezultat = document.getElementById("selector-rezultat");
+
+function evidentiazaFilmele() {
+  for (const film of filme) {
+    film.classList.remove("reperat");
+  }
+  const gasite = document.querySelectorAll(selector.value);
+  for (const film of gasite) {
+    film.classList.add("reperat");
+  }
+  selectorRezultat.textContent = `${selector.value} → ${gasite.length} elemente`;
+}
+selector.addEventListener("change", evidentiazaFilmele);
+evidentiazaFilmele();</code></pre></details>
+</section>
+<section id="continut">
+<h2>4. textContent și value: mesajul tău pe ecran</h2>
+
+<p><code>textContent</code> citește sau schimbă textul unui element. <code>value</code> citește sau schimbă valoarea unui câmp de formular.</p>
+<pre><code>&lt;label for="nume-demo"&gt;Cum te cheamă?&lt;/label&gt;
+&lt;input id="nume-demo" type="text" maxlength="40" /&gt;
+&lt;p id="salut-demo" aria-live="polite"&gt;Salut, cinefilule!&lt;/p&gt;</code></pre>
+<div class="demo" id="demo-mesaj"><h3>Afișul te salută pe nume</h3><label for="nume-demo">Cum te cheamă?</label><input id="nume-demo" type="text" maxlength="40" placeholder="De exemplu, Mara" />
+<p id="salut-demo" class="rezultat" aria-live="polite">Salut, cinefilule! Ce film alegem?</p><p>Încearcă și <code>&lt;b&gt;Mara&lt;/b&gt;</code>. Îl afișăm ca text, fără să-l transformăm în HTML.</p></div>
+<pre><code>const numeInput = document.getElementById("nume-demo");
+const salut = document.getElementById("salut-demo");
+
+function actualizeazaSalutul() {
+  const nume = numeInput.value.trim();
+  if (nume === "") {
+    salut.textContent = "Salut, cinefilule! Ce film alegem?";
+  } else {
+    salut.textContent = `Salut, ${nume}! Ce film alegem?`;
+  }
+}
+numeInput.addEventListener("input", actualizeazaSalutul);
+actualizeazaSalutul();</code></pre>
+<p><code>input</code> se declanșează pe măsură ce scrii, ștergi sau lipești text. <code>trim()</code> elimină spațiile de la capete. Funcția este apelată o dată și la pornire, ca mesajul să corespundă câmpului.</p>
+<h3>Când folosim innerHTML?</h3>
+<pre><code>const mesaj = document.getElementById("salut-demo");
+mesaj.textContent = "Bilet &lt;strong&gt;VIP&lt;/strong&gt;"; // Afișează și etichetele.
+mesaj.innerHTML = "Bilet &lt;strong&gt;VIP&lt;/strong&gt;";   // Creează un element &lt;strong&gt;.</code></pre>
+<p><code>innerHTML</code> interpretează un șir ca HTML și înlocuiește conținutul interior. Pentru text introdus de utilizator folosim <code>textContent</code>. Pentru elemente noi folosim <code>createElement</code>, explicat mai jos.</p>
+<p class="nota">Dacă înlocuiești tot conținutul unui container prin <code>innerHTML</code> sau <code>textContent</code>, dispar și vechile elemente copil. Listenerii atașați acelor copii nu se transferă pe elementele noi.</p>
+</section>
+<section id="atribute">
+<h2>5. Atribute și proprietăți: aceeași etichetă, alt comportament</h2>
+
+<p>Atributele sunt scrise în HTML: <code>id</code>, <code>href</code>, <code>title</code>. Proprietățile sunt valorile obiectului DOM, precum <code>value</code>, <code>checked</code> și <code>disabled</code>.</p>
+<pre><code>const link = document.querySelector("a");
+console.log(link.getAttribute("href")); // Citim un atribut.
+link.setAttribute("title", "Deschide lecția precedentă");
+link.removeAttribute("title");         // Eliminăm atributul.
+
+const camp = document.getElementById("nume-demo");
+console.log(camp.value); // Textul curent, inclusiv modificările utilizatorului.</code></pre>
+<div class="demo" id="demo-atribute"><h3>Butonul așteaptă un „da”</h3><label class="bifa"><input id="acord-demo" type="checkbox" /> Am verificat ora filmului</label><button id="continua-demo" type="button" disabled>Continuă</button><p id="acord-mesaj" aria-live="polite">Bifează că ai verificat ora filmului.</p></div>
+<pre><code>const acord = document.getElementById("acord-demo");
+const continua = document.getElementById("continua-demo");
+const acordMesaj = document.getElementById("acord-mesaj");
+
+acord.addEventListener("change", function () {
+  continua.disabled = !acord.checked;
+  acordMesaj.textContent = acord.checked
+    ? "Butonul este activ. Poți continua."
+    : "Bifează că ai verificat ora filmului.";
+});
+continua.addEventListener("click", function () {
+  acordMesaj.textContent = "Gata, ne vedem la film!";
+});</code></pre>
+<p><code>checked</code> este <code>true</code> sau <code>false</code>. Cu <code>!</code> inversăm valoarea: butonul este dezactivat când căsuța nu este bifată.</p>
+<p class="nota">Pentru activare scriem <code>buton.disabled = false</code> sau eliminăm atributul. <code>setAttribute("disabled", "false")</code> tot dezactivează butonul: la atributele HTML booleene contează prezența, nu textul „false”. În schimb, <code>aria-pressed="false"</code> are un sens explicit.</p>
+</section>
+<section id="stiluri">
+<h2>6. classList: schimbăm starea, CSS schimbă aspectul</h2>
+
+<p>Păstrăm culorile în CSS și folosim JavaScript pentru a adăuga sau scoate clase.</p>
+<pre><code>.mod-seara {
+  background: #20162c;
+  color: #f8fafc;
+}</code></pre>
+<div class="demo" id="demo-stiluri"><div id="scena-demo" class="scena"><h3>Începe filmul</h3><p>Luminile aprinse pentru discuții. Modul seară pentru proiecție.</p><button id="lumina-demo" type="button" aria-pressed="false">Activează modul seară</button></div></div>
+<pre><code>const scena = document.getElementById("scena-demo");
+const lumina = document.getElementById("lumina-demo");
+
+lumina.addEventListener("click", function () {
+  const esteSeara = scena.classList.toggle("mod-seara");
+  lumina.setAttribute("aria-pressed", String(esteSeara));
+  lumina.textContent = esteSeara ? "Aprinde luminile" : "Activează modul seară";
+});</code></pre>
+<ul><li><code>classList.add("mod-seara")</code> adaugă clasa.</li><li><code>classList.remove("mod-seara")</code> o elimină.</li><li><code>classList.toggle("mod-seara")</code> alternează starea și returnează dacă acum clasa există.</li><li><code>classList.contains("mod-seara")</code> verifică dacă există.</li></ul>
+<p><code>aria-pressed</code> comunică și cititoarelor de ecran dacă butonul de tip comutator este activ. Schimbăm și eticheta butonului, pentru ca acțiunea următoare să fie clară.</p>
+<p>Putem schimba și un stil punctual: <code>scena.style.fontSize = "20px"</code>. Proprietatea CSS <code>font-size</code> se scrie <code>fontSize</code> în JavaScript. Pentru un set de reguli, o clasă rămâne mai ușor de întreținut.</p>
+</section>
+<section id="creare">
+<h2>7. createElement și remove: lista de filme se construiește singură</h2>
+
+<p>Un element creat în JavaScript nu apare automat pe pagină. Îl creăm, îi dăm conținut, apoi îl atașăm unui părinte.</p>
+<pre><code>const lista = document.getElementById("lista-filme");
+const rand = document.createElement("li");
+rand.textContent = "Drum spre Marte";
+lista.appendChild(rand);
+// rand.remove(); // Ar elimina acel rând din pagină.</code></pre>
+<div class="demo" id="demo-lista"><h3>Ce vedem în weekend?</h3><form id="lista-form" novalidate><label for="titlu-film">Titlul filmului</label><div class="controale"><input id="titlu-film" type="text" maxlength="60" required aria-describedby="lista-mesaj" placeholder="De exemplu, Ratatouille" /><button type="submit">Adaugă filmul</button></div></form>
+<ul id="lista-filme" class="lista-interactiva"></ul><p id="lista-mesaj" aria-live="polite">Lista este goală. Adaugă primul film.</p></div>
+<p>Formularul funcționează și când apeși Enter. Fiecare film primește propriul buton de ștergere.</p>
+<pre><code>const formular = document.getElementById("lista-form");
+const titluInput = document.getElementById("titlu-film");
+const lista = document.getElementById("lista-filme");
+const listaMesaj = document.getElementById("lista-mesaj");
+
+formular.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const titlu = titluInput.value.trim();
+  if (titlu === "") {
+    listaMesaj.textContent = "Scrie mai întâi titlul unui film.";
+    titluInput.setAttribute("aria-invalid", "true");
+    titluInput.focus();
+    return;
+  }
+  titluInput.removeAttribute("aria-invalid");
+  const rand = document.createElement("li");
+  const text = document.createElement("span");
+  text.textContent = titlu;
+  const sterge = document.createElement("button");
+  sterge.type = "button";
+  sterge.textContent = "Șterge";
+  sterge.setAttribute("aria-label", `Șterge filmul ${titlu}`);
+  sterge.addEventListener("click", function () {
+    rand.remove();
+    listaMesaj.textContent = `Filme în listă: ${lista.children.length}`;
+    titluInput.focus();
+  });
+  rand.appendChild(text);
+  rand.appendChild(sterge);
+  lista.appendChild(rand);
+  listaMesaj.textContent = `Filme în listă: ${lista.children.length}`;
+  titluInput.value = "";
+  titluInput.focus();
+});</code></pre>
+<ol><li><code>preventDefault()</code> oprește trimiterea obișnuită a formularului, ca pagina să nu fie reîncărcată.</li><li>Refuzăm un titlu gol sau format doar din spații.</li><li>Creăm un <code>li</code>, un <code>span</code> și un <code>button</code>.</li><li>Funcția de pe buton păstrează accesul la rândul creat la acel apel, deci îl șterge pe cel potrivit.</li><li>Atașăm elementele, numărăm copiii listei și golim câmpul.</li></ol>
+<details><summary>De recunoscut: alte operații cu noduri</summary>
+<pre><code>const lista = document.createElement("ul");
+const vechi = document.createElement("li");
+vechi.textContent = "Film vechi";
+lista.appendChild(vechi);
+
+const primul = document.createElement("li");
+primul.appendChild(document.createTextNode("Primul film"));
+lista.insertBefore(primul, vechi); // Înainte de copilul indicat.
+
+const nou = document.createElement("li");
+nou.textContent = "Film nou";
+lista.replaceChild(nou, vechi);   // Mai întâi noul, apoi vechiul copil.
+lista.removeChild(primul);        // Elimină un copil direct.
+// Lista din acest exemplu rămâne în memorie: nu am atașat-o paginii.</code></pre>
+<p><code>appendChild</code> adaugă la final. Dacă nodul există deja în alt loc, îl mută, nu creează o copie.</p></details>
+</section>
+<section id="navigare-dom">
+<h2>8. Navigăm prin DOM: părinți, copii și frați</h2>
+
+<p>După ce găsim un element, putem afla cine este lângă el fără să reluăm căutarea în toată pagina.</p>
+<pre><code>const film = document.getElementById("film-spatiu");
+console.log(film.parentElement.id);                   // "filme-demo"
+console.log(film.previousElementSibling.textContent); // 🍿 Pauză de râs
+console.log(film.nextElementSibling.textContent);     // 🐈 Pisica regizor
+console.log(film.parentElement.children.length);      // 3
+console.log(film.closest(".demo").id);                // "demo-selectori"</code></pre>
+<ul><li><code>parentElement</code>: părintele element.</li><li><code>children</code>: doar copiii care sunt elemente.</li><li><code>firstElementChild</code> / <code>lastElementChild</code>: primul / ultimul copil element.</li><li><code>previousElementSibling</code> / <code>nextElementSibling</code>: fratele element anterior / următor.</li><li><code>closest(selector)</code>: verifică elementul curent, apoi urcă spre părinți până la prima potrivire.</li></ul>
+<p class="nota">Dacă nu există o potrivire, multe dintre aceste căutări întorc <code>null</code>. <code>firstChild</code> și <code>childNodes</code> includ și noduri text, inclusiv spațiile și liniile noi din HTML. Pentru elemente, folosim variantele cu „Element” sau <code>children</code>.</p>
+</section>
+<section id="evenimente">
+<h2>9. Evenimente: pagina ascultă acțiunile utilizatorului</h2>
+
+<p>Un <strong>eveniment</strong> anunță că s-a întâmplat ceva. Un <strong>listener</strong> este funcția pe care o conectăm ca să reacționeze.</p>
+<pre><code>const buton = document.getElementById("continua-demo");
+function anuntaClickul(event) {
+  console.log("Am primit evenimentul:", event.type);
+}
+buton.addEventListener("click", anuntaClickul);</code></pre>
+<p>Trimitem funcția fără <code>()</code>, ca să fie apelată la eveniment. Browserul îi oferă obiectul <code>event</code>, cu informații despre ce s-a întâmplat.</p>
+<ul><li><code>click</code>: activarea unui buton cu mouse-ul, atingerea sau tastatura.</li><li><code>input</code>: editarea valorii unui câmp, pe măsură ce se schimbă.</li><li><code>change</code>: alegerea unei opțiuni din select sau schimbarea unei bife; la un câmp text apare de obicei la confirmarea modificării prin ieșirea din câmp.</li><li><code>submit</code>: trimiterea formularului, inclusiv prin Enter.</li><li><code>keydown</code>: apăsarea unei taste; <code>event.key</code> spune care.</li></ul>
+<p><code>addEventListener</code> permite mai multe funcții pentru același tip de eveniment. Atribuirea la <code>onclick</code> înlocuiește funcția din acea proprietate. În lecție folosim <code>addEventListener</code>.</p>
+<h3>Cum oprim un listener?</h3>
+<p>Cu <code>removeEventListener</code>, folosind <strong>aceeași funcție</strong> și același tip de eveniment. O funcție nouă, chiar cu același cod, nu o elimină pe cea veche. Dacă ai setat opțiunea <code>capture</code>, și aceasta trebuie să coincidă.</p>
+<div class="demo" id="demo-ascultare"><h3>Aplauze cu pauză</h3><div class="controale"><button id="aplauze-demo" type="button">Aplaudă 👏</button><button id="pauza-demo" class="secundar" type="button">Oprește ascultarea</button><button id="reia-demo" class="secundar" type="button" disabled>Reia ascultarea</button></div><p id="aplauze-mesaj" aria-live="polite">Aplauze: 0</p></div>
+<pre><code>const aplauze = document.getElementById("aplauze-demo");
+const pauza = document.getElementById("pauza-demo");
+const reia = document.getElementById("reia-demo");
+const aplauzeMesaj = document.getElementById("aplauze-mesaj");
+let numarAplauze = 0;
+
+function numaraAplauze() {
+  numarAplauze++;
+  aplauzeMesaj.textContent = `Aplauze: ${numarAplauze}`;
+}
+aplauze.addEventListener("click", numaraAplauze);
+
+pauza.addEventListener("click", function () {
+  aplauze.removeEventListener("click", numaraAplauze);
+  aplauzeMesaj.textContent = `Pauză la ${numarAplauze}. Clickurile nu mai sunt numărate.`;
+  pauza.disabled = true;
+  reia.disabled = false;
+});
+reia.addEventListener("click", function () {
+  aplauze.addEventListener("click", numaraAplauze);
+  aplauzeMesaj.textContent = `Ascultăm din nou. Aplauze: ${numarAplauze}`;
+  pauza.disabled = false;
+  reia.disabled = true;
+});</code></pre>
+<p>După oprire, butonul poate fi apăsat, dar funcția care numără nu mai este conectată. La reluare, conectăm aceeași funcție, iar contorul continuă.</p>
+</section>
+<section id="delegare">
+<h2>10. Un singur listener pentru mai multe butoane</h2>
+
+<p>Un click poate urca de la elementul apăsat spre părinții lui. Acest comportament se numește <strong>bubbling</strong>. Îl folosim pentru <strong>delegare</strong>: ascultăm pe container și aflăm ce copil a fost apăsat.</p>
+<pre><code>&lt;div id="zona-click"&gt;
+  &lt;button class="gustare" data-produs="Popcorn" type="button"&gt;
+    &lt;span&gt;🍿 Popcorn&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+<div class="demo" id="demo-delegare"><h3>Pe buton sau pe textul din el?</h3><p>Apasă direct pe text, apoi pe marginea unui buton și observă rezultatul.</p><div id="zona-click" class="zona-click"><button class="gustare" data-produs="Popcorn" type="button"><span>🍿 Popcorn</span></button><button class="gustare" data-produs="Limonadă" type="button"><span>🍋 Limonadă</span></button></div><p id="urma-click" class="rezultat" aria-live="polite">Aștept un click.</p></div>
+<pre><code>const zona = document.getElementById("zona-click");
+const urma = document.getElementById("urma-click");
+
+zona.addEventListener("click", function (event) {
+  const buton = event.target.closest(".gustare");
+  if (buton === null) {
+    urma.textContent = "Ai apăsat spațiul dintre butoane. Nu alegem nimic.";
+    return;
+  }
+  urma.textContent = `target: ${event.target.tagName}; currentTarget: ${event.currentTarget.tagName}; alegere: ${buton.dataset.produs}`;
+});</code></pre>
+<ul><li><code>event.target</code> este elementul de la care a pornit clickul. Poate fi <code>span</code>-ul din buton.</li><li><code>event.currentTarget</code> este elementul pe care am conectat listenerul: containerul <code>div</code>.</li><li><code>closest(".gustare")</code> găsește butonul, chiar dacă am apăsat pe copilul său.</li><li><code>data-produs</code> păstrează o informație simplă în HTML; o citim prin <code>dataset.produs</code>.</li></ul>
+<p>Un click pe spațiul gol nu găsește un buton, deci ieșim prin <code>return</code>. <code>preventDefault()</code> oprește acțiunea implicită, precum trimiterea unui formular; nu oprește propagarea evenimentului.</p>
+<p class="nota">Delegarea funcționează și pentru butoane adăugate ulterior în container. Nu trebuie să conectăm un listener separat fiecărui buton nou. Vom folosi același principiu pentru cele 48 de locuri din sală.</p>
+</section>
+<section id="verificare">
+<h2>11. Trei întrebări înainte de workshop</h2>
+
+<details><summary>De ce primesc „Cannot read properties of null”?</summary><p>Selectorul nu a găsit un element. Verifică ID-ul, diferența dintre <code>getElementById("nume")</code> și <code>querySelector("#nume")</code>, apoi prezența lui <code>defer</code>. Verifică și dacă acel element chiar există pe pagina curentă.</p></details>
+<details><summary>De ce nu se actualizează lungimea unui querySelectorAll mai vechi?</summary><p>Lista este statică. Apelează din nou <code>querySelectorAll()</code> când vrei potrivirile actuale. În workshop vom căuta locurile selectate în interiorul funcției de actualizare.</p></details>
+<details><summary>Cum evit să selectez și scaunul verde din legendă?</summary><p>Caut doar în sala cu locuri: <code>container.querySelectorAll(".seat.selected")</code>. Un selector limitat la container nu include elemente decorative din afara lui.</p></details>
+</section>
+<section id="movie-tickets">
+<h2>12. Movie Tickets: toate piesele în aceeași aplicație</h2>
+
+<p>Avem patru filme, fiecare cu un preț, și o sală cu <strong>6 rânduri × 8 locuri = 48 de locuri</strong>. Nouă locuri sunt deja ocupate. Selectăm locurile libere, le putem deselecta și vedem totalul imediat.</p>
+<ol><li>Fiecare opțiune din select păstrează prețul în <code>value</code>.</li><li>Un loc ales primește clasa <code>selected</code>.</li><li>Numărul de bilete este numărul locurilor selectate.</li><li><strong>Total = număr bilete × preț bilet.</strong></li></ol>
+<p>În acest demo, schimbarea filmului păstrează selecția și schimbă prețul. Este un exercițiu de interfață, cu o hartă fixă de locuri ocupate.</p>
+<iframe class="cinema-demo" src="exemple-dom/movie-tickets.html" title="Movie Tickets: alege filmul și locurile, calculează totalul"></iframe>
+<p><a href="exemple-dom/movie-tickets.html">Deschide Movie Tickets separat, la mărime completă →</a></p>
+<nav aria-label="Etapele Movie Tickets"><ol start="0">
+<li><a href="#movie-pas-0">Pregătim cele trei fișiere</a></li>
+<li><a href="#movie-pas-1">Selectul, legenda și rezumatul</a></li>
+<li><a href="#movie-pas-2">Cele șase rânduri de locuri</a></li>
+<li><a href="#movie-pas-3">Culorile celor trei stări</a></li>
+<li><a href="#movie-pas-4">Găsim elementele în JavaScript</a></li>
+<li><a href="#movie-pas-5">Funcția de actualizare</a></li>
+<li><a href="#movie-pas-6">Clickul pe un loc</a></li>
+<li><a href="#movie-pas-7">Schimbarea filmului</a></li>
+<li><a href="#movie-pas-8">Golirea selecției</a></li>
+<li><a href="#movie-pas-9">Pornirea și verificările finale</a></li>
+</ol></nav>
+</section>
+<section id="movie-pas-0">
+<h2>Movie Tickets · Pasul 0: trei fișiere, trei roluri</h2>
+
+<p>Creează un folder <code>movie-tickets</code> cu următoarele fișiere, apoi deschide HTML-ul în browser:</p>
+<pre><code>movie-tickets/
+  movie-tickets.html
+  movie-tickets.css
+  movie-tickets.js</code></pre>
+<ul><li><strong>HTML:</strong> filmul, locurile, legenda și textele cu rezultatele.</li><li><strong>CSS:</strong> așezarea și aspectul locurilor libere, alese sau ocupate.</li><li><strong>JavaScript:</strong> selecția, numărarea și calculul.</li></ul>
+<p>Începem <code>movie-tickets.html</code> astfel. Înlocuiește comentariul din <code>main</code> cu elementele din pașii 1 și 2.</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang="ro"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Movie Tickets&lt;/title&gt;
+    &lt;link rel="stylesheet" href="movie-tickets.css" /&gt;
+    &lt;script src="movie-tickets.js" defer&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Movie Tickets&lt;/h1&gt;
+      &lt;!-- Aici adăugăm interfața din pașii 1 și 2. --&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p class="nota">La pașii 4–9 adaugi codul în același fișier JavaScript, în ordinea prezentată. La final găsești și cele trei fișiere complete, ca să nu fie nevoie să reconstruiești proiectul din fragmente.</p>
+</section>
+<section id="movie-pas-1">
+<h2>Pasul 1: filmul și locurile pentru rezultate</h2>
+
+<p>Adaugă selectul, legenda și ecranul. Prețurile sunt demonstrative, în lei.</p>
+<pre><code>&lt;div class="movie-container"&gt;
+        &lt;label for="movie"&gt;Alege filmul&lt;/label&gt;
+        &lt;select id="movie"&gt;
+          &lt;option value="10"&gt;Rocky — 10 lei&lt;/option&gt;
+          &lt;option value="12"&gt;Joker — 12 lei&lt;/option&gt;
+          &lt;option value="8"&gt;Home Alone — 8 lei&lt;/option&gt;
+          &lt;option value="9"&gt;The Lord of the Rings — 9 lei&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;ul class="legend" aria-label="Legenda locurilor"&gt;
+        &lt;li&gt;&lt;span class="swatch free" aria-hidden="true"&gt;&lt;/span&gt;Liber&lt;/li&gt;
+        &lt;li&gt;&lt;span class="swatch selected" aria-hidden="true"&gt;✓&lt;/span&gt;Selectat&lt;/li&gt;
+        &lt;li&gt;&lt;span class="swatch occupied" aria-hidden="true"&gt;×&lt;/span&gt;Ocupat&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;p class="screen"&gt;ECRAN&lt;/p&gt;</code></pre>
+<p>După acestea vom așeza sala din pasul 2, apoi rezumatul de mai jos:</p>
+<pre><code>&lt;div class="summary" role="status" aria-live="polite" aria-atomic="true"&gt;
+        &lt;p&gt;Preț / bilet: &lt;strong&gt;&lt;span id="price"&gt;10&lt;/span&gt; lei&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Bilete selectate: &lt;strong id="count"&gt;0&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Total: &lt;strong&gt;&lt;span id="total"&gt;0&lt;/span&gt; lei&lt;/strong&gt;&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;button id="reset" type="button"&gt;Golește selecția&lt;/button&gt;</code></pre>
+<ul><li><code>label for="movie"</code> este legat de selectul cu <code>id="movie"</code>.</li><li>Textele afișate sunt numele filmelor; valorile <code>10</code>, <code>12</code>, <code>8</code> și <code>9</code> sunt prețurile.</li><li><code>price</code>, <code>count</code> și <code>total</code> sunt ID-urile pe care le va actualiza JavaScript.</li><li><code>role="status"</code> și <code>aria-live="polite"</code> permit anunțarea discretă a rezultatului. <code>aria-atomic="true"</code> cere citirea rezumatului ca întreg.</li></ul>
+<p class="nota"><strong>Verifică:</strong> selectul se deschide și poți alege orice film. Totalul rămâne încă 0: nu am conectat JavaScript.</p>
+</section>
+<section id="movie-pas-2">
+<h2>Pasul 2: construim sala, rând cu rând</h2>
+
+<p>Între ecran și rezumat adaugă un container <code>&lt;div id="seats"&gt;</code>. În el punem șase rânduri. Iată primul rând complet:</p>
+<pre><code>&lt;div id="seats"&gt;
+        &lt;div class="row" role="group" aria-label="Rândul A"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A1" aria-pressed="false"&gt;&lt;span&gt;A1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A2" aria-pressed="false"&gt;&lt;span&gt;A2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A3" aria-pressed="false"&gt;&lt;span&gt;A3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A4" aria-pressed="false"&gt;&lt;span&gt;A4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A5" aria-pressed="false"&gt;&lt;span&gt;A5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A6" aria-pressed="false"&gt;&lt;span&gt;A6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A7" aria-pressed="false"&gt;&lt;span&gt;A7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A8" aria-pressed="false"&gt;&lt;span&gt;A8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+  &lt;!-- Adaugă aici încă 5 rânduri: B, C, D, E și F. --&gt;
+&lt;/div&gt;</code></pre>
+<p>Copiază <code>div.row</code> de cinci ori, în același container. Schimbă litera în eticheta rândului, în textul fiecărui buton și în <code>aria-label</code>: B1…B8, apoi C1…C8, până la F1…F8.</p>
+<h3>Un loc ocupat</h3>
+<pre><code>&lt;button class="seat occupied" type="button"
+        aria-label="Locul B4, ocupat" disabled&gt;
+  &lt;span&gt;B4&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+<p>Înlocuiește butoanele B4, B5, C7, C8, E4, E5, F4, F5 și F7 cu această variantă, schimbând numele locului. Ai <strong>9 ocupate și 39 libere</strong>. În fișierul complet de la final sunt deja scrise toate cele 48 de butoane.</p>
+<ul><li>Folosim <code>button</code>, pentru click, focus și activare cu Enter sau Space.</li><li><code>disabled</code> blochează interacțiunea cu un loc ocupat.</li><li><code>aria-pressed="false"</code> marchează un loc liber încă neselectat; îl schimbăm la <code>true</code> când îl alegem.</li><li><code>span</code>-ul conține codul locului. Ne ajută să vedem de ce <code>closest()</code> este util la click.</li></ul>
+<p class="nota"><strong>Verifică:</strong> ai șase rânduri a câte opt butoane. Butoanele ocupate sunt dezactivate, iar cele libere pot primi focus cu Tab.</p>
+</section>
+<section id="movie-pas-3">
+<h2>Pasul 3: CSS arată cele trei stări</h2>
+
+<p>Locul liber este deschis la culoare, cel selectat este verde, iar cel ocupat are și semnul ×. Folosim și simboluri, nu doar culori.</p>
+<pre><code>.row { display: flex; gap: 4px; margin: 8px 0; }
+.seat {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 12px 12px 4px 4px;
+  background: #ede3f5;
+}
+.seat.selected { background: #a7f3d0; }
+.seat.occupied { background: #6b596e; cursor: not-allowed; }</code></pre>
+<p><code>.seat.selected</code> înseamnă același element cu ambele clase. <code>.seat .selected</code>, cu spațiu, ar căuta un descendent și ar însemna altceva.</p>
+<p>În CSS-ul complet, <code>:nth-child(2)</code> și <code>:nth-child(7)</code> creează mici culoare între grupurile de locuri, iar <code>:focus-visible</code> evidențiază focusul tastaturii.</p>
+<details><summary>Copiază CSS-ul complet în movie-tickets.css</summary><pre><code id="movie-css-complet">* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  color: #f8fafc;
+  background: #20162c;
+}
+main { max-width: 540px; margin: 0 auto; }
+h1 { margin: 0 0 8px; font-size: 28px; }
+a { color: #e4cbff; }
+label { display: block; font-weight: bold; margin-bottom: 6px; }
+select, button { font: inherit; }
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid #cab2de;
+  border-radius: 6px;
+  background: white;
+  color: #20162c;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.legend li { display: flex; align-items: center; gap: 6px; }
+.swatch { width: 20px; height: 20px; border-radius: 6px 6px 2px 2px; text-align: center; }
+.swatch.free { background: #ede3f5; color: #20162c; }
+.swatch.selected { background: #a7f3d0; color: #064e3b; }
+.swatch.occupied { background: #6b596e; color: white; }
+.screen {
+  margin: 22px 0;
+  padding: 6px;
+  text-align: center;
+  color: #20162c;
+  background: #f1e8fa;
+  border-radius: 50% 50% 4px 4px;
+  letter-spacing: 3px;
+}
+.row { display: flex; gap: 4px; margin: 8px 0; }
+.seat {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 3px 0;
+  border: 2px solid transparent;
+  border-radius: 12px 12px 4px 4px;
+  color: #291936;
+  background: #ede3f5;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.seat:nth-child(2) { margin-right: 6px; }
+.seat:nth-child(7) { margin-left: 6px; }
+.seat.selected { background: #a7f3d0; color: #064e3b; border-color: #34d399; }
+.seat.selected::after { content: "✓"; display: block; font-size: 11px; }
+.seat.occupied { background: #6b596e; color: white; cursor: not-allowed; opacity: 1; }
+.seat.occupied::after { content: "×"; display: block; font-size: 11px; }
+.seat:not(:disabled):hover { border-color: #c084fc; }
+:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
+.summary { margin: 20px 0 12px; padding: 12px; border: 1px solid #897097; border-radius: 8px; }
+.summary p { margin: 4px 0; }
+.summary strong { color: #a7f3d0; }
+#reset {
+  min-height: 44px;
+  padding: 8px 14px;
+  color: #20162c;
+  background: #ede3f5;
+  border: 1px solid #cab2de;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.hint { color: #e0d1e9; font-size: 14px; }
+@media (max-width: 350px) {
+  body { padding: 12px; }
+}</code></pre></details>
+<p class="nota"><strong>Verifică:</strong> sala încape pe ecran, iar cele trei stări se disting. Poți pune temporar clasa <code>selected</code> pe un loc liber ca să-i vezi stilul, apoi o elimini înainte de pasul următor.</p>
+</section>
+<section id="movie-pas-4">
+<h2>Pasul 4: găsim piesele în JavaScript</h2>
+
+<p>Începem fișierul <code>movie-tickets.js</code> cu referințe către elementele de care avem nevoie:</p>
+<pre><code id="movie-js-pas-4">// Pasul 4: găsim elementele și citim prețul inițial.
+const container = document.getElementById("seats");
+const count = document.getElementById("count");
+const total = document.getElementById("total");
+const movieSelect = document.getElementById("movie");
+const price = document.getElementById("price");
+const resetButton = document.getElementById("reset");
+let ticketPrice = Number(movieSelect.value);</code></pre>
+<p>Elementele sunt păstrate în <code>const</code>: vom modifica proprietățile lor, nu vom reatribui variabilele. <code>ticketPrice</code> folosește <code>let</code>, pentru că se schimbă atunci când alegem alt film.</p>
+<p><code>movieSelect.value</code> este text, de exemplu <code>"10"</code>. <code>Number()</code> îl transformă în numărul <code>10</code>, pe care îl folosim la calcule.</p>
+<p class="nota"><strong>Verifică în consolă:</strong> <code>console.log(container, ticketPrice)</code> trebuie să arate containerul sălii și prețul. Dacă primești <code>null</code>, verifică ID-ul și atributul <code>defer</code>.</p>
+</section>
+<section id="movie-pas-5">
+<h2>Pasul 5: o singură funcție actualizează rezumatul</h2>
+
+<p>În loc să repetăm calculul în fiecare listener, scriem o funcție și o apelăm după orice schimbare relevantă.</p>
+<pre><code id="movie-js-pas-5">// Pasul 5: aceeași funcție actualizează toate valorile afișate.
+function updateSelectedCount() {
+  const selectedSeats = container.querySelectorAll(".seat.selected");
+  const selectedSeatsCount = selectedSeats.length;
+  count.textContent = selectedSeatsCount;
+  price.textContent = ticketPrice;
+  total.textContent = selectedSeatsCount * ticketPrice;
+}</code></pre>
+<ol><li>Căutăm <code>.seat.selected</code> numai în sala <code>container</code>.</li><li><code>length</code> spune câte locuri sunt alese.</li><li>Scriem numărul și prețul în elementele pregătite în HTML.</li><li>Înmulțim cantitatea cu prețul și afișăm totalul.</li></ol>
+<p>Căutarea este <strong>în interiorul funcției</strong>, deci se repetă la fiecare actualizare. Dacă am păstra o listă statică a locurilor selectate doar la pornire, ar rămâne goală chiar după clickuri.</p>
+<p class="nota"><strong>Verifică:</strong> apelează temporar <code>updateSelectedCount()</code>. Cu zero locuri selectate, numărul și totalul sunt 0. Definirea funcției, singură, nu o execută.</p>
+</section>
+<section id="movie-pas-6">
+<h2>Pasul 6: click pe loc → schimbare de clasă → recalculare</h2>
+
+<p>Conectăm listenerul la containerul sălii. El primește și clickurile care pornesc din butoanele din interior.</p>
+<pre><code id="movie-js-pas-6">// Pasul 6: un singur listener pentru toate locurile.
+container.addEventListener("click", function (event) {
+  const seat = event.target.closest(".seat");
+  if (seat === null || seat.classList.contains("occupied") || seat.disabled) {
+    return;
+  }
+  const isSelected = seat.classList.toggle("selected");
+  seat.setAttribute("aria-pressed", String(isSelected));
+  updateSelectedCount();
+});</code></pre>
+<ol><li><code>closest(".seat")</code> găsește butonul, chiar dacă <code>target</code> este textul din <code>span</code>.</li><li>Dacă nu am apăsat un loc sau locul este ocupat/dezactivat, ieșim imediat.</li><li><code>toggle("selected")</code> selectează sau deselectează locul.</li><li>Actualizăm <code>aria-pressed</code> în același timp cu starea vizuală.</li><li>Apelăm funcția care recalculează rezumatul.</li></ol>
+<p>Nu creștem manual un contor la fiecare click. Numărăm locurile care au clasa potrivită acum, astfel încât și deselectarea să fie tratată corect.</p>
+<p class="nota"><strong>Verifică:</strong> cu Rocky la 10 lei, alege A1 și A2: 2 bilete, 20 lei. Apasă iar A1: 1 bilet, 10 lei. Un loc ocupat nu schimbă nimic.</p>
+</section>
+<section id="movie-pas-7">
+<h2>Pasul 7: alt film, alt preț</h2>
+<pre><code id="movie-js-pas-7">// Pasul 7: schimbarea filmului actualizează prețul și totalul.
+movieSelect.addEventListener("change", function () {
+  ticketPrice = Number(movieSelect.value);
+  updateSelectedCount();
+});</code></pre>
+<p><code>change</code> apare când utilizatorul schimbă opțiunea selectată. Citim noul preț, apoi actualizăm totalul pentru locurile care sunt deja alese.</p>
+<p>Ordinea contează: mai întâi schimbăm <code>ticketPrice</code>, apoi calculăm. Dacă am apela funcția înaintea atribuirii, am afișa totalul cu prețul vechi.</p>
+<p class="nota"><strong>Verifică:</strong> păstrează două locuri selectate și schimbă Rocky cu Joker. Numărul rămâne 2, prețul devine 12 lei, iar totalul este 24 lei.</p>
+</section>
+<section id="movie-pas-8">
+<h2>Pasul 8: golim selecția</h2>
+<pre><code id="movie-js-pas-8">// Pasul 8: golim selecția, păstrând filmul ales.
+resetButton.addEventListener("click", function () {
+  const selectedSeats = container.querySelectorAll(".seat.selected");
+  for (const seat of selectedSeats) {
+    seat.classList.remove("selected");
+    seat.setAttribute("aria-pressed", "false");
+  }
+  updateSelectedCount();
+});</code></pre>
+<p>Căutăm locurile selectate și le eliminăm clasa, unul câte unul. Actualizăm și starea anunțată de cititoarele de ecran. Recalculăm rezumatul o singură dată, după buclă.</p>
+<p>Butonul „Golește selecția” păstrează filmul ales și locurile ocupate. Dacă selecția era deja goală, bucla nu are elemente de parcurs și rezultatul rămâne 0.</p>
+<p class="nota"><strong>Verifică:</strong> după golire, nu mai ai locuri verzi, numărul și totalul sunt 0, iar cele nouă locuri ocupate rămân blocate.</p>
+</section>
+<section id="movie-pas-9">
+<h2>Pasul 9: pornirea și verificarea întregului traseu</h2>
+<pre><code id="movie-js-pas-9">// Pasul 9: sincronizăm afișajul și la pornire.
+updateSelectedCount();</code></pre>
+<p>Ultimul apel sincronizează afișajul cu filmul ales și starea locurilor de la pornire.</p>
+<div class="traseu"><span>Alegi un loc</span><span>Clickul ajunge la container</span><span>Clasa selected se schimbă</span><span>Funcția numără și calculează</span><span>textContent actualizează pagina</span></div>
+<h3>Testează ca un utilizator</h3>
+<ol><li>La pornire: 0 bilete, total 0.</li><li>Rocky + două locuri libere: 2 × 10 = 20 lei.</li><li>Schimbă cu Joker: 2 × 12 = 24 lei.</li><li>Deselectează un loc: 1 × 12 = 12 lei.</li><li>Apasă pe un loc ocupat, pe ecran sau pe spațiul dintre rânduri: selecția rămâne aceeași.</li><li>Golește selecția: 0 bilete, total 0.</li><li>Cu Tab ajungi la un loc liber; Enter sau Space trebuie să-l selecteze o singură dată.</li><li>Verifică și pe telefon. Butoanele și rezumatul trebuie să rămână lizibile.</li></ol>
+<p class="nota">Aplicația folosește DOM-ul drept evidență a selecției: clasa <code>selected</code> spune ce este ales. Nu avem nevoie de un array separat de locuri alese pentru acest exercițiu.</p>
+</section>
+<section id="movie-cod-complet">
+<h2>Movie Tickets · Cele trei fișiere complete</h2>
+
+<p>Aici este exact codul demo-ului. Poți înlocui conținutul celor trei fișiere cu versiunile de mai jos. Nu adăuga și codul complet peste fragmentele deja copiate în JavaScript: ai declara aceleași variabile de două ori.</p>
+<details><summary>movie-tickets.html — structura completă, inclusiv toate locurile</summary><pre><code id="movie-html-complet">&lt;!doctype html&gt;
+&lt;html lang="ro"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Movie Tickets - alege-ți locul&lt;/title&gt;
+    &lt;link rel="stylesheet" href="movie-tickets.css" /&gt;
+    &lt;script src="movie-tickets.js" defer&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Movie Tickets&lt;/h1&gt;
+      &lt;p&gt;Tu alegi locurile, JavaScript face totalul.&lt;/p&gt;
+      &lt;div class="movie-container"&gt;
+        &lt;label for="movie"&gt;Alege filmul&lt;/label&gt;
+        &lt;select id="movie"&gt;
+          &lt;option value="10"&gt;Rocky — 10 lei&lt;/option&gt;
+          &lt;option value="12"&gt;Joker — 12 lei&lt;/option&gt;
+          &lt;option value="8"&gt;Home Alone — 8 lei&lt;/option&gt;
+          &lt;option value="9"&gt;The Lord of the Rings — 9 lei&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;ul class="legend" aria-label="Legenda locurilor"&gt;
+        &lt;li&gt;&lt;span class="swatch free" aria-hidden="true"&gt;&lt;/span&gt;Liber&lt;/li&gt;
+        &lt;li&gt;&lt;span class="swatch selected" aria-hidden="true"&gt;✓&lt;/span&gt;Selectat&lt;/li&gt;
+        &lt;li&gt;&lt;span class="swatch occupied" aria-hidden="true"&gt;×&lt;/span&gt;Ocupat&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;p class="screen"&gt;ECRAN&lt;/p&gt;
+      &lt;div id="seats" role="group" aria-label="Sala de cinema, 6 rânduri a câte 8 locuri"&gt;
+        &lt;div class="row" role="group" aria-label="Rândul A"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A1" aria-pressed="false"&gt;&lt;span&gt;A1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A2" aria-pressed="false"&gt;&lt;span&gt;A2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A3" aria-pressed="false"&gt;&lt;span&gt;A3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A4" aria-pressed="false"&gt;&lt;span&gt;A4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A5" aria-pressed="false"&gt;&lt;span&gt;A5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A6" aria-pressed="false"&gt;&lt;span&gt;A6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A7" aria-pressed="false"&gt;&lt;span&gt;A7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul A8" aria-pressed="false"&gt;&lt;span&gt;A8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="row" role="group" aria-label="Rândul B"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul B1" aria-pressed="false"&gt;&lt;span&gt;B1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul B2" aria-pressed="false"&gt;&lt;span&gt;B2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul B3" aria-pressed="false"&gt;&lt;span&gt;B3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul B4, ocupat" disabled&gt;&lt;span&gt;B4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul B5, ocupat" disabled&gt;&lt;span&gt;B5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul B6" aria-pressed="false"&gt;&lt;span&gt;B6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul B7" aria-pressed="false"&gt;&lt;span&gt;B7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul B8" aria-pressed="false"&gt;&lt;span&gt;B8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="row" role="group" aria-label="Rândul C"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul C1" aria-pressed="false"&gt;&lt;span&gt;C1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul C2" aria-pressed="false"&gt;&lt;span&gt;C2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul C3" aria-pressed="false"&gt;&lt;span&gt;C3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul C4" aria-pressed="false"&gt;&lt;span&gt;C4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul C5" aria-pressed="false"&gt;&lt;span&gt;C5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul C6" aria-pressed="false"&gt;&lt;span&gt;C6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul C7, ocupat" disabled&gt;&lt;span&gt;C7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul C8, ocupat" disabled&gt;&lt;span&gt;C8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="row" role="group" aria-label="Rândul D"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D1" aria-pressed="false"&gt;&lt;span&gt;D1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D2" aria-pressed="false"&gt;&lt;span&gt;D2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D3" aria-pressed="false"&gt;&lt;span&gt;D3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D4" aria-pressed="false"&gt;&lt;span&gt;D4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D5" aria-pressed="false"&gt;&lt;span&gt;D5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D6" aria-pressed="false"&gt;&lt;span&gt;D6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D7" aria-pressed="false"&gt;&lt;span&gt;D7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul D8" aria-pressed="false"&gt;&lt;span&gt;D8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="row" role="group" aria-label="Rândul E"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul E1" aria-pressed="false"&gt;&lt;span&gt;E1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul E2" aria-pressed="false"&gt;&lt;span&gt;E2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul E3" aria-pressed="false"&gt;&lt;span&gt;E3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul E4, ocupat" disabled&gt;&lt;span&gt;E4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul E5, ocupat" disabled&gt;&lt;span&gt;E5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul E6" aria-pressed="false"&gt;&lt;span&gt;E6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul E7" aria-pressed="false"&gt;&lt;span&gt;E7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul E8" aria-pressed="false"&gt;&lt;span&gt;E8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="row" role="group" aria-label="Rândul F"&gt;
+          &lt;button class="seat" type="button" aria-label="Locul F1" aria-pressed="false"&gt;&lt;span&gt;F1&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul F2" aria-pressed="false"&gt;&lt;span&gt;F2&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul F3" aria-pressed="false"&gt;&lt;span&gt;F3&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul F4, ocupat" disabled&gt;&lt;span&gt;F4&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul F5, ocupat" disabled&gt;&lt;span&gt;F5&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul F6" aria-pressed="false"&gt;&lt;span&gt;F6&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat occupied" type="button" aria-label="Locul F7, ocupat" disabled&gt;&lt;span&gt;F7&lt;/span&gt;&lt;/button&gt;
+          &lt;button class="seat" type="button" aria-label="Locul F8" aria-pressed="false"&gt;&lt;span&gt;F8&lt;/span&gt;&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="summary" role="status" aria-live="polite" aria-atomic="true"&gt;
+        &lt;p&gt;Preț / bilet: &lt;strong&gt;&lt;span id="price"&gt;10&lt;/span&gt; lei&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Bilete selectate: &lt;strong id="count"&gt;0&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;Total: &lt;strong&gt;&lt;span id="total"&gt;0&lt;/span&gt; lei&lt;/strong&gt;&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;button id="reset" type="button"&gt;Golește selecția&lt;/button&gt;
+      &lt;p class="hint"&gt;Apasă din nou un loc pentru a-l deselecta. Din tastatură: Tab, apoi Enter sau Space. Schimbarea filmului păstrează locurile selectate.&lt;/p&gt;
+      &lt;p class="hint"&gt;Exercițiu cu prețuri demonstrative. Nu se fac rezervări reale și selecția nu este salvată.&lt;/p&gt;
+      &lt;noscript&gt;&lt;p&gt;Activează JavaScript pentru a selecta locuri și a calcula totalul.&lt;/p&gt;&lt;/noscript&gt;
+      &lt;p&gt;&lt;a href="../js-dom-manipulation.html#movie-tickets" target="_top"&gt;Înapoi la explicația Movie Tickets&lt;/a&gt;&lt;/p&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre></details>
+<details><summary>movie-tickets.css — aspectul complet</summary><pre><code>* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  color: #f8fafc;
+  background: #20162c;
+}
+main { max-width: 540px; margin: 0 auto; }
+h1 { margin: 0 0 8px; font-size: 28px; }
+a { color: #e4cbff; }
+label { display: block; font-weight: bold; margin-bottom: 6px; }
+select, button { font: inherit; }
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid #cab2de;
+  border-radius: 6px;
+  background: white;
+  color: #20162c;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.legend li { display: flex; align-items: center; gap: 6px; }
+.swatch { width: 20px; height: 20px; border-radius: 6px 6px 2px 2px; text-align: center; }
+.swatch.free { background: #ede3f5; color: #20162c; }
+.swatch.selected { background: #a7f3d0; color: #064e3b; }
+.swatch.occupied { background: #6b596e; color: white; }
+.screen {
+  margin: 22px 0;
+  padding: 6px;
+  text-align: center;
+  color: #20162c;
+  background: #f1e8fa;
+  border-radius: 50% 50% 4px 4px;
+  letter-spacing: 3px;
+}
+.row { display: flex; gap: 4px; margin: 8px 0; }
+.seat {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 3px 0;
+  border: 2px solid transparent;
+  border-radius: 12px 12px 4px 4px;
+  color: #291936;
+  background: #ede3f5;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.seat:nth-child(2) { margin-right: 6px; }
+.seat:nth-child(7) { margin-left: 6px; }
+.seat.selected { background: #a7f3d0; color: #064e3b; border-color: #34d399; }
+.seat.selected::after { content: "✓"; display: block; font-size: 11px; }
+.seat.occupied { background: #6b596e; color: white; cursor: not-allowed; opacity: 1; }
+.seat.occupied::after { content: "×"; display: block; font-size: 11px; }
+.seat:not(:disabled):hover { border-color: #c084fc; }
+:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
+.summary { margin: 20px 0 12px; padding: 12px; border: 1px solid #897097; border-radius: 8px; }
+.summary p { margin: 4px 0; }
+.summary strong { color: #a7f3d0; }
+#reset {
+  min-height: 44px;
+  padding: 8px 14px;
+  color: #20162c;
+  background: #ede3f5;
+  border: 1px solid #cab2de;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.hint { color: #e0d1e9; font-size: 14px; }
+@media (max-width: 350px) {
+  body { padding: 12px; }
+}</code></pre></details>
+<details><summary>movie-tickets.js — tot comportamentul, în ordine</summary><pre><code id="movie-js-complet">// Pasul 4: găsim elementele și citim prețul inițial.
+const container = document.getElementById("seats");
+const count = document.getElementById("count");
+const total = document.getElementById("total");
+const movieSelect = document.getElementById("movie");
+const price = document.getElementById("price");
+const resetButton = document.getElementById("reset");
+let ticketPrice = Number(movieSelect.value);
+
+// Pasul 5: aceeași funcție actualizează toate valorile afișate.
+function updateSelectedCount() {
+  const selectedSeats = container.querySelectorAll(".seat.selected");
+  const selectedSeatsCount = selectedSeats.length;
+  count.textContent = selectedSeatsCount;
+  price.textContent = ticketPrice;
+  total.textContent = selectedSeatsCount * ticketPrice;
+}
+
+// Pasul 6: un singur listener pentru toate locurile.
+container.addEventListener("click", function (event) {
+  const seat = event.target.closest(".seat");
+  if (seat === null || seat.classList.contains("occupied") || seat.disabled) {
+    return;
+  }
+  const isSelected = seat.classList.toggle("selected");
+  seat.setAttribute("aria-pressed", String(isSelected));
+  updateSelectedCount();
+});
+
+// Pasul 7: schimbarea filmului actualizează prețul și totalul.
+movieSelect.addEventListener("change", function () {
+  ticketPrice = Number(movieSelect.value);
+  updateSelectedCount();
+});
+
+// Pasul 8: golim selecția, păstrând filmul ales.
+resetButton.addEventListener("click", function () {
+  const selectedSeats = container.querySelectorAll(".seat.selected");
+  for (const seat of selectedSeats) {
+    seat.classList.remove("selected");
+    seat.setAttribute("aria-pressed", "false");
+  }
+  updateSelectedCount();
+});
+
+// Pasul 9: sincronizăm afișajul și la pornire.
+updateSelectedCount();</code></pre></details>
+<p>În proiectul cursului găsești <a href="exemple-dom/movie-tickets.html">pagina funcțională</a>, <a href="exemple-dom/movie-tickets.css">fișierul CSS</a> și <a href="exemple-dom/movie-tickets.js">fișierul JavaScript</a>. Linkul „Înapoi la explicație” din HTML presupune structura de foldere a cursului; îl poți elimina dacă muți exemplul într-un proiect separat.</p>
+</section>
+<section id="teme">
+<h2>Temă simplă: lista pentru seara de film</h2>
+
+<p>Creează o pagină cu un formular pentru titlul unui film și o listă inițial goală.</p>
+<ol><li>La submit, oprește reîncărcarea paginii.</li><li>Verifică titlul după <code>trim()</code>. Dacă este gol, afișează un mesaj.</li><li>Creează un <code>li</code> și afișează titlul cu <code>textContent</code>.</li><li>Adaugă un buton „Văzut”, care alternează clasa <code>vazut</code> pe acel rând. În CSS, clasa taie textul titlului.</li><li>Adaugă un buton „Șterge” și actualizează numărul total de filme.</li></ol>
+<p class="nota">Verificare: adaugi două filme → contorul este 2. Marchezi unul ca văzut → contorul rămâne 2. Ștergi unul → contorul este 1. Un titlu gol nu creează niciun rând.</p>
+</section>
+<section id="tema-cinema">
+<h2>Temă puțin mai complexă: Movie Tickets cu popcorn</h2>
+
+<p>Extinde workshopul cu o opțiune „Popcorn pentru fiecare bilet”, la 5 lei pentru fiecare loc selectat.</p>
+<ol><li>Adaugă un checkbox cu un label clar.</li><li>În funcția de actualizare, citește proprietatea <code>checked</code>.</li><li>Dacă opțiunea este activă, costul extra este <code>numarBilete * 5</code>; altfel este 0.</li><li>Afișează separat subtotalul biletelor, costul popcornului și totalul final.</li><li>Conectează evenimentul <code>change</code> al checkboxului la aceeași funcție de actualizare.</li><li>Verifică selectarea, deselectarea, schimbarea filmului și golirea selecției cu opțiunea bifată.</li></ol>
+<p class="nota">Pentru două locuri la Rocky: bilete 20 lei, popcorn 10 lei, total 30 lei. La Joker: 24 + 10 = 34 lei. Cu zero bilete, costul popcornului este tot 0, chiar dacă opțiunea rămâne bifată.</p>
+<details><summary>Indiciu: calculul suplimentului</summary><pre><code>let costPopcorn = 0;
+if (popcornCheckbox.checked) {
+  costPopcorn = selectedSeatsCount * 5;
+}
+const totalFinal = selectedSeatsCount * ticketPrice + costPopcorn;</code></pre><p>Adaugă fragmentul în funcția care actualizează rezumatul, după ce ai numărat locurile. <code>popcornCheckbox</code> este referința către checkboxul creat de tine.</p></details>
+</section>
+    </main>
+    <footer>
+      <p><a href="JavaScript-Functions.html">&larr; Înapoi la lecția 11 - JavaScript Functions</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>

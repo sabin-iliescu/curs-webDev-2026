@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Tickets - alege-ți locul</title>
+    <link rel="stylesheet" href="movie-tickets.css" />
+    <script src="movie-tickets.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <h1>Movie Tickets</h1>
+      <p>Tu alegi locurile, JavaScript face totalul.</p>
+      <div class="movie-container">
+        <label for="movie">Alege filmul</label>
+        <select id="movie">
+          <option value="10">Rocky — 10 lei</option>
+          <option value="12">Joker — 12 lei</option>
+          <option value="8">Home Alone — 8 lei</option>
+          <option value="9">The Lord of the Rings — 9 lei</option>
+        </select>
+      </div>
+      <ul class="legend" aria-label="Legenda locurilor">
+        <li><span class="swatch free" aria-hidden="true"></span>Liber</li>
+        <li><span class="swatch selected" aria-hidden="true">✓</span>Selectat</li>
+        <li><span class="swatch occupied" aria-hidden="true">×</span>Ocupat</li>
+      </ul>
+      <p class="screen">ECRAN</p>
+      <div id="seats" role="group" aria-label="Sala de cinema, 6 rânduri a câte 8 locuri">
+        <div class="row" role="group" aria-label="Rândul A">
+          <button class="seat" type="button" aria-label="Locul A1" aria-pressed="false"><span>A1</span></button>
+          <button class="seat" type="button" aria-label="Locul A2" aria-pressed="false"><span>A2</span></button>
+          <button class="seat" type="button" aria-label="Locul A3" aria-pressed="false"><span>A3</span></button>
+          <button class="seat" type="button" aria-label="Locul A4" aria-pressed="false"><span>A4</span></button>
+          <button class="seat" type="button" aria-label="Locul A5" aria-pressed="false"><span>A5</span></button>
+          <button class="seat" type="button" aria-label="Locul A6" aria-pressed="false"><span>A6</span></button>
+          <button class="seat" type="button" aria-label="Locul A7" aria-pressed="false"><span>A7</span></button>
+          <button class="seat" type="button" aria-label="Locul A8" aria-pressed="false"><span>A8</span></button>
+        </div>
+        <div class="row" role="group" aria-label="Rândul B">
+          <button class="seat" type="button" aria-label="Locul B1" aria-pressed="false"><span>B1</span></button>
+          <button class="seat" type="button" aria-label="Locul B2" aria-pressed="false"><span>B2</span></button>
+          <button class="seat" type="button" aria-label="Locul B3" aria-pressed="false"><span>B3</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul B4, ocupat" disabled><span>B4</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul B5, ocupat" disabled><span>B5</span></button>
+          <button class="seat" type="button" aria-label="Locul B6" aria-pressed="false"><span>B6</span></button>
+          <button class="seat" type="button" aria-label="Locul B7" aria-pressed="false"><span>B7</span></button>
+          <button class="seat" type="button" aria-label="Locul B8" aria-pressed="false"><span>B8</span></button>
+        </div>
+        <div class="row" role="group" aria-label="Rândul C">
+          <button class="seat" type="button" aria-label="Locul C1" aria-pressed="false"><span>C1</span></button>
+          <button class="seat" type="button" aria-label="Locul C2" aria-pressed="false"><span>C2</span></button>
+          <button class="seat" type="button" aria-label="Locul C3" aria-pressed="false"><span>C3</span></button>
+          <button class="seat" type="button" aria-label="Locul C4" aria-pressed="false"><span>C4</span></button>
+          <button class="seat" type="button" aria-label="Locul C5" aria-pressed="false"><span>C5</span></button>
+          <button class="seat" type="button" aria-label="Locul C6" aria-pressed="false"><span>C6</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul C7, ocupat" disabled><span>C7</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul C8, ocupat" disabled><span>C8</span></button>
+        </div>
+        <div class="row" role="group" aria-label="Rândul D">
+          <button class="seat" type="button" aria-label="Locul D1" aria-pressed="false"><span>D1</span></button>
+          <button class="seat" type="button" aria-label="Locul D2" aria-pressed="false"><span>D2</span></button>
+          <button class="seat" type="button" aria-label="Locul D3" aria-pressed="false"><span>D3</span></button>
+          <button class="seat" type="button" aria-label="Locul D4" aria-pressed="false"><span>D4</span></button>
+          <button class="seat" type="button" aria-label="Locul D5" aria-pressed="false"><span>D5</span></button>
+          <button class="seat" type="button" aria-label="Locul D6" aria-pressed="false"><span>D6</span></button>
+          <button class="seat" type="button" aria-label="Locul D7" aria-pressed="false"><span>D7</span></button>
+          <button class="seat" type="button" aria-label="Locul D8" aria-pressed="false"><span>D8</span></button>
+        </div>
+        <div class="row" role="group" aria-label="Rândul E">
+          <button class="seat" type="button" aria-label="Locul E1" aria-pressed="false"><span>E1</span></button>
+          <button class="seat" type="button" aria-label="Locul E2" aria-pressed="false"><span>E2</span></button>
+          <button class="seat" type="button" aria-label="Locul E3" aria-pressed="false"><span>E3</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul E4, ocupat" disabled><span>E4</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul E5, ocupat" disabled><span>E5</span></button>
+          <button class="seat" type="button" aria-label="Locul E6" aria-pressed="false"><span>E6</span></button>
+          <button class="seat" type="button" aria-label="Locul E7" aria-pressed="false"><span>E7</span></button>
+          <button class="seat" type="button" aria-label="Locul E8" aria-pressed="false"><span>E8</span></button>
+        </div>
+        <div class="row" role="group" aria-label="Rândul F">
+          <button class="seat" type="button" aria-label="Locul F1" aria-pressed="false"><span>F1</span></button>
+          <button class="seat" type="button" aria-label="Locul F2" aria-pressed="false"><span>F2</span></button>
+          <button class="seat" type="button" aria-label="Locul F3" aria-pressed="false"><span>F3</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul F4, ocupat" disabled><span>F4</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul F5, ocupat" disabled><span>F5</span></button>
+          <button class="seat" type="button" aria-label="Locul F6" aria-pressed="false"><span>F6</span></button>
+          <button class="seat occupied" type="button" aria-label="Locul F7, ocupat" disabled><span>F7</span></button>
+          <button class="seat" type="button" aria-label="Locul F8" aria-pressed="false"><span>F8</span></button>
+        </div>
+      </div>
+      <div class="summary" role="status" aria-live="polite" aria-atomic="true">
+        <p>Preț / bilet: <strong><span id="price">10</span> lei</strong></p>
+        <p>Bilete selectate: <strong id="count">0</strong></p>
+        <p>Total: <strong><span id="total">0</span> lei</strong></p>
+      </div>
+      <button id="reset" type="button">Golește selecția</button>
+      <p class="hint">Apasă din nou un loc pentru a-l deselecta. Din tastatură: Tab, apoi Enter sau Space. Schimbarea filmului păstrează locurile selectate.</p>
+      <p class="hint">Exercițiu cu prețuri demonstrative. Nu se fac rezervări reale și selecția nu este salvată.</p>
+      <noscript><p>Activează JavaScript pentru a selecta locuri și a calcula totalul.</p></noscript>
+      <p><a href="../js-dom-manipulation.html#movie-tickets" target="_top">Înapoi la explicația Movie Tickets</a></p>
+    </main>
+  </body>
+</html>

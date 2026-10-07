@@ -1,0 +1,83 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  color: #f8fafc;
+  background: #20162c;
+}
+main { max-width: 540px; margin: 0 auto; }
+h1 { margin: 0 0 8px; font-size: 28px; }
+a { color: #e4cbff; }
+label { display: block; font-weight: bold; margin-bottom: 6px; }
+select, button { font: inherit; }
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid #cab2de;
+  border-radius: 6px;
+  background: white;
+  color: #20162c;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.legend li { display: flex; align-items: center; gap: 6px; }
+.swatch { width: 20px; height: 20px; border-radius: 6px 6px 2px 2px; text-align: center; }
+.swatch.free { background: #ede3f5; color: #20162c; }
+.swatch.selected { background: #a7f3d0; color: #064e3b; }
+.swatch.occupied { background: #6b596e; color: white; }
+.screen {
+  margin: 22px 0;
+  padding: 6px;
+  text-align: center;
+  color: #20162c;
+  background: #f1e8fa;
+  border-radius: 50% 50% 4px 4px;
+  letter-spacing: 3px;
+}
+.row { display: flex; gap: 4px; margin: 8px 0; }
+.seat {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 3px 0;
+  border: 2px solid transparent;
+  border-radius: 12px 12px 4px 4px;
+  color: #291936;
+  background: #ede3f5;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.seat:nth-child(2) { margin-right: 6px; }
+.seat:nth-child(7) { margin-left: 6px; }
+.seat.selected { background: #a7f3d0; color: #064e3b; border-color: #34d399; }
+.seat.selected::after { content: "✓"; display: block; font-size: 11px; }
+.seat.occupied { background: #6b596e; color: white; cursor: not-allowed; opacity: 1; }
+.seat.occupied::after { content: "×"; display: block; font-size: 11px; }
+.seat:not(:disabled):hover { border-color: #c084fc; }
+:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
+.summary { margin: 20px 0 12px; padding: 12px; border: 1px solid #897097; border-radius: 8px; }
+.summary p { margin: 4px 0; }
+.summary strong { color: #a7f3d0; }
+#reset {
+  min-height: 44px;
+  padding: 8px 14px;
+  color: #20162c;
+  background: #ede3f5;
+  border: 1px solid #cab2de;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.hint { color: #e0d1e9; font-size: 14px; }
+@media (max-width: 350px) {
+  body { padding: 12px; }
+}
