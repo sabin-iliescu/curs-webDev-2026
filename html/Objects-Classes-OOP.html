@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>16 - Objects, Classes și OOP în JavaScript</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <link rel="stylesheet" href="objects-classes-oop.css" />
+    <script src="objects-classes-oop.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="AJAX-Promises.html">&larr; Înapoi la lecția 15 - AJAX și Promises</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>16 - Objects, Classes și OOP în JavaScript</h1>
+      <p>Organizăm datele și funcțiile care lucrează cu ele. Pornim de la o sală de cinema și ajungem la o comandă cu mai multe tipuri de bilete.</p>
+      <ul class="harta-lectiei">
+        <li><a href="#demo-sali">Încearcă două săli cu stări independente</a></li>
+        <li><a href="#demo-bilete">Construiește o comandă de bilete</a></li>
+      </ul>
+      <nav aria-label="Părțile lecției"><ol>
+        <li><a href="#obiecte">Obiecte: proprietăți și metode</a></li>
+        <li><a href="#acces">Citire, modificare și parcurgere</a></li>
+        <li><a href="#clase">De la obiecte la clase</a></li>
+        <li><a href="#this">Ce înseamnă this?</a></li>
+        <li><a href="#prototipuri">Prototipuri, pe scurt</a></li>
+        <li><a href="#incapsulare">OOP: abstractizare și încapsulare</a></li>
+        <li><a href="#mostenire">Moștenire și polimorfism</a></li>
+        <li><a href="#compozitie">Compoziție: obiecte care lucrează împreună</a></li>
+        <li><a href="#static">Proprietăți și metode statice</a></li>
+        <li><a href="#recapitulare">Recapitulare</a></li>
+        <li><a href="#teme">Două teme cu rezolvări</a></li>
+      </ol></nav>
+      <p class="nota">Rulează exemplele separat în consolă. Unde refolosim o clasă, precizăm de unde o luăm. Demonstrațiile merg direct din fișierul HTML, fără server. Detaliile opționale pot rămâne pentru a doua lectură.</p>
+      <noscript><p class="nota">Activează JavaScript pentru demonstrații. Lecția și rezolvările pot fi citite și fără el.</p></noscript>
+    </header>
+    <main>
+      <section id="obiecte">
+        <h2>1. Un obiect ține lucrurile împreună</h2>
+        <p>O sală are un nume, o capacitate și un număr de locuri ocupate. Le grupăm într-un <strong>obiect</strong>. Datele sunt <strong>proprietăți</strong>; o funcție folosită ca proprietate este o <strong>metodă</strong>.</p>
+        <pre><code class="language-js">const sala = {
+  nume: "Orion",
+  capacitate: 4,
+  ocupate: 0,
+
+  rezerva() {
+    if (this.ocupate === this.capacitate) return false;
+    this.ocupate++;
+    return true;
+  }
+};
+
+console.log(sala.nume);      // "Orion"
+console.log(sala.rezerva()); // true
+console.log(sala.ocupate);   // 1</code></pre>
+        <p><code>sala.rezerva()</code> schimbă starea sălii. În acest apel, <code>this</code> este obiectul <code>sala</code>. Metoda întoarce <code>true</code> dacă a rezervat un loc și <code>false</code> dacă sala este plină.</p>
+        <p>Forma cu acolade se numește <strong>object literal</strong>. Putem crea astfel un obiect fără să definim o clasă.</p>
+      </section>
+
+      <section id="acces">
+        <h2>2. Citim și modificăm proprietăți</h2>
+        <pre><code class="language-js">const film = { titlu: "Aventura pe Lună", durata: 90 };
+
+console.log(film.titlu);      // "Aventura pe Lună"
+console.log(film["durata"]);  // 90
+
+const camp = "titlu";
+console.log(film[camp]);      // "Aventura pe Lună"
+
+film.durata = 95;             // Modificăm o proprietate.
+film.gen = "animație";        // Adăugăm una nouă.
+console.log(film.regizor);    // undefined: proprietatea lipsește.</code></pre>
+        <p>Folosim punctul când știm numele proprietății. Folosim parantezele drepte când numele vine dintr-o variabilă. <code>film.camp</code> ar căuta chiar proprietatea numită „camp”.</p>
+        <h3>Chei, valori și perechi</h3>
+        <pre><code class="language-js">const film = { titlu: "Aventura pe Lună", durata: 90 };
+
+console.log(Object.keys(film));   // ["titlu", "durata"]
+console.log(Object.values(film)); // ["Aventura pe Lună", 90]
+
+for (const [cheie, valoare] of Object.entries(film)) {
+  console.log(cheie, valoare);
+}
+// titlu Aventura pe Lună
+// durata 90</code></pre>
+        <p>Aceste metode întorc array-uri. Ele citesc proprietățile proprii, enumerabile, cu chei de tip string, precum cele din obiectul de mai sus.</p>
+        <details><summary>De ce putem modifica un obiect declarat cu const?</summary>
+          <pre><code class="language-js">const film = { titlu: "Aventura pe Lună" };
+const acelasiFilm = film;
+acelasiFilm.titlu = "Vacanță pe Marte";
+
+console.log(film.titlu); // "Vacanță pe Marte"
+// film = {};           // Eroare: nu putem reatribui variabila const.</code></pre>
+          <p><code>const</code> păstrează legătura variabilei cu obiectul. Nu îngheață proprietățile. Atribuirea <code>acelasiFilm = film</code> nu copiază obiectul: ambele variabile se referă la același obiect.</p>
+        </details>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects">MDN: lucrul cu obiecte</a>.</p>
+      </section>
+
+      <section id="clase">
+        <h2>3. O clasă, mai multe obiecte</h2>
+        <p>Când avem mai multe săli cu aceleași reguli, putem folosi o <strong>clasă</strong>. Constructorul primește datele de pornire, iar <code>new</code> creează o <strong>instanță</strong>: un obiect construit folosind clasa.</p>
+        <pre><code class="language-js">class Sala {
+  constructor(nume, capacitate) {
+    this.nume = nume;
+    this.capacitate = capacitate;
+    this.ocupate = 0;
+  }
+
+  rezerva() {
+    if (this.ocupate === this.capacitate) return false;
+    this.ocupate++;
+    return true;
+  }
+}
+
+const orion = new Sala("Orion", 4);
+const luna = new Sala("Luna", 6);
+
+orion.rezerva();
+console.log(orion.ocupate); // 1
+console.log(luna.ocupate);  // 0
+console.log(orion === luna); // false: două obiecte diferite.</code></pre>
+        <p>La <code>new Sala("Orion", 4)</code>, JavaScript creează un obiect, îi leagă prototipul de <code>Sala.prototype</code> și execută constructorul cu <code>this</code> legat de noul obiect. Constructorul nostru inițializează proprietățile.</p>
+        <p class="nota">Fiecare sală are propriul număr de locuri ocupate. Rezervarea din Orion nu schimbă sala Luna.</p>
+        <details><summary>Opțional: o funcție care creează obiecte (factory)</summary>
+          <pre><code class="language-js">function creeazaSala(nume, capacitate) {
+  return {
+    nume,
+    capacitate,
+    ocupate: 0,
+    rezerva() {
+      if (this.ocupate === this.capacitate) return false;
+      this.ocupate++;
+      return true;
+    }
+  };
+}
+
+const sala = creeazaSala("Orion", 4);
+sala.rezerva();
+console.log(sala.ocupate); // 1</code></pre>
+          <p>O funcție factory întoarce un obiect și se apelează fără <code>new</code>. Este o altă variantă simplă de a crea obiecte asemănătoare.</p>
+        </details>
+      </section>
+
+      <section id="this">
+        <h2>4. this: obiectul pe care apelăm metoda</h2>
+        <p>Pentru o metodă obișnuită, contează felul în care o apelăm. În <code>obiect.metoda()</code>, <code>this</code> este obiectul din stânga punctului.</p>
+        <pre><code class="language-js">const sala = {
+  nume: "Orion",
+  prezinta() {
+    return `Sala ${this.nume}`;
+  }
+};
+
+const altaSala = { nume: "Luna", prezinta: sala.prezinta };
+console.log(sala.prezinta());     // "Sala Orion"
+console.log(altaSala.prezinta()); // "Sala Luna"</code></pre>
+        <p>Într-un event listener, păstrăm apelul metodei într-un callback:</p>
+        <pre><code class="language-js">// Presupunem că avem un buton și o instanță Sala.
+buton.addEventListener("click", () =&gt; {
+  sala.rezerva();
+});</code></pre>
+        <p>Astfel, rezervarea este apelată pe <code>sala</code>. Dacă am transmite direct <code>sala.rezerva</code> către listener, am desprinde metoda de obiectul ei.</p>
+        <details><summary>Opțional: call și apply aleg explicit valoarea lui this</summary>
+          <pre><code class="language-js">function prezinta(prefix, sufix) {
+  return prefix + this.nume + sufix;
+}
+
+const sala = { nume: "Orion" };
+console.log(prezinta.call(sala, "Sala ", "!"));
+console.log(prezinta.apply(sala, ["Sala ", "!"]));
+// Ambele afișează "Sala Orion!".</code></pre>
+          <p><code>call</code> primește argumentele separat; <code>apply</code> le primește într-un array. Funcțiile arrow preiau <code>this</code> din contextul în care sunt create; call și apply nu îl schimbă pentru ele.</p>
+        </details>
+      </section>
+
+      <section id="prototipuri">
+        <h2>5. Unde sunt metodele? Pe prototip</h2>
+        <p>Refolosim clasa <code>Sala</code> din secțiunea 3. Proprietățile create în constructor sunt pe fiecare instanță. Metoda <code>rezerva</code> este pe <code>Sala.prototype</code> și este partajată.</p>
+        <pre><code class="language-js">// Rulează după definiția clasei Sala din secțiunea 3.
+const prima = new Sala("Orion", 4);
+const aDoua = new Sala("Luna", 6);
+
+console.log(Object.keys(prima));
+// ["nume", "capacitate", "ocupate"]
+console.log(Object.getPrototypeOf(prima) === Sala.prototype); // true
+console.log(prima.rezerva === aDoua.rezerva);                 // true</code></pre>
+        <p>Când citim o proprietate, JavaScript o caută întâi pe obiect, apoi de-a lungul lanțului de prototipuri:</p>
+        <ol class="lant-prototipuri" aria-label="Lanțul de prototipuri al instanței prima">
+          <li><code>prima</code> — aici găsim nume, capacitate, ocupate</li>
+          <li><code>Sala.prototype</code> — aici găsim rezerva</li>
+          <li><code>Object.prototype</code> — metode comune, precum toString</li>
+          <li><code>null</code> — sfârșitul lanțului</li>
+        </ol>
+        <p>Dacă nu găsește proprietatea nicăieri, rezultatul citirii este <code>undefined</code>.</p>
+        <details><summary>Opțional: constructori clasici și Object.create</summary>
+          <p>Poți întâlni și funcții constructor în cod mai vechi:</p>
+          <pre><code class="language-js">function SalaClasica(nume) {
+  this.nume = nume;
+}
+
+SalaClasica.prototype.prezinta = function () {
+  return `Sala ${this.nume}`;
+};
+
+const sala = new SalaClasica("Orion");
+console.log(sala.prezinta()); // "Sala Orion"</code></pre>
+          <p><code>Object.create</code> creează direct un obiect cu prototipul ales, fără să apeleze un constructor:</p>
+          <pre><code class="language-js">const comportament = {
+  prezinta() { return `Sala ${this.nume}`; }
+};
+const sala = Object.create(comportament);
+sala.nume = "Luna";
+console.log(sala.prezinta()); // "Sala Luna"
+console.log(Object.getPrototypeOf(sala) === comportament); // true</code></pre>
+        </details>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain">MDN: prototipuri și moștenire</a>.</p>
+      </section>
+
+      <section id="incapsulare">
+        <h2>6. OOP: obiectul își gestionează starea</h2>
+        <p><strong>OOP</strong> înseamnă <em>Object-Oriented Programming</em>, adică programare orientată pe obiecte. Grupăm starea și operațiile în obiecte care colaborează.</p>
+        <p><strong>Abstractizarea</strong> înseamnă să alegem detaliile relevante: pentru rezervări ne interesează capacitatea și locurile ocupate. Nu avem nevoie de culoarea pereților.</p>
+        <p><strong>Încapsularea</strong> înseamnă să păstrăm datele și regulile împreună și să controlăm cum se modifică starea. Vrem ca numărul de locuri ocupate să se schimbe prin <code>rezerva()</code> și <code>elibereaza()</code>.</p>
+        <p>Facem câmpurile interne <strong>private</strong>, cu prefixul <code>#</code>. Le putem folosi doar în interiorul clasei. Un <strong>getter</strong> ne permite să citim o valoare folosind sintaxa unei proprietăți.</p>
+        <pre><code class="language-js">class SalaCinema {
+  #capacitate;
+  #ocupate = 0;
+
+  constructor(nume, capacitate) {
+    if (!Number.isInteger(capacitate) || capacitate &lt;= 0) {
+      throw new Error("Capacitatea trebuie să fie un număr întreg pozitiv.");
+    }
+    this.nume = nume;
+    this.#capacitate = capacitate;
+  }
+
+  get capacitate() {
+    return this.#capacitate;
+  }
+
+  get ocupate() {
+    return this.#ocupate;
+  }
+
+  get libere() {
+    return this.#capacitate - this.#ocupate;
+  }
+
+  rezerva() {
+    if (this.libere === 0) return false;
+    this.#ocupate++;
+    return true;
+  }
+
+  elibereaza() {
+    if (this.#ocupate === 0) return false;
+    this.#ocupate--;
+    return true;
+  }
+}</code></pre>
+        <p><code>sala.libere</code> apelează getterul, fără paranteze. Numărul este calculat din starea curentă. Din afara clasei nu putem accesa <code>sala.#ocupate</code>. Un nume ca <code>_ocupate</code> ar fi doar o convenție, nu un câmp privat.</p>
+        <pre><code class="language-js">// Rulează după definiția clasei SalaCinema de mai sus.
+const sala = new SalaCinema("Orion", 2);
+console.log(sala.rezerva()); // true
+console.log(sala.rezerva()); // true
+console.log(sala.rezerva()); // false: sala este plină.
+console.log(sala.libere);    // 0
+sala.elibereaza();
+console.log(sala.libere);    // 1</code></pre>
+        <div class="demo" id="demo-sali">
+          <h3>Două săli, două stări</h3>
+          <p>Rezervă toate locurile din Orion. Observă că Luna rămâne liberă, apoi eliberează un loc și rezervă-l din nou.</p>
+          <div class="sali">
+            <div class="sala" id="sala-0">
+              <h4>Orion</h4>
+              <p class="numere-sala">Ocupate: 0 · Libere: 4 din 4</p>
+              <div class="locuri" aria-hidden="true"></div>
+              <div class="controale"><button class="rezerva" type="button">Rezervă în Orion</button><button class="elibereaza secundar" type="button" disabled>Eliberează în Orion</button></div>
+            </div>
+            <div class="sala" id="sala-1">
+              <h4>Luna</h4>
+              <p class="numere-sala">Ocupate: 0 · Libere: 6 din 6</p>
+              <div class="locuri" aria-hidden="true"></div>
+              <div class="controale"><button class="rezerva" type="button">Rezervă în Luna</button><button class="elibereaza secundar" type="button" disabled>Eliberează în Luna</button></div>
+            </div>
+          </div>
+          <p class="legenda">Loc alb = liber · loc mov = ocupat. Numerele de deasupra arată aceeași stare.</p>
+          <p id="stare-sali" class="rezultat" role="status">Alege o sală pentru prima rezervare.</p>
+        </div>
+        <details><summary>Cum conectăm clasa la buton?</summary>
+          <pre><code class="language-js">// Presupunem că HTML-ul are #rezerva și #rezultat.
+// Refolosim SalaCinema de mai sus.
+const sala = new SalaCinema("Orion", 4);
+const buton = document.querySelector("#rezerva");
+const rezultat = document.querySelector("#rezultat");
+
+buton.addEventListener("click", () =&gt; {
+  sala.rezerva();
+  rezultat.textContent = `${sala.libere} locuri libere`;
+  buton.disabled = sala.libere === 0;
+});</code></pre>
+          <p>Clasa schimbă datele. Callbackul afișează datele în pagină. Codul complet al celor două demonstrații este în <a href="objects-classes-oop.js">objects-classes-oop.js</a>.</p>
+        </details>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements">MDN: elemente private</a>.</p>
+      </section>
+
+      <section id="mostenire">
+        <h2>7. Moștenire: un bilet de student este un bilet</h2>
+        <p>Cu <code>extends</code>, o clasă moștenește comportamentul alteia. Poate adăuga metode sau poate <strong>suprascrie</strong> o metodă pentru a schimba rezultatul.</p>
+        <pre><code class="language-js">class Bilet {
+  constructor(film, pret) {
+    this.film = film;
+    this.pret = pret;
+  }
+
+  calculeazaPret() {
+    return this.pret;
+  }
+}
+
+class BiletStudent extends Bilet {
+  calculeazaPret() {
+    return super.calculeazaPret() / 2;
+  }
+}
+
+const standard = new Bilet("Aventura pe Lună", 20);
+const student = new BiletStudent("Aventura pe Lună", 20);
+console.log(standard.calculeazaPret()); // 20
+console.log(student.calculeazaPret());  // 10</code></pre>
+        <p><code>super.calculeazaPret()</code> apelează metoda din clasa părinte. Reducerea de 50% este regula aleasă pentru exemplul nostru. Fără constructor propriu în clasa copil, argumentele sunt transmise constructorului părinte.</p>
+        <h3>Polimorfism: același apel, comportamente diferite</h3>
+        <pre><code class="language-js">// Continuă exemplul de mai sus.
+const bilete = [standard, student];
+
+for (const bilet of bilete) {
+  console.log(bilet.calculeazaPret());
+}
+// 20, apoi 10</code></pre>
+        <p>Bucla cere fiecărui obiect să își calculeze prețul. Nu verifică dacă biletul este standard sau de student. Acesta este un exemplu de <strong>polimorfism</strong>.</p>
+        <p class="nota">În JavaScript, obiectele pot oferi aceeași metodă și fără un părinte comun. Pentru codul de mai sus contează să poată răspunde la apelul <code>calculeazaPret()</code>.</p>
+      </section>
+
+      <section id="compozitie">
+        <h2>8. Compoziție: o comandă are bilete</h2>
+        <p>O comandă nu este un bilet. Ea <strong>conține</strong> bilete și le folosește. Această relație se numește <strong>compoziție</strong>.</p>
+        <pre><code class="language-js">class Comanda {
+  constructor() {
+    this.bilete = [];
+  }
+
+  adauga(bilet) {
+    this.bilete.push(bilet);
+  }
+
+  stergeUltimul() {
+    this.bilete.pop();
+  }
+
+  goleste() {
+    this.bilete = [];
+  }
+
+  calculeazaTotal() {
+    let total = 0;
+    for (const bilet of this.bilete) {
+      total += bilet.calculeazaPret();
+    }
+    return total;
+  }
+}</code></pre>
+        <pre><code class="language-js">// Refolosim Bilet și BiletStudent din secțiunea 7 și Comanda de mai sus.
+const comanda = new Comanda();
+comanda.adauga(new Bilet("Aventura pe Lună", 20));
+comanda.adauga(new BiletStudent("Aventura pe Lună", 20));
+console.log(comanda.calculeazaTotal()); // 30
+comanda.stergeUltimul();
+console.log(comanda.calculeazaTotal()); // 20
+comanda.goleste();
+console.log(comanda.calculeazaTotal()); // 0</code></pre>
+        <p>Array-ul <code>bilete</code> este creat în constructor: fiecare comandă are propria listă. Calculul totalului folosește metoda fiecărui bilet.</p>
+        <div class="demo" id="demo-bilete">
+          <h3>Casa de bilete</h3>
+          <p>Adaugă un bilet standard și unul de student. Încearcă apoi încă un bilet standard: totalul ar trebui să fie 50 lei.</p>
+          <div class="controale"><button id="adauga-standard" type="button">+ Standard · 20 lei</button><button id="adauga-student" type="button">+ Student · 10 lei</button></div>
+          <div class="bon">
+            <strong>Aventura pe Lună</strong>
+            <ol id="lista-bilete" aria-label="Biletele din comandă"></ol>
+            <p id="total-comanda" class="rezultat" role="status">Bilete: 0 · Total: 0 lei</p>
+          </div>
+          <div class="controale"><button id="sterge-bilet" class="secundar" type="button" disabled>Șterge ultimul bilet</button><button id="goleste-comanda" class="secundar" type="button" disabled>Golește comanda</button></div>
+        </div>
+        <p class="nota"><strong>Este un</strong> → BiletStudent este un Bilet, folosim moștenire.<br /><strong>Are</strong> → Comanda are bilete, folosim compoziție.</p>
+      </section>
+
+      <section id="static">
+        <h2>9. static: apelăm pe clasă</h2>
+        <p>O metodă obișnuită lucrează cu o instanță. O metodă <strong>statică</strong> se apelează pe clasă. De exemplu, putem transforma un obiect simplu primit ca date într-un bilet.</p>
+        <pre><code class="language-js">// Variantă completă a clasei Bilet; rulează separat.
+class Bilet {
+  static moneda = "lei";
+
+  constructor(film, pret) {
+    this.film = film;
+    this.pret = pret;
+  }
+
+  calculeazaPret() {
+    return this.pret;
+  }
+
+  static dinDate(date) {
+    return new Bilet(date.film, date.pret);
+  }
+}
+
+const date = { film: "Aventura pe Lună", pret: 20 };
+const bilet = Bilet.dinDate(date);
+console.log(bilet.calculeazaPret()); // 20
+console.log(Bilet.moneda);          // "lei"
+console.log(bilet.moneda);          // undefined</code></pre>
+        <p><code>dinDate</code> și <code>moneda</code> aparțin clasei. <code>calculeazaPret</code> se apelează pe un bilet. Un obiect simplu obținut prin <code>JSON.parse()</code> nu primește automat metodele clasei.</p>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_classes">MDN: folosirea claselor</a>.</p>
+      </section>
+
+      <section id="recapitulare">
+        <h2>10. Ce merită reținut</h2>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Recapitulare obiecte și OOP">
+          <table><caption>Conceptele, pe exemplul nostru</caption>
+            <thead><tr><th>Concept</th><th>Ce face</th><th>Exemplu</th></tr></thead>
+            <tbody>
+              <tr><td>Obiect</td><td>Grupează date și comportament</td><td>O sală cu locuri și o metodă de rezervare</td></tr>
+              <tr><td>Clasă / instanță</td><td>Definiție comună / obiect concret</td><td>SalaCinema / sala Orion</td></tr>
+              <tr><td>Prototip</td><td>Oferă proprietăți și metode prin lanțul de căutare</td><td>Sala.prototype.rezerva</td></tr>
+              <tr><td>Abstractizare</td><td>Alege datele relevante</td><td>Numărăm locuri, nu descriem pereții</td></tr>
+              <tr><td>Încapsulare</td><td>Controlează accesul la starea internă</td><td>#ocupate se schimbă prin metode</td></tr>
+              <tr><td>Moștenire</td><td>Extinde o clasă</td><td>BiletStudent extends Bilet</td></tr>
+              <tr><td>Polimorfism</td><td>Același apel, comportamente diferite</td><td>calculeazaPret() pe fiecare tip de bilet</td></tr>
+              <tr><td>Compoziție</td><td>Un obiect conține alte obiecte</td><td>Comanda conține bilete</td></tr>
+              <tr><td>static</td><td>Membru accesat pe clasă</td><td>Bilet.dinDate(date)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Începe cu obiecte simple. Introdu o clasă când ai nevoie de mai multe instanțe cu aceleași reguli. Pentru aceste exemple sunt suficiente clase mici și metode cu un rol clar.</p>
+      </section>
+
+      <section id="teme">
+        <h2>Temă simplă: gustări la cinema</h2>
+        <p>Creează clasa <code>Gustare</code> cu proprietățile <code>nume</code>, <code>pret</code> și <code>stoc</code>. Folosește un stoc inițial întreg, mai mare sau egal cu zero.</p>
+        <ol>
+          <li>Constructorul primește cele trei valori.</li>
+          <li>Metoda <code>vinde()</code> scade stocul cu 1 și întoarce true. Dacă stocul este 0, întoarce false și nu îl modifică.</li>
+          <li>Creează popcorn cu prețul de 12 lei și stoc 2, apoi limonadă cu prețul de 10 lei și stoc 3.</li>
+          <li>Încearcă să vinzi popcorn de trei ori. Afișează rezultatele și stocul ambelor produse.</li>
+        </ol>
+        <p class="nota">Verificare: rezultatele sunt true, true, false. Stocul de popcorn ajunge la 0, iar cel de limonadă rămâne 3.</p>
+        <details class="rezolvare"><summary>Arată rezolvarea</summary>
+          <pre><code class="language-js">class Gustare {
+  constructor(nume, pret, stoc) {
+    this.nume = nume;
+    this.pret = pret;
+    this.stoc = stoc;
+  }
+
+  vinde() {
+    if (this.stoc === 0) return false;
+    this.stoc--;
+    return true;
+  }
+}
+
+const popcorn = new Gustare("Popcorn", 12, 2);
+const limonada = new Gustare("Limonadă", 10, 3);
+console.log(popcorn.vinde()); // true
+console.log(popcorn.vinde()); // true
+console.log(popcorn.vinde()); // false
+console.log(popcorn.stoc);    // 0
+console.log(limonada.stoc);   // 3</code></pre>
+          <p>Metoda modifică doar stocul obiectului pe care este apelată. Verificarea de la început oprește vânzarea când produsul s-a epuizat.</p>
+        </details>
+      </section>
+
+      <section id="tema-comanda">
+        <h2>Temă puțin mai complexă: bilet cu meniu</h2>
+        <p>Refolosește clasele <code>Bilet</code> din secțiunea 7 și <code>Comanda</code> din secțiunea 8.</p>
+        <ol>
+          <li>Creează <code>BiletCuMeniu extends Bilet</code>.</li>
+          <li>Constructorul primește filmul, prețul biletului și prețul meniului. Apelează <code>super(film, pret)</code> înainte să folosești this, apoi salvează prețul meniului.</li>
+          <li>Suprascrie <code>calculeazaPret()</code> pentru a aduna prețul biletului cu cel al meniului.</li>
+          <li>Adaugă într-o comandă un bilet standard de 20 lei și un bilet de 20 lei cu meniu de 8 lei.</li>
+          <li>Afișează totalul, apoi șterge ultimul bilet și afișează din nou totalul.</li>
+        </ol>
+        <p class="nota">Verificare: totalul este 48 lei, apoi 20 lei. Clasa Comanda trebuie să funcționeze fără modificări.</p>
+        <details class="rezolvare"><summary>Arată rezolvarea</summary>
+          <pre><code class="language-js">// Refolosim Bilet și Comanda din lecție.
+class BiletCuMeniu extends Bilet {
+  constructor(film, pret, pretMeniu) {
+    super(film, pret);
+    this.pretMeniu = pretMeniu;
+  }
+
+  calculeazaPret() {
+    return super.calculeazaPret() + this.pretMeniu;
+  }
+}
+
+const comanda = new Comanda();
+comanda.adauga(new Bilet("Aventura pe Lună", 20));
+comanda.adauga(new BiletCuMeniu("Aventura pe Lună", 20, 8));
+console.log(comanda.calculeazaTotal()); // 48
+comanda.stergeUltimul();
+console.log(comanda.calculeazaTotal()); // 20</code></pre>
+          <p><code>super(...)</code> inițializează partea moștenită a instanței. Comanda continuă să apeleze aceeași metodă pe fiecare bilet; noua clasă furnizează propriul calcul.</p>
+        </details>
+      </section>
+    </main>
+    <footer>
+      <p><a href="AJAX-Promises.html">&larr; Înapoi la lecția 15 - AJAX și Promises</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>

@@ -12,6 +12,7 @@
   <body>
     <header id="sus">
       <p><a href="Web-Concepts-Dive-Deeper.html">&larr; Înapoi la lecția 14 - Web Concepts: Dive Deeper</a></p>
+      <p><a href="Objects-Classes-OOP.html">Continuă cu lecția 16 - Objects, Classes și OOP &rarr;</a></p>
       <p><a href="index.html">Toate lecțiile</a></p>
       <h1>15 - AJAX și Promises</h1>
       <p>Cerem date, așteptăm răspunsul și actualizăm doar partea de pagină care are nevoie de ele.</p>
@@ -33,6 +34,7 @@
         <li><a href="#scriere">POST, PUT și DELETE</a></li>
         <li><a href="#async-await">Aceiași pași cu async / await</a></li>
         <li><a href="#recapitulare">Greșeli frecvente</a></li>
+        <li><a href="#problema-meteo">Problemă rezolvată: aplicație meteo</a></li>
         <li><a href="#teme">Două teme pentru acasă</a></li>
       </ol></nav>
       <p class="nota">Rulează blocurile de cod separat; continuările spun ce funcții refolosesc. Primele două demonstrații merg și prin deschiderea directă a fișierului. Pentru catalogul AJAX, vezi <a href="#pregatire">pregătirea serverului local</a>. Detaliile opționale pot rămâne pentru a doua lectură.</p>
@@ -447,6 +449,432 @@ arataPrimulProgram(); // Mai târziu: "17:00, 19:30, 21:45"</code></pre>
         <p>Fișierele lecției: <a href="ajax-api.js">citirea JSON</a>, <a href="ajax-promises.js">codul demonstrațiilor</a>, <a href="ajax-promises.css">stilurile demonstrațiilor</a> și <a href="exemple-ajax/filme.json">catalogul</a>.</p>
       </section>
 
+      <section id="problema-meteo">
+        <h2>Problemă rezolvată: vremea în orașul tău</h2>
+        <p>Creează o aplicație de prognoză meteo folosind AJAX, cu HTML, CSS și JavaScript în fișiere separate. Utilizatorul introduce un oraș și apasă un buton pentru a încărca datele, fără reîncărcarea paginii.</p>
+        <h3>Cerințe</h3>
+        <ol>
+          <li><strong>Formular:</strong> câmp pentru oraș, câmp pentru cheia OpenWeather și butonul „Arată vremea”.</li>
+          <li><strong>Vremea acum:</strong> într-un div afișează descrierea, imaginea meteo, umiditatea, presiunea și temperatura curentă. Adaugă minima și maxima prognozate pentru azi și o legătură către prognoză.</li>
+          <li><strong>Prognoza:</strong> într-un al doilea div afișează datele pentru următoarele <strong>cinci zile</strong>, grupate după dată. Pentru fiecare interval de trei ore arată ora, temperatura, descrierea și imaginea meteo.</li>
+          <li><strong>Stări:</strong> mesaj de încărcare, rezultat și eroare. Nu permite trimiterea repetată a formularului cât timp cererea este în curs.</li>
+          <li><strong>Opțional:</strong> adaugă o legătură către oraș pe Google Maps.</li>
+        </ol>
+        <h3>Adresele pe care le folosim</h3>
+        <pre><code>https://api.openweathermap.org/data/2.5/weather
+https://api.openweathermap.org/data/2.5/forecast
+https://openweathermap.org/img/wn/10d@2x.png</code></pre>
+        <p>Pentru primele două adrese trimitem parametrii <code>q</code> (oraș), <code>appid</code> (cheia API), <code>units=metric</code> și <code>lang=ro</code>. Codul imaginii, de exemplu <code>10d</code>, vine din răspunsul API-ului.</p>
+        <p class="nota">Încearcă întâi să citești vremea și să afișezi temperatura în consolă. Adaugă apoi interfața și prognoza. Rezolvarea completă se deschide cu un click mai jos.</p>
+
+        <details id="rezolvare-meteo" class="rezolvare-meteo">
+          <summary>Vezi rezolvarea pas cu pas și codul complet</summary>
+          <p><a href="exemple-ajax/meteo.html" target="_blank" rel="noopener noreferrer">Deschide aplicația meteo funcțională &rarr;</a></p>
+          <p>Deschide aplicația prin serverul local al cursului și introdu o cheie OpenWeather în formular. Un al doilea click pe „Vezi rezolvarea pas cu pas și codul complet” ascunde rezolvarea.</p>
+
+          <h3>1. Pregătim cele trei fișiere</h3>
+          <pre><code>exemple-ajax/
+├── meteo.html
+├── meteo.css
+└── meteo.js</code></pre>
+          <p>HTML-ul definește formularul și cele două panouri. CSS-ul aranjează datele. JavaScript citește formularul, trimite cererile și completează pagina.</p>
+
+          <h3>2. Construim URL-ul din valorile formularului</h3>
+          <pre><code class="language-js">function construiesteURL(endpoint, oras, cheie) {
+  const parametri = new URLSearchParams({
+    q: oras,
+    appid: cheie,
+    units: "metric",
+    lang: "ro"
+  });
+  return `https://api.openweathermap.org/data/2.5/${endpoint}?${parametri}`;
+}</code></pre>
+          <p><code>URLSearchParams</code> construiește partea de după semnul întrebării și codifică valorile. Astfel, putem trimite și nume precum <code>Cluj-Napoca,RO</code> sau <code>New York,US</code>.</p>
+
+          <h3>3. Citim vremea și prognoza cu Promise.all</h3>
+          <p>Funcția <code>citesteMeteo</code> din codul complet verifică statusul HTTP și întoarce datele JSON. În handlerul async al formularului folosim:</p>
+          <pre><code>const [acum, prognoza] = await Promise.all([
+  citesteMeteo(construiesteURL("weather", oras, cheie)),
+  citesteMeteo(construiesteURL("forecast", oras, cheie))
+]);
+
+afiseazaAcum(acum, prognoza);
+afiseazaPrognoza(prognoza);</code></pre>
+          <p>Cele două cereri sunt independente, deci le pornim împreună. <code>Promise.all</code> ne oferă rezultatele în aceeași ordine: primul pentru vremea actuală, al doilea pentru prognoză. Scrierea <code>const [acum, prognoza]</code> pune cele două elemente ale listei în variabile separate.</p>
+
+          <h3>4. Legăm datele de elementele HTML</h3>
+          <div class="tabel-container" tabindex="0" role="region" aria-label="Câmpuri din răspunsul meteo, tabel derulabil">
+            <table><caption>Ce citim din răspunsuri</caption>
+              <thead><tr><th scope="col">Informație</th><th scope="col">Câmp</th></tr></thead>
+              <tbody>
+                <tr><td>Temperatura curentă</td><td><code>acum.main.temp</code></td></tr>
+                <tr><td>Umiditate și presiune</td><td><code>acum.main.humidity</code>, <code>acum.main.pressure</code></td></tr>
+                <tr><td>Descriere și imagine</td><td><code>acum.weather[0].description</code>, <code>acum.weather[0].icon</code></td></tr>
+                <tr><td>Intervalele prognozate</td><td><code>prognoza.list</code></td></tr>
+                <tr><td>Ora unui interval</td><td><code>interval.dt</code></td></tr>
+                <tr><td>Decalajul orar al orașului</td><td><code>prognoza.city.timezone</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Pentru texte folosim <code>textContent</code>. Pentru imagine compunem adresa din codul primit și o atribuim proprietății <code>src</code>.</p>
+
+          <h3>5. Grupăm intervalele după zi</h3>
+          <pre><code>const zile = {};
+
+for (const interval of prognoza.list) {
+  const zi = cheiaZilei(interval.dt, prognoza.city.timezone);
+  if (!zile[zi]) zile[zi] = [];
+  zile[zi].push(interval);
+}</code></pre>
+          <p>Obiectul <code>zile</code> va avea câte o listă pentru fiecare dată. Parcurgem listele și creăm un titlu de zi, apoi cardurile cu oră, imagine, temperatură și descriere.</p>
+          <p><code>dt</code> este exprimat în secunde. Funcțiile de dată din rezolvare îl transformă în milisecunde și aplică decalajul orașului, astfel încât afișajul să nu depindă de fusul orar al calculatorului.</p>
+
+          <h3>6. Tratăm încărcarea și erorile</h3>
+          <p>Începem cu <code>event.preventDefault()</code>, verificăm câmpurile după <code>trim()</code> și ascundem rezultatul precedent. În <code>try</code> încărcăm datele, în <code>catch</code> afișăm mesajul de eroare, iar în <code>finally</code> reactivăm controalele.</p>
+
+          <h3>Codul complet</h3>
+          <p>Copiază fiecare bloc în fișierul cu același nume. Legăturile „Înapoi” din HTML sunt pentru structura cursului; le poți elimina într-un proiect separat.</p>
+          <details><summary>meteo.html · structura paginii</summary><pre><code id="meteo-html-complet">&lt;!doctype html&gt;
+&lt;html lang="ro"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Vremea în orașul tău · Exercițiu AJAX&lt;/title&gt;
+    &lt;link rel="stylesheet" href="meteo.css" /&gt;
+    &lt;script src="meteo.js" defer&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header&gt;
+      &lt;p&gt;&lt;a href="../AJAX-Promises.html#problema-meteo"&gt;&amp;larr; Înapoi la problema meteo&lt;/a&gt;&lt;/p&gt;
+      &lt;h1&gt;Vremea în orașul tău&lt;/h1&gt;
+      &lt;p class="introducere"&gt;Caută un oraș pentru vremea de acum și prognoza pe următoarele cinci zile, din trei în trei ore.&lt;/p&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+      &lt;section class="panou" aria-labelledby="titlu-cautare"&gt;
+        &lt;h2 id="titlu-cautare"&gt;Unde vrei să mergi?&lt;/h2&gt;
+        &lt;form id="formular-meteo" novalidate&gt;
+          &lt;div class="campuri"&gt;
+            &lt;div class="camp"&gt;
+              &lt;label for="oras"&gt;Oraș&lt;/label&gt;
+              &lt;input id="oras" name="oras" type="text" value="București,RO" placeholder="De exemplu: Brașov,RO" required maxlength="100" aria-describedby="stare-meteo" /&gt;
+            &lt;/div&gt;
+            &lt;div class="camp"&gt;
+              &lt;label for="cheie-api"&gt;Cheia OpenWeather&lt;/label&gt;
+              &lt;input id="cheie-api" type="password" placeholder="Lipește cheia API" required autocomplete="off" spellcheck="false" aria-describedby="nota-cheie stare-meteo" /&gt;
+            &lt;/div&gt;
+            &lt;button id="cauta-vremea" type="submit"&gt;Arată vremea&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;p id="nota-cheie" class="mic"&gt;Cheia este folosită pentru cerere și nu este salvată de aplicație.&lt;/p&gt;
+        &lt;/form&gt;
+        &lt;p id="stare-meteo" class="stare" role="status"&gt;Introdu orașul și cheia, apoi apasă „Arată vremea”.&lt;/p&gt;
+        &lt;noscript&gt;&lt;p class="nota"&gt;Activează JavaScript pentru a căuta vremea.&lt;/p&gt;&lt;/noscript&gt;
+      &lt;/section&gt;
+
+      &lt;div id="rezultate-meteo" hidden&gt;
+        &lt;div id="vreme-acum" class="panou" role="region" aria-labelledby="titlu-acum"&gt;
+          &lt;h2 id="titlu-acum"&gt;Vremea acum&lt;/h2&gt;
+          &lt;p id="actualizare" class="mic"&gt;&lt;/p&gt;
+          &lt;div class="vreme-principala"&gt;
+            &lt;img id="imagine-acum" width="100" height="100" alt="" /&gt;
+            &lt;div&gt;
+              &lt;div id="temperatura-acum" class="temperatura"&gt;&lt;/div&gt;
+              &lt;p id="descriere-acum" class="descriere"&gt;&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;dl class="detalii"&gt;
+            &lt;div&gt;&lt;dt&gt;Umiditate&lt;/dt&gt;&lt;dd id="umiditate"&gt;&lt;/dd&gt;&lt;/div&gt;
+            &lt;div&gt;&lt;dt&gt;Presiune&lt;/dt&gt;&lt;dd id="presiune"&gt;&lt;/dd&gt;&lt;/div&gt;
+            &lt;div&gt;&lt;dt&gt;Minimă prognozată azi&lt;/dt&gt;&lt;dd id="minima"&gt;&lt;/dd&gt;&lt;/div&gt;
+            &lt;div&gt;&lt;dt&gt;Maximă prognozată azi&lt;/dt&gt;&lt;dd id="maxima"&gt;&lt;/dd&gt;&lt;/div&gt;
+          &lt;/dl&gt;
+          &lt;p&gt;&lt;a href="#prognoza"&gt;Vezi prognoza meteo &amp;darr;&lt;/a&gt; · &lt;a id="harta-oras" target="_blank" rel="noopener noreferrer"&gt;Vezi orașul pe Google Maps&lt;/a&gt;&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div id="prognoza" class="panou" role="region" aria-labelledby="titlu-prognoza"&gt;
+          &lt;h2 id="titlu-prognoza"&gt;Prognoza pe cinci zile&lt;/h2&gt;
+          &lt;p id="rezumat-prognoza" class="mic"&gt;&lt;/p&gt;
+          &lt;div id="zile-prognoza"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/main&gt;
+    &lt;footer&gt;
+      &lt;p&gt;Date și imagini meteo: &lt;a href="https://openweathermap.org/"&gt;OpenWeather&lt;/a&gt;.&lt;/p&gt;
+      &lt;p&gt;&lt;a href="../AJAX-Promises.html#rezolvare-meteo"&gt;Vezi rezolvarea pas cu pas&lt;/a&gt;&lt;/p&gt;
+    &lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre></details>
+          <details><summary>meteo.css · aspectul paginii</summary><pre><code id="meteo-css-complet">* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 24px 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #243044;
+  background: linear-gradient(150deg, #e0f2fe, #f5f0fb 55%, #f8fafc);
+  min-height: 100vh;
+}
+header, main, footer { max-width: 1080px; margin: 0 auto; }
+h1 { margin-bottom: 8px; color: #512571; }
+h2, h3 { color: #512571; }
+a { color: #67328f; }
+.introducere { max-width: 720px; }
+.panou { margin: 24px 0; padding: 24px; border: 1px solid #d8dfea; border-radius: 16px; background: white; }
+.panou &gt; h2 { margin-top: 0; }
+.campuri { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+.camp { flex: 1 1 240px; min-width: 0; }
+label { display: block; margin-bottom: 6px; font-weight: bold; }
+input, button { font: inherit; min-height: 46px; max-width: 100%; border-radius: 8px; }
+input { width: 100%; border: 1px solid #8090a4; padding: 10px 12px; }
+button { padding: 10px 18px; border: 1px solid #67328f; background: #67328f; color: white; cursor: pointer; }
+button:hover { background: #512571; }
+button:disabled { background: #e2e8f0; border-color: #a0aaba; color: #475569; cursor: wait; }
+:focus-visible { outline: 3px solid #67328f; outline-offset: 3px; }
+[aria-invalid="true"] { border: 2px solid #b42318; }
+.nota { padding: 12px 16px; background: #f0f7ff; border-left: 4px solid #3b82b6; border-radius: 0 8px 8px 0; }
+.mic { font-size: 14px; color: #526174; }
+.stare { margin-bottom: 0; font-weight: bold; overflow-wrap: anywhere; }
+.stare[data-tip="eroare"] { color: #9f251b; }
+.stare[data-tip="succes"] { color: #17613f; }
+.vreme-principala { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.vreme-principala img { width: 100px; height: 100px; border-radius: 20px; background: #e0f2fe; }
+.temperatura { font-size: clamp(40px, 7vw, 64px); font-weight: bold; line-height: 1.2; }
+.descriere { margin: 8px 0; font-size: 20px; }
+.detalii { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+.detalii &gt; div { padding: 14px; border-radius: 10px; background: #f5f3fa; }
+dt { font-size: 14px; }
+dd { margin: 4px 0 0; font-size: 22px; font-weight: bold; }
+.zi { margin-top: 24px; padding-top: 16px; border-top: 1px solid #d8dfea; }
+.zi h3 { margin: 0 0 4px; }
+.intervale { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; list-style: none; padding: 0; }
+.interval { padding: 12px; text-align: center; border: 1px solid #d8dfea; border-radius: 12px; background: #f8fbff; }
+.interval time { display: block; font-weight: bold; }
+.interval img { display: block; width: 64px; height: 64px; margin: 0 auto; }
+.interval strong { display: block; font-size: 20px; }
+.interval p { margin: 6px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
+footer { margin-top: 32px; font-size: 14px; }
+@media (min-width: 700px) {
+  .detalii { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .intervale { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 400px) {
+  body { padding: 16px 12px; }
+  .panou { padding: 16px; }
+  .interval { padding: 10px 6px; }
+}</code></pre></details>
+          <details><summary>meteo.js · cererile AJAX și afișarea rezultatelor</summary><pre><code id="meteo-js-complet">// 1. Găsim elementele interfeței.
+const formular = document.getElementById("formular-meteo");
+const orasInput = document.getElementById("oras");
+const cheieInput = document.getElementById("cheie-api");
+const butonCauta = document.getElementById("cauta-vremea");
+const stare = document.getElementById("stare-meteo");
+const rezultate = document.getElementById("rezultate-meteo");
+const zileContainer = document.getElementById("zile-prognoza");
+const API_BASE = "https://api.openweathermap.org/data/2.5/";
+const ICON_BASE = "https://openweathermap.org/img/wn/";
+
+// 2. Construim adresele. URLSearchParams se ocupă de spații și diacritice.
+function construiesteURL(endpoint, oras, cheie) {
+  const parametri = new URLSearchParams({
+    q: oras,
+    appid: cheie,
+    units: "metric",
+    lang: "ro"
+  });
+  return `${API_BASE}${endpoint}?${parametri}`;
+}
+
+// 3. Citim JSON-ul și transformăm erorile HTTP în mesaje utile.
+async function citesteMeteo(url) {
+  const raspuns = await fetch(url);
+  if (!raspuns.ok) {
+    if (raspuns.status === 401) {
+      throw new Error("Cheia API nu este validă sau nu este încă activă.");
+    }
+    if (raspuns.status === 404) {
+      throw new Error("Orașul nu a fost găsit. Încearcă și codul țării, de exemplu Brașov,RO.");
+    }
+    if (raspuns.status === 429) {
+      throw new Error("Prea multe cereri. Așteaptă puțin și încearcă din nou.");
+    }
+    throw new Error(`Serviciul meteo a răspuns cu eroarea ${raspuns.status}.`);
+  }
+  return raspuns.json();
+}
+
+// 4. Mici funcții pentru numere, imagini și ora locală a orașului.
+function cuUnitate(valoare, unitate) {
+  if (!Number.isFinite(valoare)) return "—";
+  return `${valoare.toLocaleString("ro-RO", { maximumFractionDigits: 1 })} ${unitate}`;
+}
+
+function adresaImagine(cod) {
+  // Acceptăm numai coduri de iconițe OpenWeather.
+  if (!/^\d{2}[dn]$/.test(cod)) return "";
+  return `${ICON_BASE}${cod}@2x.png`;
+}
+
+function dataLocala(timestamp, decalaj) {
+  return new Date((timestamp + decalaj) * 1000);
+}
+
+function cheiaZilei(timestamp, decalaj) {
+  return dataLocala(timestamp, decalaj).toISOString().slice(0, 10);
+}
+
+function oraLocala(timestamp, decalaj) {
+  return dataLocala(timestamp, decalaj).toLocaleTimeString("ro-RO", {
+    timeZone: "UTC", hour: "2-digit", minute: "2-digit"
+  });
+}
+
+function numeleZilei(timestamp, decalaj) {
+  return dataLocala(timestamp, decalaj).toLocaleDateString("ro-RO", {
+    timeZone: "UTC", weekday: "long", day: "numeric", month: "long"
+  });
+}
+
+function seteazaImagine(imagine, vreme) {
+  const sursa = adresaImagine(vreme.icon);
+  imagine.alt = vreme.description || "Vreme";
+  imagine.hidden = !sursa;
+  imagine.onerror = () =&gt; { imagine.hidden = true; };
+  if (sursa) imagine.src = sursa;
+  else imagine.removeAttribute("src");
+}
+
+// 5. Completăm panoul cu vremea de acum.
+function afiseazaAcum(acum, prognoza) {
+  const decalaj = prognoza.city.timezone;
+  const azi = cheiaZilei(acum.dt, decalaj);
+  const temperaturiAzi = prognoza.list
+    .filter((interval) =&gt; cheiaZilei(interval.dt, decalaj) === azi)
+    .map((interval) =&gt; interval.main.temp)
+    .filter(Number.isFinite);
+
+  document.getElementById("titlu-acum").textContent = `Vremea acum în ${acum.name}, ${acum.sys.country}`;
+  document.getElementById("actualizare").textContent = `Actualizare: ${numeleZilei(acum.dt, decalaj)}, ${oraLocala(acum.dt, decalaj)}`;
+  document.getElementById("temperatura-acum").textContent = cuUnitate(acum.main.temp, "°C");
+  document.getElementById("descriere-acum").textContent = acum.weather[0].description;
+  document.getElementById("umiditate").textContent = cuUnitate(acum.main.humidity, "%");
+  document.getElementById("presiune").textContent = cuUnitate(acum.main.pressure, "hPa");
+  document.getElementById("minima").textContent = cuUnitate(Math.min(...temperaturiAzi), "°C");
+  document.getElementById("maxima").textContent = cuUnitate(Math.max(...temperaturiAzi), "°C");
+  seteazaImagine(document.getElementById("imagine-acum"), acum.weather[0]);
+
+  const coordonate = `${acum.coord.lat},${acum.coord.lon}`;
+  document.getElementById("harta-oras").href = `https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(coordonate)}`;
+}
+
+// 6. Grupăm intervalele după dată și construim cardurile în ordine.
+function afiseazaPrognoza(prognoza) {
+  zileContainer.replaceChildren();
+  const decalaj = prognoza.city.timezone;
+  const zile = {};
+
+  for (const interval of prognoza.list) {
+    const zi = cheiaZilei(interval.dt, decalaj);
+    if (!zile[zi]) zile[zi] = [];
+    zile[zi].push(interval);
+  }
+
+  for (const intervale of Object.values(zile)) {
+    const sectiune = document.createElement("section");
+    sectiune.className = "zi";
+    const titlu = document.createElement("h3");
+    titlu.textContent = numeleZilei(intervale[0].dt, decalaj);
+    const lista = document.createElement("ul");
+    lista.className = "intervale";
+
+    for (const interval of intervale) {
+      const card = document.createElement("li");
+      card.className = "interval";
+      const ora = document.createElement("time");
+      ora.dateTime = new Date(interval.dt * 1000).toISOString();
+      ora.textContent = oraLocala(interval.dt, decalaj);
+      const imagine = document.createElement("img");
+      imagine.width = 64;
+      imagine.height = 64;
+      imagine.loading = "lazy";
+      seteazaImagine(imagine, interval.weather[0]);
+      const temperatura = document.createElement("strong");
+      temperatura.textContent = cuUnitate(interval.main.temp, "°C");
+      const descriere = document.createElement("p");
+      descriere.textContent = interval.weather[0].description;
+      card.append(ora, imagine, temperatura, descriere);
+      lista.append(card);
+    }
+
+    sectiune.append(titlu, lista);
+    zileContainer.append(sectiune);
+  }
+
+  document.getElementById("rezumat-prognoza").textContent = prognoza.list.length
+    ? `${prognoza.list.length} intervale, din trei în trei ore. Orele sunt afișate pentru orașul ales.`
+    : "Nu sunt disponibile intervale de prognoză pentru acest oraș.";
+}
+
+// 7. Validăm formularul, pornim ambele cereri și afișăm rezultatele.
+formular.addEventListener("submit", async (event) =&gt; {
+  event.preventDefault();
+  rezultate.hidden = true;
+  zileContainer.replaceChildren();
+  const oras = orasInput.value.trim();
+  const cheie = cheieInput.value.trim();
+  orasInput.setAttribute("aria-invalid", String(!oras));
+  cheieInput.setAttribute("aria-invalid", String(!cheie));
+  stare.dataset.tip = "eroare";
+
+  if (!oras || !cheie) {
+    stare.textContent = "Completează orașul și cheia API.";
+    if (!oras) orasInput.focus();
+    else cheieInput.focus();
+    return;
+  }
+
+  butonCauta.disabled = true;
+  orasInput.disabled = true;
+  cheieInput.disabled = true;
+  stare.dataset.tip = "incarcare";
+  stare.textContent = `Căutăm vremea pentru ${oras}…`;
+
+  try {
+    const [acum, prognoza] = await Promise.all([
+      citesteMeteo(construiesteURL("weather", oras, cheie)),
+      citesteMeteo(construiesteURL("forecast", oras, cheie))
+    ]);
+
+    if (!acum.main || !Array.isArray(acum.weather) || !acum.weather.length || !Array.isArray(prognoza.list) || !prognoza.city) {
+      throw new Error("Datele primite nu au formatul așteptat.");
+    }
+    afiseazaAcum(acum, prognoza);
+    afiseazaPrognoza(prognoza);
+    rezultate.hidden = false;
+    stare.dataset.tip = "succes";
+    stare.textContent = `Vremea pentru ${acum.name} a fost încărcată.`;
+  } catch (eroare) {
+    stare.dataset.tip = "eroare";
+    stare.textContent = eroare instanceof TypeError
+      ? "Nu am putut încărca vremea. Verifică conexiunea și încearcă din nou."
+      : eroare.message;
+  } finally {
+    butonCauta.disabled = false;
+    orasInput.disabled = false;
+    cheieInput.disabled = false;
+  }
+});</code></pre></details>
+
+          <h3>Testează singur</h3>
+          <ol>
+            <li>Caută <code>București,RO</code>, apoi <code>Paris,FR</code>. Titlul, vremea și prognoza se actualizează fără reload.</li>
+            <li>Lasă orașul gol: apare un mesaj și nu se trimite cererea.</li>
+            <li>Încearcă un oraș inexistent sau o cheie greșită: vezi eroarea și poți încerca din nou.</li>
+            <li>În Network, urmărește cererile <code>weather</code> și <code>forecast</code>.</li>
+          </ol>
+          <p class="sursa">Documentație: <a href="https://openweathermap.org/api/current">vremea actuală</a>, <a href="https://openweathermap.org/api/forecast5">prognoza</a>, <a href="https://developers.google.com/maps/documentation/urls/get-started">legături Google Maps</a>.</p>
+        </details>
+      </section>
+
       <section id="teme">
         <h2>Temă simplă: automatul de limonadă</h2>
         <p>Creează o pagină cu un select pentru „Avem lămâi” / „Nu mai avem lămâi”, un buton „Prepară” și un paragraf pentru rezultat.</p>
@@ -482,6 +910,7 @@ arataPrimulProgram(); // Mai târziu: "17:00, 19:30, 21:45"</code></pre>
     </main>
     <footer>
       <p><a href="Web-Concepts-Dive-Deeper.html">&larr; Înapoi la lecția 14 - Web Concepts: Dive Deeper</a></p>
+      <p><a href="Objects-Classes-OOP.html">Continuă cu lecția 16 - Objects, Classes și OOP &rarr;</a></p>
       <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
       <p><a href="#sus">Înapoi sus &uarr;</a></p>
     </footer>

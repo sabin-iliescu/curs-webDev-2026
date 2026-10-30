@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vremea în orașul tău · Exercițiu AJAX</title>
+    <link rel="stylesheet" href="meteo.css" />
+    <script src="meteo.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <p><a href="../AJAX-Promises.html#problema-meteo">&larr; Înapoi la problema meteo</a></p>
+      <h1>Vremea în orașul tău</h1>
+      <p class="introducere">Caută un oraș pentru vremea de acum și prognoza pe următoarele cinci zile, din trei în trei ore.</p>
+    </header>
+    <main>
+      <section class="panou" aria-labelledby="titlu-cautare">
+        <h2 id="titlu-cautare">Unde vrei să mergi?</h2>
+        <form id="formular-meteo" novalidate>
+          <div class="campuri">
+            <div class="camp">
+              <label for="oras">Oraș</label>
+              <input id="oras" name="oras" type="text" value="București,RO" placeholder="De exemplu: Brașov,RO" required maxlength="100" aria-describedby="stare-meteo" />
+            </div>
+            <div class="camp">
+              <label for="cheie-api">Cheia OpenWeather</label>
+              <input id="cheie-api" type="password" placeholder="Lipește cheia API" required autocomplete="off" spellcheck="false" aria-describedby="nota-cheie stare-meteo" />
+            </div>
+            <button id="cauta-vremea" type="submit">Arată vremea</button>
+          </div>
+          <p id="nota-cheie" class="mic">Cheia este folosită pentru cerere și nu este salvată de aplicație.</p>
+        </form>
+        <p id="stare-meteo" class="stare" role="status">Introdu orașul și cheia, apoi apasă „Arată vremea”.</p>
+        <noscript><p class="nota">Activează JavaScript pentru a căuta vremea.</p></noscript>
+      </section>
+
+      <div id="rezultate-meteo" hidden>
+        <div id="vreme-acum" class="panou" role="region" aria-labelledby="titlu-acum">
+          <h2 id="titlu-acum">Vremea acum</h2>
+          <p id="actualizare" class="mic"></p>
+          <div class="vreme-principala">
+            <img id="imagine-acum" width="100" height="100" alt="" />
+            <div>
+              <div id="temperatura-acum" class="temperatura"></div>
+              <p id="descriere-acum" class="descriere"></p>
+            </div>
+          </div>
+          <dl class="detalii">
+            <div><dt>Umiditate</dt><dd id="umiditate"></dd></div>
+            <div><dt>Presiune</dt><dd id="presiune"></dd></div>
+            <div><dt>Minimă prognozată azi</dt><dd id="minima"></dd></div>
+            <div><dt>Maximă prognozată azi</dt><dd id="maxima"></dd></div>
+          </dl>
+          <p><a href="#prognoza">Vezi prognoza meteo &darr;</a> · <a id="harta-oras" target="_blank" rel="noopener noreferrer">Vezi orașul pe Google Maps</a></p>
+        </div>
+
+        <div id="prognoza" class="panou" role="region" aria-labelledby="titlu-prognoza">
+          <h2 id="titlu-prognoza">Prognoza pe cinci zile</h2>
+          <p id="rezumat-prognoza" class="mic"></p>
+          <div id="zile-prognoza"></div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <p>Date și imagini meteo: <a href="https://openweathermap.org/">OpenWeather</a>.</p>
+      <p><a href="../AJAX-Promises.html#rezolvare-meteo">Vezi rezolvarea pas cu pas</a></p>
+    </footer>
+  </body>
+</html>

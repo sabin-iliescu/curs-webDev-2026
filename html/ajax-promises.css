@@ -32,6 +32,9 @@
 .ore-film { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin-bottom: 0; }
 .ore-film li { padding: 6px 12px; color: #512571; background: #eee4f7; border-radius: 6px; }
 .sursa { font-size: 14px; }
+.rezolvare-meteo > summary { display: list-item; padding: 12px 16px; color: white; background: #67328f; border-radius: 6px; }
+.rezolvare-meteo > summary:hover { background: #512571; }
+.rezolvare-meteo[open] > summary { margin-bottom: 20px; }
 button:disabled { color: #555; background: #e2e2e2; border-color: #999; cursor: wait; }
 [hidden] { display: none !important; }
 @keyframes popcorn-salt { to { transform: translateY(-8px) rotate(5deg); } }

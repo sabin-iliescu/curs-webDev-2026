@@ -1,0 +1,19 @@
+.harta-lectiei { padding-left: 22px; }
+.harta-lectiei li { margin: 8px 0; }
+.sali { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.sala { min-width: 0; padding: 16px; border: 1px solid #d8bfe9; border-radius: 8px; background: white; }
+.sala h4 { margin: 0; font-size: 20px; color: #67328f; }
+.locuri { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.loc { display: grid; place-items: center; width: 36px; height: 40px; border: 2px solid #67328f; border-radius: 7px 7px 3px 3px; color: #67328f; background: white; }
+.loc.ocupat { color: white; background: #67328f; }
+.legenda, .sursa { font-size: 14px; }
+.lant-prototipuri { padding-left: 24px; }
+.lant-prototipuri li { padding: 6px; }
+.bon { margin: 16px 0; padding: 16px; background: white; border: 1px dashed #67328f; border-radius: 6px; }
+.bon ol { padding-left: 24px; }
+button:disabled { opacity: .5; cursor: default; }
+.rezolvare > summary { padding: 8px 12px; color: white; background: #67328f; border-radius: 5px; min-height: 44px; }
+@media (max-width: 600px) {
+  .sali { grid-template-columns: 1fr; }
+  .sala { padding: 12px; }
+}
