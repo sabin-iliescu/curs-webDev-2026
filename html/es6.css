@@ -1,0 +1,7 @@
+/* Aspectul comun vine din javascript-basics.css. */
+.pasi { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; }
+.pasi li { flex: 1 1 160px; padding: 12px; background: #faf5ff; border-left: 4px solid #67328f; }
+button:disabled { color: #555; background: #e2e2e2; border-color: #999; cursor: wait; }
+.demo form { margin-bottom: 12px; }
+.demo output { display: block; }
+pre { tab-size: 2; }

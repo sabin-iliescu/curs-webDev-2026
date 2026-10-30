@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>13 - ES6</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <link rel="stylesheet" href="es6.css" />
+    <script src="es6.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="js-dom-manipulation.html">&larr; Înapoi la lecția 12 - JavaScript DOM Manipulation</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>13 - ES6</h1>
+      <p>Aceleași variabile, funcții și obiecte, cu câteva unelte care ne ajută să scriem mai clar.</p>
+      <p>Continuăm seara la cinema: calculăm bilete, combinăm liste de filme și simulăm verificarea locurilor. Fiecare idee începe cu un exemplu mic.</p>
+      <nav aria-label="Părțile lecției">
+        <ol>
+          <li><a href="#standard">Ce înseamnă ES6?</a></li>
+          <li><a href="#variabile">let, const și block scope</a></li>
+          <li><a href="#hoisting">Hoisting: când putem folosi o variabilă?</a></li>
+          <li><a href="#arrow">Arrow functions și this</a></li>
+          <li><a href="#clase">Clase: constructor, obiecte și metode</a></li>
+          <li><a href="#spread">Spread: desfacem o listă</a></li>
+          <li><a href="#rest">Rest: strângem argumentele într-o listă</a></li>
+          <li><a href="#promises">Promise: un rezultat care vine mai târziu</a></li>
+          <li><a href="#async">async / await și un demo complet</a></li>
+          <li><a href="#recapitulare">Recapitulare</a></li>
+          <li><a href="#teme">Două teme pentru acasă</a></li>
+        </ol>
+      </nav>
+      <p class="nota">Testează exemplele pe rând în DevTools → Console sau într-un fișier JS separat. Blocurile sunt independente, exceptând continuările marcate explicit. Liniile care ar produce erori sunt comentate. Secțiunile „Opțional” pot rămâne pentru a doua lectură.</p>
+      <noscript><p class="nota">Explicațiile și exemplele se pot citi fără JavaScript. Activează-l pentru cele două demonstrații.</p></noscript>
+    </header>
+    <main>
+      <section id="standard">
+        <h2>1. ES6 este o versiune a standardului JavaScript</h2>
+        <p><strong>ECMAScript</strong> este standardul care descrie regulile limbajului. JavaScript implementează aceste reguli. <strong>ES6</strong> și <strong>ES2015</strong> sunt două nume pentru aceeași ediție, publicată în 2015.</p>
+        <p>Ai folosit deja <code>const</code>, <code>let</code> și funcții arrow în lecțiile trecute. Acum vedem de ce sunt utile și adăugăm câteva idei noi.</p>
+        <ul>
+          <li><strong>ES2015:</strong> let, const, arrow functions, clase, template literals, spread pentru liste și apeluri, rest parameters și Promise.</li>
+          <li><strong>ES2017:</strong> async / await.</li>
+          <li><strong>ES2018:</strong> spread în obiecte.</li>
+        </ul>
+        <p>Ultimele două apar în partea a doua a materialului și le includem aici, cu versiunea corectă. ES6 este un reper, nu numele tuturor noutăților JavaScript.</p>
+        <h3>O scurtă recapitulare: texte cu valori în interior</h3>
+        <pre><code>const film = "Drum spre Marte";
+const pret = 20;
+const mesaj = `${film}: ${pret} lei / bilet`;
+console.log(mesaj); // "Drum spre Marte: 20 lei / bilet"</code></pre>
+        <p>Un <em>template literal</em> folosește backticks (<code>`</code>), iar <code>${...}</code> introduce o valoare sau un calcul în text. Vom folosi această formă în exemple.</p>
+      </section>
+
+      <section id="variabile">
+        <h2>2. const pentru început, let când reatribuim</h2>
+        <pre><code>const pretBilet = 20;
+let numarBilete = 2;
+
+numarBilete = 3; // Variabila primește altă valoare.
+console.log(pretBilet * numarBilete); // 60
+
+// pretBilet = 25; // TypeError: un const nu poate fi reatribuit.</code></pre>
+        <p>Alege <code>const</code> când variabila va păstra aceeași valoare sau aceeași referință. Alege <code>let</code> când urmează o reatribuire, de exemplu pentru un contor sau un total acumulat.</p>
+        <h3>Block scope: variabila aparține blocului în care o declari</h3>
+        <p>Un bloc este o zonă delimitată de acolade, de exemplu corpul unui <code>if</code>. Variabilele declarate acolo cu <code>let</code> sau <code>const</code> sunt accesibile în acel bloc și în blocurile din interior.</p>
+        <pre><code>const pret = 20;
+
+if (true) {
+  const reducere = 5;
+  const pret = 15; // Altă variabilă, doar pentru acest bloc.
+  console.log(pret, reducere); // 15 5
+}
+
+console.log(pret); // 20: variabila din exterior nu s-a schimbat.
+// console.log(reducere); // ReferenceError: în afara blocului.</code></pre>
+        <p>Exemplul repetă intenționat numele <code>pret</code> ca să arate limita blocului. În codul obișnuit, nume precum <code>pretRedus</code> sunt mai ușor de urmărit.</p>
+        <details>
+          <summary>De recunoscut în cod mai vechi: var</summary>
+          <p><code>var</code> are scope de funcție, nu de bloc. Un <code>if</code> nu îi creează un domeniu separat.</p>
+          <pre><code>function exempluVar() {
+  var pret = 20;
+  if (true) {
+    var pret = 15; // Aceeași variabilă din funcție.
+  }
+  console.log(pret); // 15
+}
+
+exempluVar();</code></pre>
+          <p>Pentru exercițiile noi folosim <code>let</code> și <code>const</code>. Nu înlocui mecanic fiecare <code>var</code> din cod vechi: limitele de vizibilitate pot schimba comportamentul.</p>
+        </details>
+        <h3>const nu îngheață obiectele și listele</h3>
+        <pre><code>const bilet = { film: "Drum spre Marte", pret: 20 };
+bilet.pret = 25; // Modificăm o proprietate a aceluiași obiect.
+console.log(bilet.pret); // 25
+
+const filme = ["Drum spre Marte"];
+filme.push("Pisica regizor");
+console.log(filme.length); // 2
+
+// bilet = { film: "Alt film", pret: 10 }; // TypeError.
+// filme = []; // TypeError: am încerca să înlocuim lista.</code></pre>
+        <p class="nota">Reatribuirea schimbă valoarea păstrată în variabilă. Modificarea unei proprietăți sau un <code>push()</code> schimbă conținutul obiectului existent. <code>const</code> împiedică prima operație.</p>
+      </section>
+
+      <section id="hoisting">
+        <h2>3. Hoisting: declarăm înainte să folosim</h2>
+        <p>Înainte să execute instrucțiunile unui domeniu, JavaScript pregătește declarațiile. Numim acest comportament <strong>hoisting</strong>; codul nu este mutat fizic în fișier.</p>
+        <pre><code>console.log(titluVechi); // undefined
+var titluVechi = "Drum spre Marte";
+console.log(titluVechi); // "Drum spre Marte"
+
+// console.log(titluNou); // ReferenceError dacă decomentezi linia.
+let titluNou = "Pisica regizor";
+console.log(titluNou); // "Pisica regizor"</code></pre>
+        <p>Cu <code>var</code>, variabila este inițializată cu <code>undefined</code> înainte de linia declarației. Cu <code>let</code> și <code>const</code>, nu o putem accesa până când execuția ajunge la declarație. Acea perioadă se numește <em>temporal dead zone</em>.</p>
+        <p><code>undefined</code> este o valoare. <code>ReferenceError</code> este o eroare de execuție; fără tratare, oprește execuția curentă. O variabilă nedeclarată nu este creată automat când încerci să o citești.</p>
+        <details>
+          <summary>Opțional: de ce typeof poate să ne surprindă?</summary>
+          <pre><code>console.log(typeof variabilaCareNuExista); // "undefined"
+// console.log(variabilaCareNuExista); // ReferenceError.
+
+// console.log(typeof locuri); // Tot ReferenceError: temporal dead zone.
+const locuri = 8;</code></pre>
+          <p><code>typeof</code> are un comportament special pentru un nume nedeclarat. Acesta nu se aplică unei variabile <code>let</code> sau <code>const</code> înainte de inițializare.</p>
+        </details>
+        <p class="nota">Regula practică: scrie declarația înaintea folosirii. Procedează la fel cu o clasă și cu o funcție păstrată într-un <code>const</code>. O declarație obișnuită <code>function</code> poate fi apelată și înainte de linia ei.</p>
+      </section>
+
+      <section id="arrow">
+        <h2>4. Arrow functions: de la forma lungă la cea scurtă</h2>
+        <p>Funcțiile următoare fac același calcul. Schimbăm doar felul în care îl scriem.</p>
+        <pre><code>const totalClasic = function (pret, cantitate) {
+  return pret * cantitate;
+};
+
+const totalArrow = (pret, cantitate) =&gt; {
+  return pret * cantitate;
+};
+
+const totalScurt = (pret, cantitate) =&gt; pret * cantitate;
+
+console.log(totalClasic(20, 3)); // 60
+console.log(totalArrow(20, 3));  // 60
+console.log(totalScurt(20, 3));  // 60</code></pre>
+        <ul>
+          <li>Fără acolade, expresia de după <code>=&gt;</code> este returnată automat.</li>
+          <li>Cu acolade, scrie <code>return</code> dacă ai nevoie de un rezultat.</li>
+          <li>La un singur parametru simplu poți omite parantezele: <code>pret =&gt; pret * 2</code>.</li>
+          <li>La zero sau mai mulți parametri, parantezele sunt obligatorii.</li>
+        </ul>
+        <h3>Un callback mic pentru o listă de prețuri</h3>
+        <pre><code>const preturi = [20, 25, 30];
+const preturiReduse = preturi.map(pret =&gt; pret - 5);
+
+console.log(preturiReduse); // [15, 20, 25]
+console.log(preturi);       // [20, 25, 30]</code></pre>
+        <p><code>map()</code> creează o listă nouă din rezultatul fiecărui apel. Aici, fiecare preț este redus cu 5 lei.</p>
+        <h3>Două capcane mici</h3>
+        <pre><code>const faraReturn = (pret) =&gt; { pret * 2; };
+console.log(faraReturn(20)); // undefined: lipsește return.
+
+const creeazaBilet = (film, pret) =&gt; ({ film: film, pret: pret });
+console.log(creeazaBilet("Drum spre Marte", 20));
+// { film: "Drum spre Marte", pret: 20 }</code></pre>
+        <p>Când returnezi direct un obiect, învelește-l în <code>()</code>. Altfel, acoladele sunt interpretate drept corpul funcției. Păstrează <code>=&gt;</code> pe aceeași linie cu lista parametrilor.</p>
+      </section>
+
+      <section id="this">
+        <h2>5. this: arrow preia contextul din exterior</h2>
+        <p>O funcție arrow nu are propriul <code>this</code>. Îl preia din contextul în care a fost creată. Este utilă ca funcție mică în interiorul unei metode.</p>
+        <pre><code>const cinema = {
+  nume: "Cinema Central",
+  filme: ["Drum spre Marte", "Pisica regizor"],
+  creeazaEtichete() {
+    return this.filme.map(film =&gt; `${this.nume}: ${film}`);
+  }
+};
+
+console.log(cinema.creeazaEtichete());
+// ["Cinema Central: Drum spre Marte", "Cinema Central: Pisica regizor"]</code></pre>
+        <p>Apelăm metoda prin <code>cinema.creeazaEtichete()</code>, deci <code>this</code> din metodă este obiectul <code>cinema</code>. Callbackul arrow folosește același <code>this</code>.</p>
+        <p class="nota">Pentru o metodă care citește proprietăți prin <code>this</code>, păstrează forma <code>metoda() { ... }</code>. Nu o transforma automat într-o proprietate cu arrow. Într-un listener arrow pentru DOM, folosește <code>event.currentTarget</code> dacă ai nevoie de elementul pe care ai pus listenerul.</p>
+      </section>
+
+      <section id="clase">
+        <h2>6. Clase: aceeași structură pentru mai multe bilete</h2>
+        <p>Un obiect literal este suficient pentru un singur bilet. O clasă descrie cum creăm mai multe obiecte cu aceleași tipuri de date și aceleași metode.</p>
+        <pre><code>class Bilet {
+  constructor(film, pret) {
+    this.film = film;
+    this.pret = pret;
+  }
+
+  calculeazaTotal(cantitate = 1) {
+    return this.pret * cantitate;
+  }
+}
+
+const primul = new Bilet("Drum spre Marte", 20);
+const alDoilea = new Bilet("Pisica regizor", 15);
+
+console.log(primul.film);               // "Drum spre Marte"
+console.log(primul.calculeazaTotal(3)); // 60
+console.log(alDoilea.calculeazaTotal()); // 15</code></pre>
+        <ol>
+          <li><code>class Bilet</code> definește clasa. Prin convenție, numele începe cu literă mare.</li>
+          <li><code>new Bilet(...)</code> creează un obiect nou, numit <strong>instanță</strong>.</li>
+          <li><code>constructor</code> setează datele inițiale. Aici, <code>this</code> este noul obiect.</li>
+          <li><code>calculeazaTotal()</code> este o metodă apelată printr-o instanță.</li>
+          <li><code>cantitate = 1</code> este o valoare implicită: se folosește dacă argumentul lipsește sau este <code>undefined</code>.</li>
+        </ol>
+        <p>Cele două obiecte au propriile valori pentru film și preț. Clasele folosesc mecanismul de prototipuri al JavaScript; nu trebuie să îl aprofundăm pentru acest exercițiu.</p>
+        <div class="demo">
+          <h3>Testează metoda pentru un bilet de 20 lei</h3>
+          <form id="formular-bilete" novalidate>
+            <div class="controale">
+              <div><label for="cantitate">Număr de bilete (1–10)</label><input id="cantitate" type="number" min="1" max="10" step="1" value="2" required aria-describedby="total-bilete" /></div>
+              <button type="submit">Calculează totalul</button>
+            </div>
+          </form>
+          <output id="total-bilete" class="rezultat" for="cantitate" aria-live="polite">Drum spre Marte: 2 × 20 lei = 40 lei</output>
+        </div>
+        <p>Formularul citește cantitatea cu <code>Number()</code>, verifică dacă este un întreg între 1 și 10, apoi apelează metoda de mai sus. <a href="es6.js">Vezi codul celor două demonstrații</a>.</p>
+        <details>
+          <summary>Opțional: getter, setter și o metodă statică</summary>
+          <p>Un <strong>getter</strong> se citește ca o proprietate, fără <code>()</code>. Un <strong>setter</strong> se execută la atribuire. O metodă <strong>statică</strong> se apelează pe clasă.</p>
+          <pre><code>class Film {
+  constructor(titlu) {
+    this.titlu = titlu; // Apelează setterul de mai jos.
+  }
+
+  get titlu() {
+    return this._titlu;
+  }
+
+  set titlu(valoare) {
+    this._titlu = valoare.trim();
+  }
+
+  static descriere() {
+    return "Un film din programul cinematografului.";
+  }
+}
+
+const film = new Film("  Drum spre Marte  ");
+console.log(film.titlu); // "Drum spre Marte"
+film.titlu = "  Pisica regizor  ";
+console.log(film.titlu); // "Pisica regizor"
+console.log(Film.descriere()); // "Un film din programul cinematografului."
+// film.descriere(); // TypeError: metoda statică aparține clasei.</code></pre>
+          <p>În acest exemplu, titlul primit este un șir de caractere. <code>_titlu</code> este un nume ales prin convenție, nu o proprietate privată. Folosim alt nume în setter ca să nu apelăm același setter la nesfârșit.</p>
+        </details>
+        <details>
+          <summary>Opțional: extends și super</summary>
+          <p>O clasă poate extinde alta. Exemplul continuă clasa <code>Bilet</code> de mai sus și adaugă prețul unui meniu.</p>
+          <pre><code>class BiletCuMeniu extends Bilet {
+  constructor(film, pret, pretMeniu) {
+    super(film, pret);
+    this.pretMeniu = pretMeniu;
+  }
+
+  calculeazaTotal(cantitate = 1) {
+    return super.calculeazaTotal(cantitate) + this.pretMeniu * cantitate;
+  }
+}
+
+const bilet = new BiletCuMeniu("Drum spre Marte", 20, 5);
+console.log(bilet.calculeazaTotal(2)); // 50: două bilete și două meniuri.</code></pre>
+          <p><code>extends</code> stabilește legătura cu clasa de bază. În constructorul clasei derivate, <code>super(...)</code> apelează constructorul părinte înainte de folosirea lui <code>this</code>. În metodă, <code>super.calculeazaTotal(...)</code> refolosește calculul părintelui.</p>
+        </details>
+      </section>
+
+      <section id="spread">
+        <h2>7. Spread: desfacem elementele acolo unde avem nevoie de ele</h2>
+        <p>Sintaxa <code>...</code> poate introduce elementele unei liste într-o altă listă sau într-un apel de funcție.</p>
+        <h3>Combinăm liste fără să le modificăm pe cele inițiale</h3>
+        <pre><code>const vineri = ["Drum spre Marte", "Pisica regizor"];
+const sambata = ["Pauză de râs"];
+const weekend = [...vineri, ...sambata];
+
+console.log(weekend);
+// ["Drum spre Marte", "Pisica regizor", "Pauză de râs"]
+console.log(vineri.length); // 2
+
+const listaMea = [...vineri];
+listaMea.push("Aventura din parc");
+console.log(listaMea.length); // 3
+console.log(vineri.length);  // 2</code></pre>
+        <p><code>const listaMea = vineri</code> ar păstra o referință către aceeași listă. <code>[...vineri]</code> creează o listă nouă. Spread nu elimină elementele duplicate.</p>
+        <h3>Trimitem elementele unei liste ca argumente separate</h3>
+        <pre><code>const preturi = [20, 15, 30];
+console.log(Math.max(...preturi)); // 30
+// Echivalent cu Math.max(20, 15, 30).</code></pre>
+        <h3>Spread în obiecte: copiere și actualizare (ES2018)</h3>
+        <pre><code>const bilet = { film: "Drum spre Marte", pret: 20 };
+const biletRedus = { ...bilet, pret: 15 };
+
+console.log(biletRedus); // { film: "Drum spre Marte", pret: 15 }
+console.log(bilet.pret); // 20</code></pre>
+        <p>Dacă o proprietate apare de mai multe ori, <strong>ultima valoare câștigă</strong>. În <code>{ pret: 15, ...bilet }</code>, prețul ar redeveni 20.</p>
+        <details>
+          <summary>Atenție: copia este superficială</summary>
+          <pre><code>const original = [{ titlu: "Drum spre Marte" }];
+const copie = [...original];
+copie[0].titlu = "Titlu schimbat";
+
+console.log(original[0].titlu); // "Titlu schimbat"</code></pre>
+          <p>Lista este nouă, dar obiectul din interior este același. Și spread în obiecte copiază doar primul nivel. În exemplele de copiere independentă de mai sus, listele conțin texte, iar obiectul conține doar texte și numere.</p>
+        </details>
+      </section>
+
+      <section id="rest">
+        <h2>8. Rest: primim mai multe argumente într-o singură listă</h2>
+        <p>În lista de parametri a unei funcții, <code>...</code> adună argumentele rămase într-un array.</p>
+        <pre><code>function adunaPreturi(...preturi) {
+  let total = 0;
+  for (const pret of preturi) {
+    total += pret;
+  }
+  return total;
+}
+
+console.log(adunaPreturi(20, 15, 30)); // 65
+console.log(adunaPreturi(20));         // 20
+console.log(adunaPreturi());           // 0
+
+const bon = [20, 15, 30];
+console.log(adunaPreturi(...bon));     // 65</code></pre>
+        <p>În declarația funcției, <code>...preturi</code> este <strong>rest</strong>: strânge argumentele. În ultimul apel, <code>...bon</code> este <strong>spread</strong>: desface lista în argumente.</p>
+        <ul class="pasi" aria-label="Legătura dintre spread și rest">
+          <li>Lista <code>[20, 15, 30]</code></li>
+          <li>Spread → argumentele <code>20, 15, 30</code></li>
+          <li>Rest → parametrul <code>preturi</code>, un array</li>
+        </ul>
+        <p class="nota">Un parametru rest trebuie să fie ultimul și poate apărea o singură dată în lista parametrilor: <code>function bon(nume, ...preturi) { ... }</code>. În calculele noastre trimitem numere, nu texte precum <code>"20"</code>.</p>
+      </section>
+
+      <section id="promises">
+        <h2>9. Promise: rezultatul nu este disponibil imediat</h2>
+        <p>La un calcul simplu obținem rezultatul pe loc. La o operație asincronă, cum ar fi o cerere către un server, rezultatul vine mai târziu. Un <strong>Promise</strong> reprezintă finalizarea acelei operații.</p>
+        <ul>
+          <li><code>pending</code>: operația nu s-a încheiat.</li>
+          <li><code>fulfilled</code>: operația s-a încheiat cu succes și avem o valoare.</li>
+          <li><code>rejected</code>: operația a eșuat și avem un motiv al erorii.</li>
+        </ul>
+        <p>O promisiune trece din pending într-una dintre celelalte două stări. După aceea, starea ei nu se mai schimbă.</p>
+        <h3>Simulăm o verificare, fără server</h3>
+        <pre><code>function verificaLocuri(disponibil) {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (disponibil) {
+        resolve("Sunt locuri disponibile.");
+      } else {
+        reject(new Error("Nu mai sunt locuri la acest film."));
+      }
+    }, 1000);
+  });
+}</code></pre>
+        <p><code>setTimeout</code> programează callbackul după aproximativ 1000 ms. <code>resolve()</code> oferă valoarea de succes; <code>reject()</code> semnalează eșecul. <code>new Error(...)</code> creează un obiect de eroare cu proprietatea <code>message</code>.</p>
+        <p>Funcția întoarce imediat promisiunea. Textul va fi disponibil abia după terminarea verificării. Întârzierea este simulată; nu facem o rezervare reală.</p>
+        <h3>then și catch: ce facem cu rezultatul?</h3>
+        <p>Rulează fragmentul următor după definiția lui <code>verificaLocuri</code>.</p>
+        <pre><code>console.log("1. Începem verificarea.");
+
+verificaLocuri(true)
+  .then(mesaj =&gt; {
+    console.log(`3. ${mesaj}`);
+  })
+  .catch(eroare =&gt; {
+    console.log(eroare.message);
+  });
+
+console.log("2. Putem continua cu alt cod.");
+// Imediat: 1. Începem verificarea.
+// Imediat: 2. Putem continua cu alt cod.
+// Mai târziu: 3. Sunt locuri disponibile.</code></pre>
+        <p><code>.then()</code> tratează succesul. <code>.catch()</code> tratează respingerea promisiunii sau o eroare apărută în callbackul precedent. Înlocuiește <code>true</code> cu <code>false</code> și vei vedea mesajul din <code>catch</code>.</p>
+        <p class="nota"><code>verificaLocuri(true)</code> întoarce un Promise, nu textul rezultat. Nu putem citi textul imediat după apel ca și cum operația s-ar fi terminat deja.</p>
+      </section>
+
+      <section id="async">
+        <h2>10. async / await: citim pașii în ordine</h2>
+        <p><code>async / await</code> lucrează tot cu promisiuni. Într-o funcție <code>async</code>, <code>await</code> suspendă continuarea acelei funcții până când promisiunea se încheie. Pagina poate răspunde în continuare la interacțiuni.</p>
+        <p>Acest fragment folosește aceeași funcție <code>verificaLocuri</code> din secțiunea precedentă.</p>
+        <pre><code>async function afiseazaDisponibilitate(disponibil) {
+  try {
+    const mesaj = await verificaLocuri(disponibil);
+    console.log(mesaj);
+  } catch (eroare) {
+    console.log(eroare.message);
+  }
+}
+
+afiseazaDisponibilitate(true); // Mai târziu: "Sunt locuri disponibile."
+// Încearcă apoi afiseazaDisponibilitate(false).</code></pre>
+        <p><code>try</code> conține pașii pe care îi încercăm. Dacă promisiunea este respinsă, <code>await</code> produce o eroare, iar execuția trece în <code>catch</code>.</p>
+        <p>O funcție <code>async</code> întoarce întotdeauna o promisiune, chiar dacă scrii <code>return 20</code>. În exemplele noastre, scriem <code>await</code> doar în interiorul unei funcții <code>async</code>.</p>
+        <div class="demo">
+          <h3>Urmărește cele trei stări</h3>
+          <p>Alege rezultatul simulat, apoi pornește verificarea. În timpul așteptării poți folosi calculatorul de bilete de mai sus.</p>
+          <div class="controale">
+            <div><label for="scenariu">Scenariu</label><select id="scenariu"><option value="disponibil">Succes: există locuri</option><option value="ocupat">Eșec: sala este plină</option></select></div>
+            <button id="verifica-locuri" type="button">Verifică locurile</button>
+          </div>
+          <p id="stare-promisiune" class="rezultat" role="status" aria-live="polite">Verificarea nu a început.</p>
+        </div>
+        <details>
+          <summary>Vezi legătura dintre demo și cod</summary>
+          <p>Pe lângă <code>verificaLocuri</code>, folosim elementele cu ID-urile din demonstrație. <code>finally</code> rulează atât după succes, cât și după eroarea tratată, pentru a reactiva controalele.</p>
+          <pre><code>const butonVerifica = document.getElementById("verifica-locuri");
+const scenariu = document.getElementById("scenariu");
+const stare = document.getElementById("stare-promisiune");
+
+butonVerifica.addEventListener("click", async () =&gt; {
+  const disponibil = scenariu.value === "disponibil";
+  butonVerifica.disabled = true;
+  scenariu.disabled = true;
+  stare.textContent = "pending: verificăm locurile…";
+
+  try {
+    const mesaj = await verificaLocuri(disponibil);
+    stare.textContent = `fulfilled: ${mesaj}`;
+  } catch (eroare) {
+    stare.textContent = `rejected: ${eroare.message}`;
+  } finally {
+    butonVerifica.disabled = false;
+    scenariu.disabled = false;
+  }
+});</code></pre>
+          <p>Butonul este dezactivat în timpul așteptării, ca să nu pornim aceeași verificare de mai multe ori. Pentru o pagină separată, copiază și HTML-ul demonstrației și funcția <code>verificaLocuri</code>, apoi încarcă scriptul cu <code>defer</code>.</p>
+        </details>
+      </section>
+
+      <section id="recapitulare">
+        <h2>11. Ce alegem și când?</h2>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Recapitulare ES6, tabel derulabil">
+          <table>
+            <caption>Uneltele de bază din lecție</caption>
+            <thead><tr><th scope="col">Am nevoie să…</th><th scope="col">Folosesc</th><th scope="col">Rețin</th></tr></thead>
+            <tbody>
+              <tr><td>Păstrez o valoare</td><td><code>const</code> / <code>let</code></td><td>let dacă reatribui; ambele au block scope.</td></tr>
+              <tr><td>Scriu un callback scurt</td><td><code>(x) =&gt; x * 2</code></td><td>Cu acolade, rezultatul cere return.</td></tr>
+              <tr><td>Creez obiecte cu aceeași structură</td><td><code>class</code> și <code>new</code></td><td>Constructorul setează datele instanței.</td></tr>
+              <tr><td>Desfac o listă</td><td>Spread: <code>[...lista]</code></td><td>Copia este superficială.</td></tr>
+              <tr><td>Primesc mai multe argumente</td><td>Rest: <code>function f(...valori)</code></td><td>Parametrul rest este ultimul.</td></tr>
+              <tr><td>Folosesc un rezultat asincron</td><td>Promise, then / catch sau async / await</td><td>Tratez atât succesul, cât și eroarea.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <details>
+          <summary>Verifică-te: trei întrebări scurte, cu răspunsuri</summary>
+          <ol>
+            <li>Pot face <code>push()</code> într-un array declarat cu const? <strong>Da</strong>: modific conținutul, nu reatribui variabila.</li>
+            <li>Ce întoarce <code>(x) =&gt; { x + 1; }</code>? <strong>undefined</strong>: lipsește return.</li>
+            <li>Blochează await întreaga pagină? <strong>Nu</strong>: suspendă continuarea funcției async respective până la rezultat.</li>
+          </ol>
+        </details>
+      </section>
+
+      <section id="teme">
+        <h2>Temă simplă: bonul pentru seara de film</h2>
+        <p>Lucrează într-un fișier <code>tema-es6-1.js</code>, încărcat într-un HTML cu <code>defer</code>. Este suficient să afișezi rezultatele în consolă.</p>
+        <pre><code>const bilete = [20, 15];
+const gustari = [5, 10];</code></pre>
+        <ol>
+          <li>Creează lista <code>toatePreturile</code> cu spread, pornind de la cele două liste.</li>
+          <li>Scrie funcția <code>calculeazaTotal(...preturi)</code> folosind rest și o buclă simplă.</li>
+          <li>Apelează funcția cu elementele din <code>toatePreturile</code>, folosind spread.</li>
+          <li>Scrie o funcție arrow <code>imparteNota(total, persoane)</code> care întoarce suma de plătit de fiecare persoană. Presupunem că numărul de persoane este pozitiv.</li>
+          <li>Afișează un mesaj cu template literals: <code>Total: 50 lei. Fiecare plătește 25 lei.</code></li>
+        </ol>
+        <p class="nota">Verificare: totalul este 50, împărțit la două persoane este 25. <code>calculeazaTotal()</code> întoarce 0. Listele inițiale rămân <code>[20, 15]</code> și <code>[5, 10]</code>.</p>
+        <details><summary>Indiciu, fără rezolvarea completă</summary><p>În funcția de total, pornește cu <code>let total = 0</code> și adună fiecare element. La apel, <code>calculeazaTotal(...toatePreturile)</code> trimite patru numere separate.</p></details>
+      </section>
+
+      <section id="tema-bilet">
+        <h2>Temă puțin mai complexă: biletul și verificarea locurilor</h2>
+        <p>Creează o pagină mică pentru filmul „Pisica regizor”, cu un bilet de 15 lei. Refolosește clasa <code>Bilet</code> și funcția <code>verificaLocuri</code> din lecție.</p>
+        <ol>
+          <li>Creează o instanță pentru film. Calculează costul a două bilete cu metoda ei și afișează <code>Pisica regizor: 30 lei</code>.</li>
+          <li>Adaugă un select cu două opțiuni: „Există locuri” și „Sala este plină”, un buton „Verifică” și un paragraf pentru rezultat.</li>
+          <li>La click, afișează „Verificăm…” și dezactivează butonul și selectul.</li>
+          <li>Într-un callback <code>async</code>, folosește <code>await verificaLocuri(...)</code>. Trimite true sau false în funcție de opțiunea aleasă.</li>
+          <li>La succes, afișează mesajul primit. În <code>catch</code>, afișează mesajul erorii. În <code>finally</code>, reactivează controalele.</li>
+        </ol>
+        <p class="nota">Verificare: prețul celor două bilete este 30 lei. Scenariul de succes afișează „Sunt locuri disponibile.”, iar cel de eșec afișează „Nu mai sunt locuri la acest film.”. După fiecare încercare, poți porni alta. Nu ai nevoie de server sau de salvarea unei rezervări.</p>
+        <details><summary>Indiciu: ordinea pașilor</summary><p>Creează întâi biletul și verifică prețul în consolă. Leagă apoi butonul de un mesaj simplu în pagină. Adaugă la final <code>async</code>, <code>await</code> și blocurile <code>try / catch / finally</code>, după modelul demonstrației.</p></details>
+      </section>
+    </main>
+    <footer>
+      <p><a href="js-dom-manipulation.html">&larr; Înapoi la lecția 12 - JavaScript DOM Manipulation</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>
