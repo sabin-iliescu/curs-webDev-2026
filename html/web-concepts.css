@@ -1,0 +1,16 @@
+/* Păstrăm stilul comun al lecțiilor JavaScript. */
+.traseu-web { display: grid; gap: 12px; padding: 0; list-style: none; }
+.traseu-web li { padding: 14px; background: #faf5ff; border-left: 4px solid #67328f; }
+.traseu-web strong { display: block; color: #512571; }
+.mesaje-http { display: grid; gap: 12px; }
+.mesaje-http > div { min-width: 0; }
+.mesaje-http h4 { margin: 14px 0 6px; }
+.mesaje-http pre { margin-top: 0; background: white; }
+.lista-api { padding-left: 24px; }
+.lista-api li { margin: 8px 0; overflow-wrap: anywhere; }
+.sursa { font-size: 14px; }
+button:disabled { color: #555; background: #e2e2e2; border-color: #999; cursor: wait; }
+@media (min-width: 700px) {
+  .traseu-web { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mesaje-http { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

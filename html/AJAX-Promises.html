@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>15 - AJAX și Promises</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <link rel="stylesheet" href="ajax-promises.css" />
+    <script src="ajax-api.js" defer></script>
+    <script src="ajax-promises.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="Web-Concepts-Dive-Deeper.html">&larr; Înapoi la lecția 14 - Web Concepts: Dive Deeper</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <h1>15 - AJAX și Promises</h1>
+      <p>Cerem date, așteptăm răspunsul și actualizăm doar partea de pagină care are nevoie de ele.</p>
+      <p>În lecția trecută am urmărit cererile HTTP. Acum scriem codul care le pornește și folosim promisiuni pentru a lega pașii, a afișa rezultatele și a trata erorile.</p>
+      <ul class="harta-lectiei" aria-label="Cele trei demonstrații">
+        <li><a href="#demo-ordine">01 · Cine ajunge primul?</a><span>Descoperă ordinea codului sincron, a promisiunii și a timerului.</span></li>
+        <li><a href="#demo-popcorn">02 · Automat de popcorn</a><span>O promisiune, două rezultate posibile. Pagina rămâne interactivă.</span></li>
+        <li><a href="#demo-cinema">03 · Alege filmul de seară</a><span>Catalog și program încărcate la click, fără reîncărcarea paginii.</span></li>
+      </ul>
+      <nav aria-label="Părțile lecției"><ol>
+        <li><a href="#ajax">AJAX, API și JSON</a></li>
+        <li><a href="#callback">Sincron, asincron și callback</a></li>
+        <li><a href="#event-loop">Event loop pe un exemplu mic</a></li>
+        <li><a href="#promisiuni">Creăm și folosim o promisiune</a></li>
+        <li><a href="#lanturi">Lanțuri de promisiuni și return</a></li>
+        <li><a href="#json">Transformăm datele în JSON și înapoi</a></li>
+        <li><a href="#fetch">Fetch: de la răspuns la date</a></li>
+        <li><a href="#atelier">Atelier: mini-cinema cu AJAX</a></li>
+        <li><a href="#scriere">POST, PUT și DELETE</a></li>
+        <li><a href="#async-await">Aceiași pași cu async / await</a></li>
+        <li><a href="#recapitulare">Greșeli frecvente</a></li>
+        <li><a href="#teme">Două teme pentru acasă</a></li>
+      </ol></nav>
+      <p class="nota">Rulează blocurile de cod separat; continuările spun ce funcții refolosesc. Primele două demonstrații merg și prin deschiderea directă a fișierului. Pentru catalogul AJAX, vezi <a href="#pregatire">pregătirea serverului local</a>. Detaliile opționale pot rămâne pentru a doua lectură.</p>
+      <noscript><p class="nota">Activează JavaScript pentru demonstrații. Explicațiile, codul și temele rămân disponibile și fără el.</p></noscript>
+    </header>
+    <main>
+      <section id="ajax">
+        <h2>1. AJAX: actualizăm o parte din pagină</h2>
+        <p><strong>AJAX</strong> vine de la <em>Asynchronous JavaScript and XML</em>. Este o tehnică: JavaScript comunică asincron cu serverul, primește date și modifică interfața fără să reîncarce întregul document.</p>
+        <p>Litera X a rămas în nume, dar putem folosi JSON, text sau alte formate. În această lecție folosim <strong>JSON</strong>.</p>
+        <ol>
+          <li>Utilizatorul apasă „Vezi orele”.</li>
+          <li>JavaScript cere programul filmului.</li>
+          <li>Serverul răspunde cu datele.</li>
+          <li>JavaScript afișează orele într-un panou. Restul paginii rămâne pe loc.</li>
+        </ol>
+        <p><strong>API-ul</strong> stabilește ce cerem și ce primim. <strong>AJAX</strong> descrie felul în care actualizăm pagina. <strong>Promise</strong> reprezintă un rezultat care poate deveni disponibil mai târziu.</p>
+        <p>O aplicație poate combina navigarea între pagini cu actualizări AJAX. Nu trebuie ca toate cererile ei să întoarcă exclusiv JSON.</p>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Network_requests">MDN: cereri de rețea din JavaScript</a>.</p>
+      </section>
+
+      <section id="callback">
+        <h2>2. Asincron: pornim o operație și continuăm</h2>
+        <p>Codul sincron rulează în ordine. Când programăm un timer sau pornim o cerere de rețea, nu trebuie să ocupăm firul principal așteptând rezultatul.</p>
+        <pre><code class="language-js">console.log("1. Comandăm popcorn.");
+
+setTimeout(() =&gt; {
+  console.log("3. Popcornul este gata.");
+}, 1000);
+
+console.log("2. Alegem un film între timp.");
+// Ordine: 1, 2, apoi 3, după aproximativ o secundă.</code></pre>
+        <p>Funcția trimisă lui <code>setTimeout</code> este un <strong>callback</strong>: o funcție transmisă altei funcții pentru a fi apelată de aceasta. Aici este apelată mai târziu.</p>
+        <p class="nota">Un callback nu este automat asincron. În <code>[10, 20].map(pret =&gt; pret * 2)</code>, callbackul rulează în timpul apelului map. O funcție care primește sau întoarce funcții este numită <em>higher-order function</em>.</p>
+        <h3>Rezultatul nu apare mai repede doar pentru că îl citim</h3>
+        <pre><code class="language-js">let mesaj = "Se pregătește…";
+
+setTimeout(() =&gt; {
+  mesaj = "Gata!";
+  console.log(mesaj); // "Gata!", mai târziu.
+}, 1000);
+
+console.log(mesaj); // "Se pregătește…", imediat.</code></pre>
+        <p>Folosim rezultatul când operația este gata: în callback, într-un <code>then</code> sau după <code>await</code>.</p>
+        <details><summary>Ce întoarce setTimeout?</summary>
+          <pre><code class="language-js">const timerId = setTimeout(() =&gt; {
+  return "Gata!";
+}, 1000);
+
+console.log(typeof timerId); // "number" în browser.
+clearTimeout(timerId);       // Anulăm timerul.</code></pre>
+          <p>În browser, <code>setTimeout()</code> întoarce un identificator al timerului. Nu întoarce rezultatul callbackului. <code>return "Gata!"</code> ar ieși doar din callback.</p>
+        </details>
+      </section>
+
+      <section id="event-loop">
+        <h2>3. Event loop: cine primește rândul?</h2>
+        <p>Pentru codul de pe firul principal, JavaScript execută câte o bucată de cod odată. <strong>Call stack</strong> ține evidența apelurilor în curs. Browserul gestionează operații precum timerele și rețeaua, iar callbackurile sunt programate pentru execuție.</p>
+        <p>Când codul curent se termină, callbackurile promisiunilor pregătite rulează ca <strong>microtaskuri</strong>, înaintea următorului task, cum ar fi un callback de timer pregătit.</p>
+        <pre><code class="language-js">console.log("A");
+setTimeout(() =&gt; console.log("B"), 0);
+Promise.resolve().then(() =&gt; console.log("C"));
+console.log("D");
+// A, D, C, B</code></pre>
+        <p><code>Promise.resolve()</code> creează aici o promisiune deja îndeplinită. Callbackul din <code>then</code> tot nu rulează imediat. Nici un timer cu <code>0</code> nu întrerupe codul curent.</p>
+        <div class="demo" id="demo-ordine">
+          <h3>Cine ajunge primul?</h3>
+          <p>Prezice ordinea celor patru litere, apoi rulează exemplul. Lista este completată de callbackurile reale.</p>
+          <button id="ruleaza-ordinea" type="button">Rulează A, B, C, D</button>
+          <ol id="jurnal-ordine" class="jurnal" aria-label="Ordinea execuției"></ol>
+          <p id="stare-ordine" class="rezultat" role="status">Rezultatul va apărea aici.</p>
+        </div>
+        <p class="nota">Asincron nu înseamnă că orice cod este executat în paralel sau că pagina nu se poate bloca. Un calcul foarte lung pe firul principal poate întârzia atât interfața, cât și callbackurile. Timpul dat unui timer nu este o garanție a momentului exact de execuție.</p>
+        <p class="sursa">Detalii opționale: <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide">MDN: taskuri și microtaskuri</a>.</p>
+      </section>
+
+      <section id="promisiuni">
+        <h2>4. Promise: bonul unei comenzi care se pregătește</h2>
+        <p>O promisiune este un obiect care reprezintă finalizarea unei operații. Nu este rezultatul însuși și nu garantează succesul.</p>
+        <ul>
+          <li><code>pending</code>: încă așteptăm.</li>
+          <li><code>fulfilled</code>: operația a reușit și avem o valoare.</li>
+          <li><code>rejected</code>: operația a eșuat și avem un motiv.</li>
+        </ul>
+        <p>După succes sau eșec, promisiunea este <em>settled</em> și nu își mai schimbă starea. O încercare nouă poate crea o promisiune nouă.</p>
+        <h3>Creăm o promisiune pentru o comandă simulată</h3>
+        <pre><code class="language-js" id="cod-prepara-popcorn">function preparaPopcorn(disponibil) {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (disponibil) {
+        resolve("Popcornul este gata!");
+      } else {
+        reject(new Error("Nu mai avem porumb. Alege altă gustare."));
+      }
+    }, 1800);
+  });
+}</code></pre>
+        <p>Funcția transmisă lui <code>new Promise</code> rulează imediat și programează timerul. Timerul produce întârzierea. <code>resolve(mesaj)</code> livrează textul, iar <code>reject(new Error(...))</code> semnalează eșecul.</p>
+        <h3>Folosim promisiunea: then, catch și finally</h3>
+        <p>Rulează acest bloc după definiția lui <code>preparaPopcorn</code>.</p>
+        <pre><code class="language-js">preparaPopcorn(true)
+  .then((mesaj) =&gt; {
+    console.log(mesaj); // "Popcornul este gata!"
+  })
+  .catch((eroare) =&gt; {
+    console.log(eroare.message);
+  })
+  .finally(() =&gt; {
+    console.log("Putem prelua altă comandă.");
+  });</code></pre>
+        <ul>
+          <li><code>then</code> primește valoarea de succes.</li>
+          <li><code>catch</code> primește eroarea din lanț.</li>
+          <li><code>finally</code> face curățenia comună, de exemplu reactivează un buton. Nu primește rezultatul ca argument.</li>
+        </ul>
+        <div class="demo" id="demo-popcorn">
+          <h3>Automatul de popcorn</h3>
+          <p>Alege rezultatul comenzii. Așteptarea de 1,8 secunde este simulată local, fără server.</p>
+          <div class="controale">
+            <div><label for="scenariu-popcorn">Ce se întâmplă în automat?</label><select id="scenariu-popcorn"><option value="succes">Avem porumb: succes</option><option value="eroare">S-a terminat porumbul: eșec</option></select></div>
+            <button id="comanda-popcorn" type="button">Comandă popcorn</button>
+          </div>
+          <div class="automat" id="automat-popcorn" data-stare="idle">
+            <span class="popcorn" aria-hidden="true">🍿</span>
+            <div><ul class="stari" aria-label="Stările posibile ale promisiunii"><li data-eticheta="pending">pending</li><li data-eticheta="fulfilled">fulfilled</li><li data-eticheta="rejected">rejected</li></ul><p id="stare-popcorn" class="rezultat" role="status">Automatul așteaptă comanda.</p></div>
+          </div>
+          <button id="contor-async" class="secundar" type="button">Pagina răspunde: 0 clickuri</button>
+          <p>Apasă contorul cât timp comanda se pregătește. Valoarea lui rămâne și după ce primești rezultatul.</p>
+        </div>
+        <p class="sursa">Referință: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">MDN: Promise</a>. <code>fulfilled</code> este numele stării de succes; termenul „resolved” are un sens tehnic mai larg.</p>
+      </section>
+
+      <section id="lanturi">
+        <h2>5. Un lanț: rezultatul unui pas devine intrarea următorului</h2>
+        <p>Fiecare apel <code>then()</code> întoarce o promisiune nouă. Ce returnăm din callback determină rezultatul următorului pas.</p>
+        <pre><code class="language-js">Promise.resolve(20)
+  .then((pret) =&gt; {
+    return pret * 2;
+  })
+  .then((total) =&gt; {
+    return `Două bilete costă ${total} lei.`;
+  })
+  .then((mesaj) =&gt; {
+    console.log(mesaj); // "Două bilete costă 40 lei."
+  });</code></pre>
+        <ul>
+          <li><strong>Returnăm o valoare:</strong> următorul then o primește.</li>
+          <li><strong>Returnăm o promisiune:</strong> lanțul așteaptă rezultatul ei.</li>
+          <li><strong>Aruncăm o eroare:</strong> lanțul trece către un handler de eroare, de exemplu catch.</li>
+        </ul>
+        <h3>Capcana: return uitat</h3>
+        <pre><code class="language-js">Promise.resolve(20)
+  .then((pret) =&gt; {
+    pret * 2; // Calculăm, dar nu returnăm.
+  })
+  .then((total) =&gt; {
+    console.log(total); // undefined
+  });</code></pre>
+        <p>Dacă pornești o altă operație asincronă în <code>then</code>, returnează-i promisiunea ca pasul următor să o aștepte. Vom aplica asta când cerem întâi filmele și apoi programul.</p>
+        <details><summary>Opțional: după catch, lanțul poate continua</summary>
+          <pre><code class="language-js">Promise.reject(new Error("Catalog indisponibil"))
+  .catch(() =&gt; {
+    return []; // Alegem o valoare de rezervă.
+  })
+  .then((filme) =&gt; {
+    console.log(filme.length); // 0
+  });</code></pre>
+          <p>Dacă un catch se termină normal, eroarea este tratată. Poți arunca din nou eroarea dacă vrei să rămână un eșec. O listă goală de rezervă nu este întotdeauna potrivită; uneori utilizatorul trebuie să vadă mesajul de eroare.</p>
+        </details>
+        <p>Promisiunile folosesc tot callbackuri. Avantajul este că putem lega operațiile într-un lanț și putem trata erorile într-un loc, fără multe funcții imbricate, numite uneori <em>callback hell</em>.</p>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises">MDN: folosirea promisiunilor</a>.</p>
+      </section>
+
+      <section id="json">
+        <h2>6. JSON este text; obiectul JavaScript este o valoare în memorie</h2>
+        <pre><code class="language-js">const rezervare = { filmId: 1, loc: "A2" };
+const text = JSON.stringify(rezervare);
+
+console.log(text);        // '{"filmId":1,"loc":"A2"}'
+console.log(typeof text); // "string"
+
+const copie = JSON.parse(text);
+console.log(copie.loc);   // "A2"</code></pre>
+        <p><code>JSON.stringify()</code> serializează datele în text JSON. <code>JSON.parse()</code> face transformarea inversă. JSON acceptă obiecte, liste, texte, numere, booleeni și null, dar nu funcții sau comentarii.</p>
+        <p class="nota">Nu orice text este JSON valid. De exemplu, o pagină HTML de eroare nu poate fi citită cu <code>json()</code>. Cheile unui obiect JSON au ghilimele duble; valorile pot fi și numere, liste sau alte tipuri acceptate.</p>
+      </section>
+
+      <section id="fetch">
+        <h2>7. Fetch: două așteptări, un rezultat</h2>
+        <p>Prima promisiune oferă un <code>Response</code>: status, headere și acces la corp. <code>raspuns.json()</code> întoarce o altă promisiune, care oferă datele citite și parsate.</p>
+        <h3 id="pregatire">Pregătire: pornim serverul local</h3>
+        <p>Deschide proiectul prin serverul local folosit la curs, de exemplu Live Server. Alternativ, dacă ai Python, rulează din folderul principal al proiectului:</p>
+        <pre><code>python3 -m http.server 8000 --bind 127.0.0.1 --directory html</code></pre>
+        <p>Apoi deschide <code>http://localhost:8000/AJAX-Promises.html</code>. Oprești serverul cu <kbd>Ctrl</kbd> + <kbd>C</kbd>. Deschiderea prin <code>file://</code> nu este potrivită pentru cererile locale fetch.</p>
+        <h3>GET: cerem catalogul</h3>
+        <pre><code class="language-js">fetch("exemple-ajax/filme.json")
+  .then((raspuns) =&gt; {
+    if (!raspuns.ok) {
+      throw new Error(`HTTP ${raspuns.status}`);
+    }
+    return raspuns.json(); // Returnăm promisiunea citirii corpului.
+  })
+  .then((filme) =&gt; {
+    console.log(filme[0].titlu); // "Drum spre Marte"
+  })
+  .catch((eroare) =&gt; {
+    console.log(`Nu am putut citi filmele: ${eroare.message}`);
+  });</code></pre>
+        <p><code>ok</code> este true pentru statusuri de la 200 la 299. Un status 404 sau 500 nu respinge automat promisiunea fetch; noi verificăm răspunsul și aruncăm eroarea. O problemă de rețea poate respinge fetch înainte să existe un Response.</p>
+        <h3>Extragem partea reutilizabilă în ajax-api.js</h3>
+        <pre><code class="language-js" id="cod-citeste-json">function citesteJSON(url) {
+  return fetch(url).then((raspuns) =&gt; {
+    if (!raspuns.ok) {
+      throw new Error(`HTTP ${raspuns.status}: resursa nu a putut fi citită.`);
+    }
+    return raspuns.json();
+  });
+}</code></pre>
+        <p>Funcția nu afișează nimic și nu ascunde erorile. Codul interfeței decide ce să facă prin <code>then</code> și <code>catch</code>.</p>
+        <pre><code>&lt;script src="ajax-api.js" defer&gt;&lt;/script&gt;
+&lt;script src="ajax-promises.js" defer&gt;&lt;/script&gt;</code></pre>
+        <p>Scripturile externe clasice cu defer sunt executate în ordinea lor din document. Astfel, funcția de citire există înainte să o folosească demonstrațiile.</p>
+        <details><summary>De recunoscut: XMLHttpRequest, jQuery și Axios</summary>
+          <p><code>XMLHttpRequest</code> este o altă interfață a browserului pentru cereri. Nu întoarce nativ un Promise; de obicei lucrăm cu evenimentele sale. Acest exemplu citește același catalog:</p>
+          <pre><code class="language-js">const cerere = new XMLHttpRequest();
+cerere.open("GET", "exemple-ajax/filme.json");
+cerere.responseType = "json";
+cerere.addEventListener("load", () =&gt; {
+  if (cerere.status &gt;= 200 &amp;&amp; cerere.status &lt; 300 &amp;&amp; cerere.response !== null) {
+    console.log(cerere.response);
+  } else {
+    console.log(`Răspuns inutilizabil, status ${cerere.status}.`);
+  }
+});
+cerere.addEventListener("error", () =&gt; console.log("Eroare de rețea."));
+cerere.send();</code></pre>
+          <p>În alte proiecte poți întâlni biblioteci precum jQuery sau Axios. Aici folosim fetch și Promise direct, fără instalări suplimentare.</p>
+          <p class="sursa">Referință: <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API/Using_XMLHttpRequest">MDN: XMLHttpRequest</a>.</p>
+        </details>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">MDN: Fetch API</a>.</p>
+      </section>
+
+      <section id="atelier">
+        <h2>8. Atelier: alegem filmul, apoi încărcăm orele</h2>
+        <p>Catalogul și programul sunt fișiere JSON servite prin HTTP. Ilustrează citirea datelor unui API; nu fac rezervări și nu au o bază de date.</p>
+        <div class="demo mini-cinema" id="demo-cinema">
+          <h3>Ce vedem în seara asta?</h3>
+          <p>Trei filme imaginare, fiecare cu propriul program. Încarcă lista, filtrează după gen și descoperă orele la click.</p>
+          <div class="controale">
+            <div><label for="gen-film">Genul filmului</label><select id="gen-film" disabled><option value="toate">Toate genurile</option><option value="aventura">Aventură</option><option value="comedie">Comedie</option><option value="animatie">Animație</option><option value="documentar">Documentar (fără rezultate)</option></select></div>
+            <button id="incarca-catalog" type="button">Încarcă filmele</button>
+            <button id="testeaza-404" class="secundar" type="button">Testează 404</button>
+          </div>
+          <p id="stare-catalog" class="rezultat" role="status">Catalogul așteaptă prima cerere.</p>
+          <ul id="catalog-filme" class="catalog-filme" aria-label="Filmele din catalog"></ul>
+          <div id="program-film" class="program-film" hidden>
+            <h4 id="program-titlu">Programul filmului</h4>
+            <p id="program-stare" role="status"></p>
+            <ul id="ore-film" class="ore-film" aria-label="Orele proiecțiilor"></ul>
+          </div>
+          <p class="sursa">Filtrarea după gen se face în browser, pe lista deja primită. „Vezi orele” trimite o cerere nouă. Butonul 404 cere intenționat un fișier absent; poți reveni cu „Încarcă filmele”.</p>
+        </div>
+        <h3>Pasul 1: știm forma datelor</h3>
+        <p>Un film din <a href="exemple-ajax/filme.json">catalog</a> conține ID-ul, titlul, genul, durata, un simbol și descrierea. Pentru filmul 1, <a href="exemple-ajax/program-1.json">programul</a> arată astfel:</p>
+        <pre><code class="language-json">{ "filmId": 1, "sala": "Sala Orion", "ore": ["17:00", "19:30", "21:45"] }</code></pre>
+        <h3>Pasul 2: legăm două citiri care depind una de alta</h3>
+        <p>Acest exemplu pentru consolă folosește <code>citesteJSON</code> de mai sus. Cere catalogul, apoi programul primului film.</p>
+        <pre><code class="language-js">citesteJSON("exemple-ajax/filme.json")
+  .then((filme) =&gt; {
+    if (filme.length === 0) {
+      throw new Error("Catalogul este gol.");
+    }
+    const primulFilm = filme[0];
+    return citesteJSON(`exemple-ajax/program-${primulFilm.id}.json`);
+  })
+  .then((program) =&gt; {
+    console.log(program.sala);           // "Sala Orion"
+    console.log(program.ore.join(", ")); // "17:00, 19:30, 21:45"
+  })
+  .catch((eroare) =&gt; {
+    console.log(eroare.message);
+  });</code></pre>
+        <p>Al doilea then primește <strong>programul</strong>, fiindcă primul returnează promisiunea celei de-a doua citiri. Nu avem nevoie de un then imbricat în alt then.</p>
+        <h3>Pasul 3: în interfață, utilizatorul alege momentul celei de-a doua cereri</h3>
+        <p>În demo afișăm întâi cardurile. Butonul fiecărui card apelează <code>incarcaProgram(film)</code>, care folosește ID-ul acelui film.</p>
+        <details><summary>Vezi funcția care încarcă și afișează orele</summary>
+          <p>Acesta este codul folosit de demo. Variabilele DOM sunt definite în <a href="ajax-promises.js">scriptul interfeței</a>. <code>seteazaIncarcare</code> dezactivează sau reactivează controalele catalogului.</p>
+          <pre><code class="language-js" id="cod-program">function incarcaProgram(film) {
+  seteazaIncarcare(true);
+  programPanou.hidden = false;
+  programTitlu.textContent = film.titlu;
+  programStare.textContent = "Se încarcă programul…";
+  oreLista.replaceChildren();
+
+  return citesteJSON(`exemple-ajax/program-${film.id}.json`)
+    .then((program) =&gt; {
+      if (!Array.isArray(program.ore)) {
+        throw new Error("Programul trebuie să conțină o listă de ore.");
+      }
+      for (const ora of program.ore) {
+        const element = document.createElement("li");
+        element.textContent = ora;
+        oreLista.append(element);
+      }
+      programStare.textContent = program.ore.length === 0
+        ? "Nu sunt proiecții programate pentru acest film."
+        : `${program.sala}: ${program.ore.length} proiecții. Program demonstrativ.`;
+    })
+    .catch((eroare) =&gt; {
+      programStare.textContent = `Nu am putut încărca orele. ${eroare.message} Apasă din nou «Vezi orele» pentru a reîncerca.`;
+    })
+    .finally(() =&gt; seteazaIncarcare(false));
+}</code></pre>
+        </details>
+        <h3>Pasul 4: verificăm și când lucrurile nu merg</h3>
+        <ul>
+          <li><strong>Loading:</strong> arătăm un mesaj și dezactivăm controalele care ar porni cereri concurente.</li>
+          <li><strong>Succes:</strong> construim elementele cu <code>createElement</code> și punem textele cu <code>textContent</code>.</li>
+          <li><strong>Gol:</strong> explicăm de ce nu apar filme sau ore.</li>
+          <li><strong>Eroare:</strong> afișăm un mesaj și oferim reîncercare. Nu păstrăm orele filmului anterior sub alt titlu.</li>
+        </ul>
+        <p>În Network vei vedea întâi <code>filme.json</code>, apoi, la click, <code>program-1.json</code> sau programul altui film. Contorul de lângă automatul de popcorn își păstrează valoarea: documentul nu a fost reîncărcat.</p>
+        <details><summary>Opțional: Promise.all pentru două cereri independente</summary>
+          <p>Când știm deja cele două adrese, putem porni ambele citiri și aștepta rezultatele împreună. Exemplul refolosește <code>citesteJSON</code>.</p>
+          <pre><code class="language-js">Promise.all([
+  citesteJSON("exemple-ajax/program-1.json"),
+  citesteJSON("exemple-ajax/program-2.json")
+])
+  .then((programe) =&gt; {
+    console.log(programe[0].sala); // "Sala Orion"
+    console.log(programe[1].sala); // "Sala Luna"
+  })
+  .catch((eroare) =&gt; console.log(eroare.message));</code></pre>
+          <p>Rezultatele păstrează ordinea din lista de intrare, chiar dacă a doua cerere termină prima. Dacă una eșuează, promisiunea comună este respinsă; celelalte cereri nu sunt anulate automat.</p>
+          <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all">MDN: Promise.all</a>.</p>
+        </details>
+      </section>
+
+      <section id="scriere">
+        <h2>9. Când trimitem date: POST, PUT și DELETE</h2>
+        <p>Până acum am citit date. Pentru a trimite JSON, alegem metoda, descriem formatul cu <code>Content-Type</code> și serializăm obiectul în <code>body</code>.</p>
+        <p>Funcția de mai jos este un model pentru un API care primește JSON și întoarce JSON sau 204. Definirea ei nu trimite nicio cerere.</p>
+        <pre><code class="language-js">function trimiteJSON(url, metoda, date) {
+  return fetch(url, {
+    method: metoda,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(date)
+  }).then((raspuns) =&gt; {
+    if (!raspuns.ok) {
+      throw new Error(`HTTP ${raspuns.status}`);
+    }
+    if (raspuns.status === 204) {
+      return null; // Succes, fără corp de citit.
+    }
+    return raspuns.json();
+  });
+}</code></pre>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Exemple de scriere prin API, tabel derulabil"><table>
+          <caption>Exemple de apel pentru un backend de rezervări</caption>
+          <thead><tr><th scope="col">Acțiune</th><th scope="col">Metodă și adresă</th><th scope="col">Date</th></tr></thead>
+          <tbody>
+            <tr><td>Creăm o rezervare</td><td>POST /api/rezervari</td><td><code>{ filmId: 1, loc: "A2" }</code></td></tr>
+            <tr><td>Înlocuim datele ei</td><td>PUT /api/rezervari/42</td><td><code>{ filmId: 1, loc: "A3" }</code></td></tr>
+            <tr><td>Ștergem rezervarea</td><td>DELETE /api/rezervari/42</td><td>În acest exemplu nu trimitem corp.</td></tr>
+          </tbody>
+        </table></div>
+        <pre><code class="language-js">// Exemple ilustrative: decomentează doar dacă ai backendul potrivit.
+// trimiteJSON("/api/rezervari", "POST", { filmId: 1, loc: "A2" })
+//   .then(date =&gt; console.log(date))
+//   .catch(eroare =&gt; console.log(eroare.message));
+
+// fetch("/api/rezervari/42", { method: "DELETE" })
+//   .then(raspuns =&gt; {
+//     if (!raspuns.ok) throw new Error(`HTTP ${raspuns.status}`);
+//     console.log("Rezervarea a fost ștearsă.");
+//   })
+//   .catch(eroare =&gt; console.log(eroare.message));</code></pre>
+        <p class="nota">Serverul static folosit pentru lecție nu implementează aceste rute și nu salvează rezervări. Nu trimitem POST către fișierul filme.json ca să îl modificăm. Formatul și metoda trebuie să respecte contractul backendului.</p>
+        <p>Pentru explorare separată, <a href="https://jsonplaceholder.typicode.com/">JSONPlaceholder</a> oferă date și operații demonstrative pentru exersarea cererilor. Exemplele interactive din această pagină folosesc fișierele locale.</p>
+      </section>
+
+      <section id="async-await">
+        <h2>10. Aceeași idee, scrisă cu async / await</h2>
+        <p>Nu schimbăm modul în care funcționează rețeaua. Schimbăm forma codului care consumă promisiunile. Acest exemplu refolosește <code>citesteJSON</code>.</p>
+        <pre><code class="language-js">async function arataPrimulProgram() {
+  try {
+    const filme = await citesteJSON("exemple-ajax/filme.json");
+    if (filme.length === 0) {
+      throw new Error("Catalogul este gol.");
+    }
+    const program = await citesteJSON(`exemple-ajax/program-${filme[0].id}.json`);
+    console.log(program.ore.join(", "));
+  } catch (eroare) {
+    console.log(eroare.message);
+  }
+}
+
+arataPrimulProgram(); // Mai târziu: "17:00, 19:30, 21:45"</code></pre>
+        <p><code>await</code> suspendă continuarea funcției async până la rezultat; nu oprește întreaga pagină. Funcția <code>async</code> întoarce la rândul ei o promisiune.</p>
+        <p>Folosește forma pe care o urmărești mai ușor. Pentru început, păstrează un flux consecvent: fie then / catch, fie await cu try / catch.</p>
+      </section>
+
+      <section id="recapitulare">
+        <h2>11. Cinci greșeli pe care acum le poți recunoaște</h2>
+        <ol>
+          <li><strong>Citesc prea devreme rezultatul.</strong> Îl folosesc în callback, then sau după await.</li>
+          <li><strong>Uit return într-un then.</strong> Următorul pas poate primi undefined sau poate continua fără operația pornită.</li>
+          <li><strong>Cred că fetch respinge automat un 404.</strong> Verific <code>raspuns.ok</code>.</li>
+          <li><strong>Citesc JSON din orice răspuns.</strong> Un 204 nu are corp; un răspuns HTML nu este JSON.</li>
+          <li><strong>Dezactivez butonul și îl uit blocat după eroare.</strong> Îl reactivez în finally.</li>
+        </ol>
+        <p>Fișierele lecției: <a href="ajax-api.js">citirea JSON</a>, <a href="ajax-promises.js">codul demonstrațiilor</a>, <a href="ajax-promises.css">stilurile demonstrațiilor</a> și <a href="exemple-ajax/filme.json">catalogul</a>.</p>
+      </section>
+
+      <section id="teme">
+        <h2>Temă simplă: automatul de limonadă</h2>
+        <p>Creează o pagină cu un select pentru „Avem lămâi” / „Nu mai avem lămâi”, un buton „Prepară” și un paragraf pentru rezultat.</p>
+        <ol>
+          <li>Scrie <code>preparaLimonada(disponibil)</code>, care întoarce un Promise.</li>
+          <li>După aproximativ o secundă, rezolvă promisiunea cu „Limonada este gata!” sau respinge-o cu un obiect Error.</li>
+          <li>La click, citește opțiunea, afișează „Se prepară…” și dezactivează butonul și selectul.</li>
+          <li>Folosește then pentru succes, catch pentru eroare și finally pentru a reactiva controalele.</li>
+        </ol>
+        <p class="nota">Verificare: testează succes, apoi eșec, apoi din nou succes. Mesajul se schimbă la fiecare comandă, controalele sunt reactivate în ambele cazuri, iar pagina nu se reîncarcă. Acest exercițiu nu are nevoie de server.</p>
+        <details><summary>Indiciu</summary><p>Pornește de la <code>preparaPopcorn</code>. Înlocuiește mesajele și întârzierea, apoi leagă funcția de elementele tale HTML. Nu încerca să returnezi băutura direct din callbackul setTimeout.</p></details>
+      </section>
+
+      <section id="tema-catalog">
+        <h2>Temă puțin mai complexă: meniu și ingrediente la click</h2>
+        <p>Creează o pagină mică, un <code>meniu.json</code> și câte un fișier de ingrediente pentru două produse. Deschide pagina prin serverul local.</p>
+        <pre><code class="language-json">[
+  { "id": 1, "nume": "Limonadă", "pret": 12 },
+  { "id": 2, "nume": "Ciocolată caldă", "pret": 15 }
+]</code></pre>
+        <p>Pentru <code>ingrediente-1.json</code>, poți folosi <code>{ "ingrediente": ["apă", "lămâie", "miere"] }</code>. Creează și al doilea fișier cu ingredientele alese de tine.</p>
+        <ol>
+          <li>Reutilizează funcția <code>citesteJSON</code> într-un fișier separat, încărcat înaintea scriptului interfeței.</li>
+          <li>La click pe „Încarcă meniul”, cere lista și afișează numele și prețul fiecărui produs.</li>
+          <li>Fiecare produs are un buton „Ingrediente”, care cere fișierul corespunzător ID-ului și afișează ingredientele.</li>
+          <li>Adaugă mesaje de încărcare, eroare și rezultat gol. Golește rezultatul precedent înainte de o nouă cerere.</li>
+          <li>Dezactivează controalele care ar putea porni cereri suprapuse și reactivează-le în finally.</li>
+          <li>Testează o adresă greșită, apoi repar-o și încearcă din nou.</li>
+        </ol>
+        <p class="nota">Verificare: apar două produse, fără dubluri după reîncărcare. Ingredientele sunt cerute abia la click. Un fișier lipsă afișează o eroare, nu ingredientele produsului precedent. După eroare, poți reîncerca.</p>
+        <details><summary>Indiciu</summary><p>Adresa poate fi construită cu <code>`ingrediente-${produs.id}.json`</code>. Urmărește în Network momentul în care apare fiecare cerere. Pentru această temă sunt suficiente două produse și câteva ingrediente.</p></details>
+      </section>
+    </main>
+    <footer>
+      <p><a href="Web-Concepts-Dive-Deeper.html">&larr; Înapoi la lecția 14 - Web Concepts: Dive Deeper</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "titlu": "Drum spre Marte",
+    "gen": "aventura",
+    "durata": 105,
+    "simbol": "🚀",
+    "descriere": "Trei prieteni, o rachetă și o hartă care începe acolo unde se termină Pământul."
+  },
+  {
+    "id": 2,
+    "titlu": "Pisica regizor",
+    "gen": "comedie",
+    "durata": 90,
+    "simbol": "🐈",
+    "descriere": "O pisică ajunge pe platoul de filmare și schimbă toate planurile echipei."
+  },
+  {
+    "id": 3,
+    "titlu": "Insula norilor",
+    "gen": "animatie",
+    "durata": 85,
+    "simbol": "☁️",
+    "descriere": "Un mic inventator construiește o barcă pentru o insulă care plutește pe cer."
+  }
+]

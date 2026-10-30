@@ -1,0 +1,47 @@
+/* Aceleași culori și spațieri ca în restul cursului. */
+.harta-lectiei { display: grid; gap: 10px; padding: 0; list-style: none; }
+.harta-lectiei li { padding: 14px; background: #eee4f7; border-radius: 8px; }
+.harta-lectiei a { font-weight: bold; }
+.harta-lectiei span { display: block; font-size: 14px; }
+.jurnal { padding-left: 30px; }
+.jurnal li { padding: 8px; margin: 6px 0; border-left: 3px solid #67328f; background: white; }
+.automat { display: flex; align-items: center; gap: 16px; margin: 20px 0; }
+.popcorn { display: grid; place-items: center; width: 96px; height: 96px; flex-shrink: 0; font-size: 56px; border-radius: 22px; background: #fef3c7; }
+.automat[data-stare="pending"] .popcorn { animation: popcorn-salt 700ms ease-in-out infinite alternate; }
+.automat[data-stare="fulfilled"] .popcorn { background: #dcfce7; }
+.automat[data-stare="rejected"] .popcorn { background: #fee2e2; }
+.stari { display: flex; gap: 8px; flex-wrap: wrap; list-style: none; padding: 0; }
+.stari li { padding: 4px 10px; color: #555; background: white; border: 1px solid #aaa; border-radius: 20px; font-size: 14px; }
+.automat[data-stare="pending"] [data-eticheta="pending"],
+.automat[data-stare="fulfilled"] [data-eticheta="fulfilled"],
+.automat[data-stare="rejected"] [data-eticheta="rejected"] { font-weight: bold; color: white; background: #67328f; border-color: #67328f; }
+.mini-cinema { background: #f5f0fb; }
+.catalog-filme { display: grid; gap: 14px; padding: 0; list-style: none; margin: 20px 0; }
+.card-film { min-width: 0; overflow: hidden; display: flex; flex-direction: column; background: white; border: 1px solid #d8bfe9; border-radius: 12px; }
+.afis-film { display: grid; place-items: center; height: 120px; font-size: 58px; background: linear-gradient(135deg, #ddd6fe, #fbcfe8); }
+.card-film[data-gen="aventura"] .afis-film { background: linear-gradient(135deg, #172554, #6d28d9); }
+.card-film[data-gen="comedie"] .afis-film { background: linear-gradient(135deg, #fef3c7, #fdba74); }
+.card-film[data-gen="animatie"] .afis-film { background: linear-gradient(135deg, #a5f3fc, #ddd6fe); }
+.film-info { display: flex; flex-direction: column; flex: 1; padding: 14px; }
+.film-info h4 { margin: 0 0 6px; font-size: 18px; color: #512571; }
+.film-info p { margin: 4px 0 12px; }
+.film-info .meta-film { font-size: 14px; color: #555; }
+.film-info button { margin-top: auto; width: 100%; }
+.program-film { padding: 16px; background: white; border: 1px dashed #a787bf; border-radius: 8px; }
+.program-film h4 { margin: 0 0 8px; }
+.ore-film { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin-bottom: 0; }
+.ore-film li { padding: 6px 12px; color: #512571; background: #eee4f7; border-radius: 6px; }
+.sursa { font-size: 14px; }
+button:disabled { color: #555; background: #e2e2e2; border-color: #999; cursor: wait; }
+[hidden] { display: none !important; }
+@keyframes popcorn-salt { to { transform: translateY(-8px) rotate(5deg); } }
+@media (min-width: 700px) {
+  .harta-lectiei, .catalog-filme { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .automat { align-items: flex-start; }
+  .popcorn { width: 64px; height: 76px; font-size: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .automat[data-stare="pending"] .popcorn { animation: none; }
+}

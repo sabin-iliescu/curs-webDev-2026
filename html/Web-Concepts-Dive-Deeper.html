@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14 - Web Concepts: Dive Deeper</title>
+    <link rel="stylesheet" href="javascript-basics.css" />
+    <link rel="stylesheet" href="web-concepts.css" />
+    <script src="web-concepts.js" defer></script>
+  </head>
+  <body>
+    <header id="sus">
+      <p><a href="ES6.html">&larr; Înapoi la lecția 13 - ES6</a></p>
+      <p><a href="index.html">Toate lecțiile</a></p>
+      <p><a href="AJAX-Promises.html">Continuă cu lecția 15 - AJAX și Promises &rarr;</a></p>
+      <h1>14 - Web Concepts: Dive Deeper</h1>
+      <p>Ce se întâmplă între click și pagina afișată? Urmărim cererea din browser, răspunsul serverului și datele care leagă vizitele între ele.</p>
+      <p>Folosim în continuare un cinema: citim programul, înțelegem o rezervare și încărcăm o listă de filme cu JavaScript.</p>
+      <nav aria-label="Părțile lecției">
+        <ol>
+          <li><a href="#arhitectura">Internet, Web și client–server</a></li>
+          <li><a href="#url">Ce conține un URL?</a></li>
+          <li><a href="#browser">Cum construiește browserul pagina?</a></li>
+          <li><a href="#http">HTTP: cerere și răspuns</a></li>
+          <li><a href="#metode">Metode HTTP și CRUD</a></li>
+          <li><a href="#status">Coduri de status și simulator</a></li>
+          <li><a href="#headere">Headere: informații despre mesaje</a></li>
+          <li><a href="#cookies">Cookies: ce păstrează și trimite browserul?</a></li>
+          <li><a href="#sesiuni">Sesiuni, autentificare și autorizare</a></li>
+          <li><a href="#storage">localStorage și sessionStorage</a></li>
+          <li><a href="#api">API, JSON și un fetch real</a></li>
+          <li><a href="#devtools">Atelier în DevTools și recapitulare</a></li>
+          <li><a href="#teme">Două teme pentru acasă</a></li>
+        </ol>
+      </nav>
+      <p class="nota">Exemplele cu <code>cinema.example</code> sunt ilustrative. Simulatorul funcționează local, fără server. Pentru demonstrația <code>fetch()</code>, deschide lecția printr-un server local, urmând <a href="#server-local">pașii de pregătire</a>.</p>
+      <noscript><p class="nota">Explicațiile, exemplele și temele se pot citi fără JavaScript. Activează-l pentru simulator și încărcarea filmelor.</p></noscript>
+    </header>
+    <main>
+      <section id="arhitectura">
+        <h2>1. Clientul cere, serverul răspunde</h2>
+        <p><strong>Internetul</strong> este infrastructura care conectează rețele și calculatoare. <strong>Web-ul</strong> este unul dintre serviciile care folosesc această infrastructură: pagini și resurse accesibile prin adrese și legături.</p>
+        <p>În aplicația noastră, browserul este <strong>clientul</strong>. El cere programul cinematografului. <strong>Serverul</strong> primește cererea, o procesează și trimite un răspuns.</p>
+        <ol class="traseu-web" aria-label="Cele trei straturi ale aplicației de cinema">
+          <li><strong>1. Prezentare</strong>Browserul afișează filmele și formularul de rezervare.</li>
+          <li><strong>2. Logică</strong>Aplicația de pe server verifică dacă locul A2 este liber.</li>
+          <li><strong>3. Date</strong>Baza de date păstrează filmele, locurile și rezervările.</li>
+        </ol>
+        <p>Acestea sunt trei <em>responsabilități</em>, nu neapărat trei calculatoare. Pentru un site simplu, serverul poate doar să trimită fișiere HTML, CSS și JS, fără o bază de date.</p>
+        <p class="nota">O validare în browser ajută utilizatorul. Pentru o rezervare reală, serverul verifică din nou datele și disponibilitatea: două persoane pot încerca același loc în același timp.</p>
+      </section>
+
+      <section id="url">
+        <h2>2. URL-ul: adresa și câteva indicații</h2>
+        <pre><code>https://cinema.example/filme?zi=vineri#program</code></pre>
+        <ul>
+          <li><code>https</code>: schema, care indică aici folosirea HTTP printr-o conexiune protejată cu TLS.</li>
+          <li><code>cinema.example</code>: numele gazdei, adică serverul căruia ne adresăm.</li>
+          <li><code>/filme</code>: calea resursei.</li>
+          <li><code>?zi=vineri</code>: query string, cu un parametru pe care aplicația îl poate folosi pentru filtrare.</li>
+          <li><code>#program</code>: fragmentul, folosit de browser pentru o secțiune din pagină. Nu este trimis în cererea HTTP.</li>
+        </ul>
+        <p>Uneori apare și portul: în <code>http://localhost:8000</code>, serverul local ascultă pe portul 8000. O cale precum <code>/filme</code> poate fi o rută a aplicației; nu trebuie să fie un fișier cu acel nume pe disc.</p>
+        <details>
+          <summary>Opțional: citim un URL cu JavaScript</summary>
+          <pre><code class="language-js">const adresa = new URL("https://cinema.example/filme?zi=vineri#program");
+console.log(adresa.hostname);               // "cinema.example"
+console.log(adresa.pathname);               // "/filme"
+console.log(adresa.searchParams.get("zi")); // "vineri"
+console.log(adresa.hash);                   // "#program"</code></pre>
+          <p>Acest cod doar analizează textul adresei. Nu deschide site-ul și nu trimite o cerere.</p>
+        </details>
+      </section>
+
+      <section id="browser">
+        <h2>3. De la adresă la pagina desenată</h2>
+        <ol>
+          <li><strong>Găsește serverul.</strong> Dacă are nevoie, browserul folosește DNS pentru a afla adresa IP asociată numelui gazdei. Unele informații sau conexiuni pot fi deja disponibile.</li>
+          <li><strong>Cere documentul.</strong> Prin conexiunea potrivită, trimite o cerere HTTP pentru pagină.</li>
+          <li><strong>Citește HTML-ul.</strong> Construiește DOM-ul și descoperă resurse precum CSS, JavaScript și imagini.</li>
+          <li><strong>Obține resursele.</strong> Unele se descarcă, altele pot fi refolosite din cache. Cererile se pot suprapune; browserul nu le execută obligatoriu una câte una.</li>
+          <li><strong>Calculează aspectul.</strong> Din DOM și regulile CSS construiește informațiile necesare pentru stiluri, dimensiuni și poziții, apoi desenează pagina.</li>
+          <li><strong>Răspunde la interacțiuni.</strong> JavaScript poate modifica DOM-ul sau cere date suplimentare fără să reîncarce toată pagina.</li>
+        </ol>
+        <p><strong>CSSOM</strong> este reprezentarea regulilor CSS în browser. Împreună cu DOM-ul, ajută la stabilirea aspectului. O pagină poate folosi și resurse de pe alte servere, de exemplu o imagine sau un videoclip.</p>
+        <h3>Legătura cu lecțiile noastre</h3>
+        <pre><code>&lt;link rel="stylesheet" href="styles.css" /&gt;
+&lt;script src="script.js" defer&gt;&lt;/script&gt;</code></pre>
+        <p>Pentru un script extern obișnuit, <code>defer</code> permite descărcarea în timpul citirii HTML-ului și amână execuția până după parcurgerea documentului. Putem pune scriptul în <code>&lt;head&gt;</code> și găsi elementele paginii când rulează.</p>
+        <p class="sursa">Lectură suplimentară: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview">MDN: imaginea de ansamblu a HTTP</a>.</p>
+      </section>
+
+      <section id="http">
+        <h2>4. HTTP: două mesaje cu roluri diferite</h2>
+        <p><strong>HTTP</strong> stabilește cum comunică un client și un server. Poate transporta HTML, imagini, JSON și multe alte tipuri de date. <strong>HTTPS</strong> protejează comunicarea în tranzit; metoda, headerele și codurile de status păstrează aceleași roluri.</p>
+        <h3>Cererea: „Vreau datele filmului 1”</h3>
+        <pre><code>GET /api/filme/1 HTTP/1.1
+Host: cinema.example
+Accept: application/json</code></pre>
+        <p><code>GET</code> este metoda, <code>/api/filme/1</code> este ținta cererii, iar liniile următoare sunt headere. Această cerere nu are corp.</p>
+        <h3>Răspunsul: „L-am găsit, acestea sunt datele”</h3>
+        <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":1,"titlu":"Drum spre Marte","pret":20}</code></pre>
+        <p><code>200</code> este codul de status. <code>Content-Type</code> descrie formatul corpului. Linia goală separă headerele de corpul mesajului.</p>
+        <p class="nota">Mesajele sunt simplificate și scrise în forma lizibilă HTTP/1.1. HTTP/2 și HTTP/3 folosesc alte reprezentări pe conexiune, dar păstrează conceptele de metodă, status, headere și corp.</p>
+        <h3>Stateless nu înseamnă că serverul nu poate salva date</h3>
+        <p>HTTP nu leagă automat două cereri de același utilizator. Aplicația poate totuși păstra date în baza de date și poate recunoaște o sesiune printr-un identificator trimis cu cererile.</p>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview#http_is_stateless_but_not_sessionless">MDN: HTTP stateless și sesiuni</a>.</p>
+      </section>
+
+      <section id="metode">
+        <h2>5. Metoda spune ce vrem să facem</h2>
+        <p><strong>CRUD</strong> înseamnă Create, Read, Update, Delete: creare, citire, actualizare și ștergere. Într-un API de rezervări, putem avea următoarea convenție:</p>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Metode HTTP și CRUD, tabel derulabil">
+          <table>
+            <caption>Cinci metode întâlnite des</caption>
+            <thead><tr><th scope="col">Metodă</th><th scope="col">Exemplu</th><th scope="col">Intenție</th></tr></thead>
+            <tbody>
+              <tr><td>GET</td><td><code>/api/filme</code></td><td>Citim lista filmelor.</td></tr>
+              <tr><td>POST</td><td><code>/api/rezervari</code></td><td>Trimitem date pentru o rezervare nouă.</td></tr>
+              <tr><td>PUT</td><td><code>/api/rezervari/42</code></td><td>Înlocuim reprezentarea rezervării cu cea trimisă.</td></tr>
+              <tr><td>PATCH</td><td><code>/api/rezervari/42</code></td><td>Modificăm parțial rezervarea, de exemplu locul.</td></tr>
+              <tr><td>DELETE</td><td><code>/api/rezervari/42</code></td><td>Ștergem rezervarea.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Serverul trebuie să implementeze aceste operații. Scrierea lui <code>POST</code> într-un apel nu creează singură o rezervare. Contractul API-ului stabilește adresele, câmpurile și răspunsurile.</p>
+        <pre><code>POST /api/rezervari HTTP/1.1
+Host: cinema.example
+Content-Type: application/json
+
+{"filmId":1,"loc":"A2"}</code></pre>
+        <p>Aici corpul conține datele noii rezervări. <code>GET</code> ar trebui folosit pentru citire, fără să cerem prin el ștergerea sau crearea unei rezervări. <code>POST</code> are și alte utilizări, nu doar crearea de resurse.</p>
+        <details><summary>De recunoscut: HEAD și OPTIONS</summary><p><code>HEAD</code> cere informațiile pe care le-ar oferi GET, dar fără corpul răspunsului. <code>OPTIONS</code> cere informații despre opțiunile de comunicare; îl poți întâlni și la verificările CORS făcute de browser.</p></details>
+        <p class="sursa">Referință: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods">MDN: metode HTTP</a>.</p>
+      </section>
+
+      <section id="status">
+        <h2>6. Statusul spune cum s-a terminat cererea</h2>
+        <p>Prima cifră indică familia: <strong>1xx</strong> informații intermediare, <strong>2xx</strong> succes, <strong>3xx</strong> redirecționare sau reutilizare condiționată, <strong>4xx</strong> probleme legate de cerere și <strong>5xx</strong> probleme pe server.</p>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Coduri de status HTTP, tabel derulabil">
+          <table>
+            <caption>Codurile pe care le urmărim la început</caption>
+            <thead><tr><th scope="col">Cod</th><th scope="col">Ce înțelegem</th><th scope="col">Exemplu</th></tr></thead>
+            <tbody>
+              <tr><td>200 OK</td><td>Cerere reușită.</td><td>Am primit lista filmelor.</td></tr>
+              <tr><td>201 Created</td><td>A fost creată o resursă.</td><td>Rezervarea nouă are ID-ul 42.</td></tr>
+              <tr><td>204 No Content</td><td>Succes, fără corp de răspuns.</td><td>Rezervarea a fost ștearsă.</td></tr>
+              <tr><td>302 Found</td><td>Redirecționare temporară.</td><td>Browserul urmează adresa din Location.</td></tr>
+              <tr><td>304 Not Modified</td><td>Se poate refolosi copia validată din cache.</td><td>Resursa nu s-a schimbat; nu primim din nou corpul.</td></tr>
+              <tr><td>400 Bad Request</td><td>Serverul consideră cererea incorectă.</td><td>În API-ul nostru lipsește câmpul loc.</td></tr>
+              <tr><td>401 Unauthorized</td><td>Lipsesc credențiale de autentificare valide.</td><td>Trebuie să ne autentificăm.</td></tr>
+              <tr><td>403 Forbidden</td><td>Serverul refuză accesul.</td><td>Un client nu poate modifica programul cinematografului.</td></tr>
+              <tr><td>404 Not Found</td><td>Resursa nu a fost găsită.</td><td>Nu există filmul cu ID-ul 999.</td></tr>
+              <tr><td>500 Internal Server Error</td><td>Eroare neașteptată pe server.</td><td>Aplicația nu a putut termina operația.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Un 4xx nu înseamnă obligatoriu că utilizatorul a greșit: poate fi și un link vechi. La 5xx, interfața poate afișa un mesaj și permite reîncercarea, dar repararea cauzei ține de server. Dacă rețeaua nu funcționează, este posibil să nu primim deloc un status HTTP.</p>
+        <div class="demo">
+          <h3>Simulator: citește cererea și răspunsul împreună</h3>
+          <p>Schimbă scenariul și urmărește metoda, statusul și corpul. Sunt mesaje prestabilite; nu se trimit cereri și nu se salvează rezervări.</p>
+          <label for="scenariu-http">Ce se întâmplă?</label>
+          <select id="scenariu-http">
+            <option value="citire">Citim un film</option>
+            <option value="creare">Creăm o rezervare</option>
+            <option value="stergere">Ștergem o rezervare</option>
+            <option value="invalid">Trimitem date incomplete</option>
+            <option value="absent">Cerem un film inexistent</option>
+            <option value="eroare">Serverul întâmpină o eroare</option>
+          </select>
+          <div class="mesaje-http">
+            <div><h4>Cerere → server</h4><pre><code id="cerere-http">GET /api/filme/1 HTTP/1.1
+Host: cinema.example
+Accept: application/json</code></pre></div>
+            <div><h4>Răspuns → browser</h4><pre><code id="raspuns-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":1,"titlu":"Drum spre Marte","pret":20}</code></pre></div>
+          </div>
+          <p id="explicatie-http" class="rezultat" role="status">200 OK: filmul a fost găsit. Corpul răspunsului conține date JSON.</p>
+        </div>
+        <p class="sursa">Referință: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status">MDN: coduri de status HTTP</a>.</p>
+      </section>
+
+      <section id="headere">
+        <h2>7. Headerele descriu mesajul și contextul lui</h2>
+        <p>Un header are forma <code>Nume: valoare</code>. Numele nu ține cont de litere mari sau mici: <code>Content-Type</code> și <code>content-type</code> desemnează același header.</p>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Headere HTTP uzuale, tabel derulabil">
+          <table>
+            <caption>Ce citim în panoul Network</caption>
+            <thead><tr><th scope="col">Header</th><th scope="col">Unde îl întâlnim</th><th scope="col">Rol</th></tr></thead>
+            <tbody>
+              <tr><td>Host</td><td>Cerere HTTP/1.1</td><td>Gazda și, când este cazul, portul.</td></tr>
+              <tr><td>Accept</td><td>Cerere</td><td>Tipuri de conținut acceptate, de exemplu application/json.</td></tr>
+              <tr><td>Content-Type</td><td>Cerere sau răspuns cu corp</td><td>Formatul corpului trimis, de exemplu text/html.</td></tr>
+              <tr><td>Authorization</td><td>Cerere</td><td>Credențiale pentru autentificare, de exemplu un token Bearer.</td></tr>
+              <tr><td>Cookie</td><td>Cerere</td><td>Cookies eligibile pentru acea cerere.</td></tr>
+              <tr><td>Set-Cookie</td><td>Răspuns</td><td>Indică browserului să creeze sau să actualizeze un cookie.</td></tr>
+              <tr><td>Location</td><td>Răspuns</td><td>Adresa unei redirecționări sau a resursei nou create.</td></tr>
+              <tr><td>Cache-Control</td><td>Cerere sau răspuns</td><td>Directive despre folosirea cache-ului.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota"><code>Accept: application/json</code> înseamnă „pot primi JSON”. <code>Content-Type: application/json</code> înseamnă „corpul acestui mesaj este JSON”. Sunt informații diferite.</p>
+        <details>
+          <summary>Opțional: alte nume din material</summary>
+          <ul>
+            <li><code>Accept-Language</code>: preferințe de limbă; <code>Accept-Encoding</code>: compresii acceptate.</li>
+            <li><code>User-Agent</code>: informații declarate de client despre software-ul folosit.</li>
+            <li><code>Referer</code>: informații despre pagina de proveniență, în limitele politicii de confidențialitate aplicate. Numele headerului este chiar „Referer”.</li>
+            <li><code>Content-Length</code>: lungimea corpului în octeți, când este specificată; <code>Content-Encoding</code>: codificarea aplicată, de exemplu gzip.</li>
+            <li><code>Last-Modified</code>: data ultimei modificări; poate fi folosit pentru validarea unei copii din cache.</li>
+          </ul>
+        </details>
+        <p>Browserul gestionează singur multe headere, inclusiv <code>Host</code> și <code>Cookie</code>. Nu le copiem pe toate într-un apel <code>fetch()</code>.</p>
+      </section>
+
+      <section id="cookies">
+        <h2>8. Cookies: date mici, trimise când se potrivesc regulile</h2>
+        <p>Un cookie este o pereche nume–valoare păstrată de browser, împreună cu reguli despre durată și trimitere. Poate ajuta la sesiuni, preferințe sau urmărirea activității.</p>
+        <h3>Serverul îl setează; browserul îl trimite ulterior</h3>
+        <pre><code>Set-Cookie: sesiune=id-demonstrativ; Path=/; Secure; HttpOnly; SameSite=Lax</code></pre>
+        <p>La o cerere ulterioară eligibilă către acel site, browserul poate trimite:</p>
+        <pre><code>Cookie: sesiune=id-demonstrativ</code></pre>
+        <p>Nu trimite toate cookies către orice site. Contează gazda, calea, HTTPS, regulile SameSite și politicile browserului. Atributele precum <code>Path</code> nu se repetă în headerul <code>Cookie</code>.</p>
+        <ul>
+          <li><code>Secure</code>: limitează trimiterea la conexiuni HTTPS, cu excepții locale definite de browser.</li>
+          <li><code>HttpOnly</code>: împiedică accesul prin JavaScript, de exemplu prin <code>document.cookie</code>. Se setează de server.</li>
+          <li><code>SameSite</code>: controlează trimiterea în contexte între site-uri.</li>
+          <li><code>Max-Age</code> sau <code>Expires</code>: stabilesc durata. Fără ele, cookie-ul este de sesiune; restaurarea sesiunii browserului îl poate păstra.</li>
+        </ul>
+        <p class="nota">HttpOnly nu garantează că o valoare este autentică și nu înlocuiește validarea pe server. Într-o sesiune obișnuită trimitem un identificator greu de ghicit, nu parola utilizatorului.</p>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies">MDN: folosirea cookies</a>.</p>
+        <details>
+          <summary>Opțional: Domain, Path și un cookie de preferință</summary>
+          <p>Fără <code>Domain</code>, cookie-ul este limitat la gazda care l-a setat. Specificarea unui domeniu permis poate include și subdomeniile. <code>Path=/cont</code> se potrivește cu <code>/cont</code> și <code>/cont/bilete</code>, dar nu cu <code>/contact</code>. Fără Path explicit, browserul calculează o cale implicită din adresa cererii.</p>
+          <p><code>Path</code> controlează trimiterea; nu este o barieră de securitate între paginile aceluiași site.</p>
+          <pre><code class="language-js">// Rulează pe serverul local. Este doar o preferință demonstrativă.
+document.cookie = "preferintaCinema=ro; Max-Age=3600; Path=/; SameSite=Lax";
+console.log(document.cookie); // Cookies accesibile JavaScript, fără cele HttpOnly.
+
+// Ștergem același cookie folosind același nume și aceeași cale.
+document.cookie = "preferintaCinema=; Max-Age=0; Path=/; SameSite=Lax";</code></pre>
+          <p>Cookie-ul de preferință este accesibil JavaScript; exemplul nu creează o autentificare.</p>
+          <p class="sursa">Referință: <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie">MDN: atributele Set-Cookie</a>.</p>
+        </details>
+      </section>
+
+      <section id="sesiuni">
+        <h2>9. Sesiunea leagă cererile de același context</h2>
+        <p>Într-o implementare obișnuită, serverul păstrează datele sesiunii, iar browserul păstrează într-un cookie identificatorul ei.</p>
+        <ol>
+          <li>Mara trimite formularul de autentificare prin HTTPS.</li>
+          <li>Serverul verifică datele, creează o sesiune și trimite identificatorul prin <code>Set-Cookie</code>.</li>
+          <li>La cererea pentru „Biletele mele”, browserul trimite cookie-ul eligibil.</li>
+          <li>Serverul validează sesiunea și verifică ce bilete are voie Mara să vadă.</li>
+          <li>La deconectare, serverul invalidează sesiunea și cere eliminarea cookie-ului.</li>
+        </ol>
+        <p>Poate exista și o sesiune anonimă, de exemplu pentru un coș înainte de autentificare. O sesiune a aplicației nu este același lucru cu <code>sessionStorage</code>.</p>
+        <h3>Autentificare și autorizare: două întrebări</h3>
+        <ul>
+          <li><strong>Autentificare:</strong> „Cine ești?” Verificăm identitatea Marei.</li>
+          <li><strong>Autorizare:</strong> „Ce ai voie să faci?” Mara poate vedea biletele ei; administratorul poate modifica programul.</li>
+        </ul>
+        <p>Un utilizator autentificat poate primi <code>403</code> când încearcă o operație interzisă. Ascunderea unui buton în HTML nu protejează operația: serverul verifică drepturile pentru fiecare cerere relevantă.</p>
+        <details><summary>De recunoscut: Authorization</summary><pre><code>Authorization: Bearer token-demonstrativ</code></pre><p>Unele API-uri folosesc un token în acest header în locul unui cookie de sesiune. Numele headerului nu înseamnă că drepturile sunt acordate automat; serverul verifică tokenul și permisiunile.</p></details>
+      </section>
+
+      <section id="storage">
+        <h2>10. Când vrem doar să păstrăm o preferință în browser</h2>
+        <p><code>localStorage</code> și <code>sessionStorage</code> păstrează perechi cheie–valoare ca texte. Nu sunt trimise automat cu cererile HTTP.</p>
+        <div class="tabel-container" tabindex="0" role="region" aria-label="Comparație între cookies și Web Storage, tabel derulabil">
+          <table>
+            <caption>Unde păstrăm informația?</caption>
+            <thead><tr><th scope="col">Mecanism</th><th scope="col">Durată și delimitare</th><th scope="col">Exemplu</th></tr></thead>
+            <tbody>
+              <tr><td>Cookie</td><td>După atribute și politicile browserului; trimis la cererile eligibile.</td><td>Identificator de sesiune.</td></tr>
+              <tr><td>localStorage</td><td>Pe origine; persistă între vizite până la ștergere.</td><td>Preferința pentru genul de film.</td></tr>
+              <tr><td>sessionStorage</td><td>Pe origine și tab; rezistă la reload, în mod normal se elimină la închiderea tabului.</td><td>Un pas temporar al unui formular.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O <strong>origine</strong> este combinația dintre schemă, gazdă și port. <code>http://localhost:8000</code> și <code>http://localhost:5500</code> au spații de stocare diferite.</p>
+        <pre><code class="language-js">localStorage.setItem("cinema-gen-preferat", "comedie");
+console.log(localStorage.getItem("cinema-gen-preferat")); // "comedie"
+
+localStorage.removeItem("cinema-gen-preferat");
+console.log(localStorage.getItem("cinema-gen-preferat")); // null</code></pre>
+        <p>Pentru a observa persistența după reload, rulează primele două linii, reîncarcă pagina și citește din nou valoarea. Rulează ștergerea separat. Aceleași metode există și pe <code>sessionStorage</code>.</p>
+        <p class="nota">Stocarea poate fi blocată sau ștearsă de utilizator ori de browser. Pentru date esențiale, aplicația trebuie să poată trata această situație. Nu păstrăm parole în Web Storage.</p>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">MDN: Web Storage</a>.</p>
+      </section>
+
+      <section id="api">
+        <h2>11. API și JSON: cerem date pentru interfața noastră</h2>
+        <p>Un <strong>API</strong> este o interfață prin care programele pot folosi funcționalități sau date. Într-un API HTTP, un <em>endpoint</em> este o adresă prin care accesăm o operație sau o resursă, de exemplu <code>GET /api/filme</code>.</p>
+        <p><strong>JSON</strong> este un format text pentru date. Cheile și textele au ghilimele duble. Nu scriem comentarii sau funcții în JSON.</p>
+        <pre><code class="language-json">[
+  { "id": 1, "titlu": "Drum spre Marte", "pret": 20 },
+  { "id": 2, "titlu": "Pisica regizor", "pret": 15 },
+  { "id": 3, "titlu": "Pauză de râs", "pret": 25 }
+]</code></pre>
+        <p>Am pus aceste date în <a href="exemple-web/filme.json">exemple-web/filme.json</a>. Le cerem prin HTTP ca pe răspunsul unui API, dar sursa este un fișier static: nu avem încă operații de creare sau ștergere pe server.</p>
+        <h3 id="server-local">Pregătire: deschide pagina prin HTTP</h3>
+        <p>Folosește serverul local pe care îl ai deja pentru curs, de exemplu Live Server în VS Code. Deschide folderul proiectului, apoi lecția prin acel server.</p>
+        <details>
+          <summary>Alternativă: server local cu Python, dacă este instalat</summary>
+          <p>Din terminal, în folderul principal al proiectului, rulează:</p>
+          <pre><code>python3 -m http.server 8000 --bind 127.0.0.1 --directory html</code></pre>
+          <p>Deschide <code>http://localhost:8000/Web-Concepts-Dive-Deeper.html</code>. Oprești serverul cu <kbd>Ctrl</kbd> + <kbd>C</kbd> în terminal. Comanda de mai sus servește doar folderul <code>html</code>.</p>
+        </details>
+        <p class="nota">La deschiderea directă prin <code>file://</code>, browserul poate bloca fetch pentru fișiere locale. Serverul local oferă cereri și răspunsuri HTTP pe care le putem inspecta în Network.</p>
+        <h3>Mai întâi, un exemplu scurt pentru consolă</h3>
+        <pre><code class="language-js">async function citesteFilmele() {
+  try {
+    const raspuns = await fetch("exemple-web/filme.json");
+    if (!raspuns.ok) {
+      throw new Error(`HTTP ${raspuns.status}`);
+    }
+    const filme = await raspuns.json();
+    console.log(filme[0].titlu); // "Drum spre Marte"
+  } catch (eroare) {
+    console.log(`Încărcarea a eșuat: ${eroare.message}`);
+  }
+}
+
+citesteFilmele();</code></pre>
+        <ol>
+          <li><code>fetch()</code> trimite implicit o cerere GET și întoarce o promisiune.</li>
+          <li><code>await</code> ne dă obiectul Response. <code>status</code> este codul numeric; <code>ok</code> este true pentru coduri de la 200 la 299.</li>
+          <li><code>await raspuns.json()</code> citește și transformă corpul JSON în valori JavaScript.</li>
+          <li><code>catch</code> tratează erorile de rețea, eroarea aruncată de noi pentru status și eventualele erori de parsare JSON.</li>
+        </ol>
+        <p class="nota">Un răspuns <code>404</code> sau <code>500</code> nu respinge singur promisiunea fetch. Verificăm <code>raspuns.ok</code>. Pentru un <code>204</code>, nu apelăm <code>json()</code>: nu există corp de parsat.</p>
+        <div class="demo" id="demo-fetch">
+          <h3>Încarcă programul cinematografului</h3>
+          <p>Deschide Network înainte de click ca să vezi cererea reală. Al doilea scenariu cere intenționat un fișier care nu există; pe serverul static local acesta produce 404.</p>
+          <div class="controale">
+            <div><label for="sursa-filme">Ce resursă cerem?</label><select id="sursa-filme"><option value="exemple-web/filme.json">Lista de filme</option><option value="exemple-web/filme-inexistente.json">Fișier inexistent (404)</option></select></div>
+            <button id="incarca-filme" type="button">Încarcă filmele</button>
+          </div>
+          <p id="stare-filme" class="rezultat" role="status">Lista nu a fost încărcată.</p>
+          <ul id="lista-filme" class="lista-api" aria-label="Filmele primite de la server"></ul>
+        </div>
+        <details>
+          <summary>Vezi codul complet al demonstrației fetch</summary>
+          <p>Scriptul folosește ID-urile din demonstrație. Golește lista la început, verifică răspunsul și creează fiecare rând cu <code>textContent</code>. În <code>finally</code> reactivează controalele.</p>
+          <pre><code class="language-js" id="cod-fetch-complet">const butonIncarca = document.getElementById("incarca-filme");
+const sursaFilme = document.getElementById("sursa-filme");
+const stareFilme = document.getElementById("stare-filme");
+const listaFilme = document.getElementById("lista-filme");
+
+async function incarcaFilme() {
+  listaFilme.replaceChildren();
+
+  if (window.location.protocol === "file:") {
+    stareFilme.textContent = "Deschide lecția printr-un server local (http://localhost…), apoi încearcă din nou. Vezi pașii de mai sus.";
+    return;
+  }
+
+  butonIncarca.disabled = true;
+  sursaFilme.disabled = true;
+  stareFilme.textContent = "Se încarcă filmele…";
+
+  try {
+    const raspuns = await fetch(sursaFilme.value);
+    if (!raspuns.ok) {
+      throw new Error(`HTTP ${raspuns.status}: lista nu a putut fi încărcată.`);
+    }
+
+    const filme = await raspuns.json();
+    for (const film of filme) {
+      const element = document.createElement("li");
+      element.textContent = `${film.titlu}: ${film.pret} lei`;
+      listaFilme.append(element);
+    }
+    stareFilme.textContent = `HTTP ${raspuns.status}: ${filme.length} filme încărcate.`;
+  } catch (eroare) {
+    stareFilme.textContent = `Nu am putut afișa filmele. ${eroare.message}`;
+  } finally {
+    butonIncarca.disabled = false;
+    sursaFilme.disabled = false;
+  }
+}
+
+butonIncarca.addEventListener("click", incarcaFilme);</code></pre>
+        </details>
+        <details>
+          <summary>Opțional: de ce un API de pe alt domeniu poate fi blocat?</summary>
+          <p>Pentru cereri între origini diferite, browserul aplică regulile <strong>CORS</strong>. Serverul trebuie să permită accesul la răspuns pentru originea paginii. Exemplul nostru cere JSON de la aceeași origine, ca să putem exersa întâi pașii de bază.</p>
+          <p><code>mode: "no-cors"</code> nu este o rezolvare pentru citirea unui JSON blocat: obții un răspuns opac, al cărui corp nu poate fi citit de script. Verifică documentația API-ului și configurarea serverului.</p>
+        </details>
+        <p class="sursa">Detalii: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">MDN: folosirea Fetch API</a>. Codul local: <a href="web-concepts.js">web-concepts.js</a>.</p>
+      </section>
+
+      <section id="devtools">
+        <h2>12. Atelier: găsim dovezile în browser</h2>
+        <h3>Network: urmărim cererile</h3>
+        <ol>
+          <li>Deschide DevTools → <strong>Network</strong>, apoi reîncarcă lecția deschisă prin serverul local.</li>
+          <li>Alege documentul HTML. În <strong>Headers</strong>, caută Request URL, Request Method, Status Code și Content-Type.</li>
+          <li>Observă cererile pentru CSS și JavaScript. În <strong>Timing</strong> sau Waterfall vezi când au avut loc.</li>
+          <li>Apasă „Încarcă filmele” și caută <code>filme.json</code>, eventual cu filtrul Fetch/XHR.</li>
+          <li>În <strong>Response</strong> sau <strong>Preview</strong>, verifică lista. Alege apoi fișierul inexistent și compară statusul și corpul.</li>
+        </ol>
+        <p>Răspunsul 404 al unui server static poate conține HTML, nu JSON. De aceea verificăm statusul înainte să încercăm parsarea. Pentru a urmări o descărcare nouă, poți bifa temporar „Disable cache” cât timp DevTools este deschis.</p>
+        <h3>Application / Storage: urmărim ce rămâne în browser</h3>
+        <p>În Chrome, caută <strong>Application</strong>; alte browsere pot folosi numele <strong>Storage</strong>. Inspectează Cookies, Local Storage și Session Storage pentru originea locală. Rulează exemplul de preferință din secțiunea 10, citește valoarea după reload, apoi șterge doar cheia creată în exercițiu.</p>
+        <p>Instrumente precum Postman sau Fiddler pot ajuta la inspectarea cererilor. Pentru această lecție, DevTools este suficient.</p>
+        <details>
+          <summary>Recapitulare: cinci întrebări cu răspunsuri</summary>
+          <ol>
+            <li>Este 404 o lipsă totală de răspuns? <strong>Nu.</strong> Serverul a răspuns că resursa nu a fost găsită.</li>
+            <li>Trimite localStorage automat date spre server? <strong>Nu.</strong> Scriptul ar trebui să le trimită explicit.</li>
+            <li>Înseamnă autentificat și administrator? <strong>Nu.</strong> Drepturile sunt verificate separat.</li>
+            <li>GET și POST sunt doar două nume pentru aceeași operație? <strong>Nu.</strong> Exprimă intenții diferite, implementate de server.</li>
+            <li>Intră fetch automat în catch la 500? <strong>Nu.</strong> Verificăm statusul sau <code>ok</code> și tratăm eroarea.</li>
+          </ol>
+        </details>
+      </section>
+
+      <section id="teme">
+        <h2>Temă simplă: detectiv în Network</h2>
+        <p>Deschide această lecție pe serverul local și notează rezultatele într-un fișier <code>tema-web-1.txt</code>.</p>
+        <ol>
+          <li>Reîncarcă pagina cu Network deschis. Notează metoda, statusul și Content-Type pentru documentul HTML și pentru un fișier CSS.</li>
+          <li>Încarcă lista de filme. Notează aceleași informații pentru <code>filme.json</code> și titlul primului film din răspuns.</li>
+          <li>Cere fișierul inexistent. Notează statusul și tipul corpului primit: JSON, HTML sau alt format.</li>
+          <li>Explică în câte o propoziție diferența dintre Accept și Content-Type, respectiv dintre 401 și 403.</li>
+          <li>Din simulator, alege crearea unei rezervări și identifică metoda, corpul cererii și adresa din Location.</li>
+        </ol>
+        <p class="nota">Verificare: pe serverul Python din lecție, filme.json este primit prin GET cu 200, iar fișierul inexistent produce 404. Primul film este „Drum spre Marte”. Simulatorul de creare arată POST, 201 și Location: /api/rezervari/42. Notează valorile observate efectiv pe serverul tău.</p>
+        <details><summary>Indiciu</summary><p>Nu confunda cererea documentului HTML cu cererea pornită de buton. Folosește filtrul din Network și deschide fiecare rând separat. Simulatorul nu creează rânduri noi în Network.</p></details>
+      </section>
+
+      <section id="tema-program">
+        <h2>Temă puțin mai complexă: programul filmelor</h2>
+        <p>Într-un folder nou creează <code>index.html</code>, <code>script.js</code> și <code>filme.json</code>. Copiază cele trei filme din exemplul lecției și deschide pagina prin serverul local.</p>
+        <ol>
+          <li>Adaugă un buton „Încarcă programul”, un paragraf de stare și o listă goală.</li>
+          <li>La click, folosește o funcție async și <code>fetch("filme.json")</code>. Verifică <code>raspuns.ok</code> înainte de <code>raspuns.json()</code>.</li>
+          <li>Afișează fiecare film ca <code>titlu: preț lei</code>, folosind <code>createElement</code> și <code>textContent</code>.</li>
+          <li>Arată „Se încarcă…” și dezactivează butonul pe durata cererii. Folosește <code>try / catch / finally</code> pentru succes, eroare și reactivare.</li>
+          <li>Golește lista înainte de o nouă încărcare, ca să nu dublezi filmele.</li>
+          <li>Schimbă temporar adresa în <code>nu-exista.json</code> și verifică mesajul de eroare. Restabilește apoi adresa corectă.</li>
+        </ol>
+        <p class="nota">Verificare: apar exact trei filme, cu prețurile 20, 15 și 25 lei. Două clickuri succesive nu produc șase rânduri. La 404 apare un mesaj, lista veche este golită, iar butonul poate fi folosit din nou.</p>
+        <details><summary>Indiciu: construiește în trei pași</summary><p>Mai întâi citește JSON-ul și afișează-l în consolă. Apoi construiește lista. La final adaugă stările de încărcare și eroare după exemplul din lecție. Nu ai nevoie de autentificare sau de o bază de date pentru această temă.</p></details>
+      </section>
+    </main>
+    <footer>
+      <p><a href="AJAX-Promises.html">Continuă cu lecția 15 - AJAX și Promises &rarr;</a></p>
+      <p><a href="ES6.html">&larr; Înapoi la lecția 13 - ES6</a></p>
+      <p><a href="index.html">Înapoi la pagina principală și la toate lecțiile</a></p>
+      <p><a href="#sus">Înapoi sus &uarr;</a></p>
+    </footer>
+  </body>
+</html>
